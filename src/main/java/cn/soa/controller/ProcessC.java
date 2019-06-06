@@ -267,8 +267,8 @@ public class ProcessC {
 	 * @Description:  根据任务tsid，获取流程所有的历史节点 
 	 * @return: ResultJson<List<Map<String,Object>>>        
 	 */  
-	@GetMapping("/nodes/history/tsid/{tsid}")
-	public ResultJson<List<Map<String,Object>>> getHisInfosByTsid(
+	@GetMapping("/nodes/historyAct/tsid/{tsid}")
+	public ResultJson<List<Map<String,Object>>> getHisActInfosByTsid(
 			@PathVariable("tsid") @NotBlank String tsid ){
 		logger.debug( "--C-------- 根据任务tsid，获取流程所有的历史节点      -------------" );
 		logger.debug( tsid );
@@ -282,19 +282,37 @@ public class ProcessC {
 	
 	/**   
 	 * @Title: getHitoryNodeInfos   
-	 * @Description:  根据任务tsid，获取流程所有的历史节点 
+	 * @Description:  根据任务tsid，获取流程所有的活动节点 
 	 * @return: ResultJson<List<Map<String,Object>>>        
 	 */  
-	@GetMapping("/nodes/history/piid/{piid}")
-	public ResultJson<List<Map<String,Object>>> getHisInfosByPiid(
+	@GetMapping("/nodes/historyAct/piid/{piid}")
+	public ResultJson<List<Map<String,Object>>> getHisActInfosByPiid(
 			@PathVariable("piid") @NotBlank String piid ){
 		logger.debug( "--C-------- 根据任务piid，获取流程所有的历史节点      -------------" );
 		logger.debug( piid );
-		List<Map<String, Object>> historyNodesInfo = activityS.getHisInfosByPiid( piid );
+		List<Map<String, Object>> historyNodesInfo = activityS.getHisActNodesByPiid( piid );
 		if( historyNodesInfo != null && historyNodesInfo.size() > 0  ) {
 			return new ResultJson<List<Map<String,Object>>>( 0, "获取流程所有的历史节点成功", historyNodesInfo );
 		}
 		return new ResultJson<List<Map<String,Object>>>( 0, "获取流程所有的历史节点失败", null );
+
+	}
+	
+	/**   
+	 * @Title: getHisTaskNodeInfosByPiid   
+	 * @Description: 根据流程piid，获取当前流程的任务节点信息  
+	 * @return: ResultJson<List<Map<String,Object>>>        
+	 */  
+	@GetMapping("/nodes/historyTask/piid/{piid}")
+	public ResultJson<List<Map<String,Object>>> getHisTaskNodeInfosByPiid(
+			@PathVariable("piid") @NotBlank String piid ){
+		logger.debug( "--C-------- 根据流程piid，获取当前流程的任务节点信息      -------------" );
+		logger.debug( piid );
+		List<Map<String, Object>> historyNodesInfo = activityS.getHisTaskNodeInfosByPiid( piid );
+		if( historyNodesInfo != null && historyNodesInfo.size() > 0  ) {
+			return new ResultJson<List<Map<String,Object>>>( 0, "获取流程实例已完成的任务节点成功", historyNodesInfo );
+		}
+		return new ResultJson<List<Map<String,Object>>>( 0, "获取流程实例已完成的任务节点失败", null );
 
 	}
 	

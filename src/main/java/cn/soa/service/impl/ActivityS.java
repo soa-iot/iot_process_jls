@@ -20,6 +20,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -736,7 +737,7 @@ public class ActivityS implements ActivitySI{
     
     /**   
      * @Title: getHistoryNodesByPiid   
-     * @Description: 根据流程piid，查询该流程的历史节点  
+     * @Description: 根据流程piid，查询该流程的历史活动节点  
      * @return: List<HistoricActivityInstance>        
      */ 
     @Override
@@ -919,7 +920,7 @@ public class ActivityS implements ActivitySI{
 	 * @return: List<Map<String,Object>>        
 	 */ 
     @Override
-	public List<Map<String,Object>> getHisInfosByPiid( String piid ){
+	public List<Map<String,Object>> getHisActNodesByPiid( String piid ){
     	logger.debug( "---S--------根据流程piid，获取当前流程的历史节点信息-------------" );
 		ArrayList<Map<String, Object>> allHistoryInfos = new ArrayList<Map<String,Object>>();
 		if( StringUtils.isBlank( piid ) ) {
@@ -939,7 +940,6 @@ public class ActivityS implements ActivitySI{
 			List<HistoricActivityInstance> historyNodes = getHistoryNodesByPiid( piid );
 			logger.debug(historyNodes.toString());
 			for( HistoricActivityInstance h : historyNodes ) {
-				logger.debug("1");
 				HashMap<String, Object> tempMap = new HashMap<String, Object>();
 				String historyActid = h.getTaskId();
 				List<Comment> comments = taskService.getTaskComments( historyActid );
@@ -957,6 +957,62 @@ public class ActivityS implements ActivitySI{
 				}
 				tempMap.put( "nodeId", h.getActivityId() );
 				tempMap.put( "nodeName", h.getActivityName() );
+				tempMap.put( "nodeExecutor", h.getAssignee() );
+				tempMap.put( "nodeEndTime", h.getEndTime() );
+				allHistoryInfos.add( tempMap );
+			}
+			return allHistoryInfos;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+    
+    /**   
+     * @Title: getHisTaskNodeInfosByPiid   
+     * @Description:  根据流程piid，获取当前流程的任务节点信息 
+     * @return: List<Map<String,Object>>        
+     */  
+    @Override
+    public List<Map<String,Object>> getHisTaskNodeInfosByPiid( String piid ){
+    	logger.debug( "---S--------根据流程piid，获取当前流程的任务节点信息-------------" );
+		ArrayList<Map<String, Object>> allHistoryInfos = new ArrayList<Map<String,Object>>();
+		if( StringUtils.isBlank( piid ) ) {
+			logger.debug( "---S--------piid为null-------------" );
+			return null;
+		}
+		
+		String tsid = getTsidByPiid( piid ); 
+		if( StringUtils.isBlank( tsid ) ) {
+			logger.debug( "---S--------tsid为null-------------" );
+			return null;
+		}
+		/*
+		 * 获取历史节点
+		 */
+		try {
+			List<HistoricTaskInstance> historyNodes = getHisTaskNodesByPiid( piid );
+			logger.debug(historyNodes.toString());
+			for( HistoricTaskInstance h : historyNodes ) {
+				HashMap<String, Object> tempMap = new HashMap<String, Object>();
+				String taskid = h.getId();
+				List<Comment> comments = taskService.getTaskComments( taskid );
+				if( comments.size() > 0 ) {
+					for( Comment c : comments ) {
+						Object o = tempMap.get( "nodeComment");
+						if( o != null ) {
+							tempMap.put( "nodeComment", o + c.getFullMessage() );
+						}else {
+							tempMap.put( "nodeComment",  c.getFullMessage() );
+						}					
+					}				
+				}else {
+					tempMap.put( "nodeComment", "" );
+				}
+				tempMap.put( "nodeId", h.getId() );
+				tempMap.put( "nodeName", h.getName() );
+				tempMap.put( "nodeExecutor", h.getAssignee() );
+				tempMap.put( "nodeEndTime", h.getEndTime() );
 				allHistoryInfos.add( tempMap );
 			}
 			return allHistoryInfos;
@@ -1078,5 +1134,30 @@ public class ActivityS implements ActivitySI{
 			return todoTasks;
 		}				
 	}
+    
+    /**   
+     * @Title: getHistoryNodesByPiid   
+     * @Description: 根据流程piid，查询该流程的历史任务节点  
+     * @return: List<HistoricActivityInstance>        
+     */ 
+    @Override
+    public List<HistoricTaskInstance> getHisTaskNodesByPiid( String piid ){
+    	if( StringUtils.isBlank( piid ) ) {
+			logger.debug( "---S--------任务piid为null-------------" );
+			return null;
+		}	
+    	try {
+    		List<HistoricTaskInstance> lists = historyService
+    				.createHistoricTaskInstanceQuery()
+    				.processInstanceId( piid )
+    				.finished()
+    				.list();
+    		logger.debug( lists.toString() );
+    		return lists;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}   	
+    }
 
 }

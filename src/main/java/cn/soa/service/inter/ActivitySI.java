@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -254,7 +255,21 @@ public interface ActivitySI {
 	 * @Description: 根据流程piid，获取当前流程的历史节点信息  
 	 * @return: List<Map<String,Object>>        
 	 */  
-	List<Map<String, Object>> getHisInfosByPiid(String piid);
+	List<Map<String, Object>> getHisActNodesByPiid(String piid);
+
+	/**   
+	 * @Title: getHisTaskNodesByPiid   
+	 * @Description: 根据流程piid，查询该流程的历史任务节点    
+	 * @return: List<HistoricTaskInstance>        
+	 */  
+	List<HistoricTaskInstance> getHisTaskNodesByPiid(String piid);
+
+	/**   
+	 * @Title: getHisTaskNodeInfosByPiid   
+	 * @Description:  根据流程piid，获取当前流程的任务节点信息 
+	 * @return: List<Map<String,Object>>        
+	 */  
+	List<Map<String, Object>> getHisTaskNodeInfosByPiid(String piid);
 
 	
 }
