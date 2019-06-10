@@ -351,6 +351,13 @@ public class ActivityS implements ActivitySI{
     @Override
     @Transactional
     public boolean nextNodeByPIID( String piid, Map<String,Object> map ) { 
+    	//检查
+    	if( map.get("userName") == null ) {
+    		logger.debug( "-------执行流转下一个节点 (根据任务piid)--------" );
+    		logger.debug( "-------userName参数不存在--------" );
+    		return false;
+    	}
+    	
     	/*
     	 * 根据piid获取tsid
     	 */
@@ -366,6 +373,9 @@ public class ActivityS implements ActivitySI{
     	logger.debug( map.toString() );
     	
     	try {     
+    		//拾取任务
+    		taskService.claim( tsid, map.get( "userName" ).toString() );
+    		
     		/*
     		 * 增加备注信息
     		 */

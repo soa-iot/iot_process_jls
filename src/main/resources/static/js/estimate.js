@@ -1,27 +1,26 @@
-/**
- * 全局变量——问题描述piid
- */
-var piidp = "ADAA80DB601C4470BE8BB224705F5F9C";
-var era;
+
 /**
  * 地址解析
  * @returns
  */
 
-getUrlPara();
-function getUrlPara(){
-	var url = window.location.href;
-	url = url.substring(url.indexOf("?")+1);
-	url=url.split("&");
-	var map = {};
-	for (var i = 0; i < url.length; i++) {
-		map[url[i].substring(0,url[i].indexOf("="))]=url[i].substring(url[i].indexOf("=")+1);
-	}
-//	//pid= url[1].substring(url[1].indexOf("=")+1);
-//	//alert(pid);
-//	console.log(map['name']);
-
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  decodeURI(r[2]); return null;
 }
+
+/**
+ * 全局变量——piid
+ */
+var piidp = GetQueryString('piid');
+
+/**
+ * 全局变量——属地单位
+ */
+var area = GetQueryString('area');
+//console.log(era+","+piidp);
 
 /**
  * 日期插件
@@ -45,7 +44,7 @@ layui.use(['carousel', 'form'], function(){
 
 	//常规轮播
 	carousel.render({
-		elem: '#test2'
+		elem: '.imgshow'
 			,arrow: 'always'
 	});
 });  
@@ -71,7 +70,7 @@ $.ajax({
 	success: function( json) {
 		if (json.state == 0) {
 			var problem = json.data;
-			era=problem.problemtype;
+			//era=problem.problemtype;
 			$("#parea").val(problem.welName);
 			$("#major").val(problem.profession);
 			$("#rfid").val(problem.rfid);
@@ -94,12 +93,12 @@ $.ajax({
 });
 
 /**
-  *图片
+  *问题图片
   */
 $.ajax({  
 	url : "/iot_process/estimates/problemreportpho",  
 	type : "get",
-	data : {piid : "12323213123"},
+	data : {piid : piidp,remark:0},
 	dataType : "json",  
 	success: function( json) {
 		if (json.state == 0) {
@@ -135,181 +134,158 @@ $.ajax({
 });
 
 
-//作业安排
-$("#work_plan_tree").hide();
-$("#organization_tree").hide();
-var usernames="";
-function workPlanBtn(obj){
-	var tree1 ;
-
-	//数据初tree数据声明
-	var tree_data=[];
-	$.ajax({  
-		url : "http://localhost:10238/iot_usermanager/user/rolename",  
-		type : "get",
-		data : {roleName:era},
-		dataType : "json",  
-		success: function( json) {
-			if (json.state == 0) {
-				var datapro = json.data;
-
-				//数据初始化
-				tree_data = buildTree(datapro);
-
-					/*url : "http://localhost:10238/iot_usermanager/role/rolid",  
-					type : "get",
-					data : {rolid:"A291958C761347159F28FBDF70ADC12D"},
-					dataType : "json",  */
-
-							//tree
-							layui.use('tree', function(){
-								var tree = layui.tree
-								,layer = layui.layer
-								,data = [{label: era
-									//,id: 1
-									,children: tree_data}];
-
-
-								//弹出层
-								layui.use('layer', function(){ //独立版的layer无需执行这一句
-									var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
-									//触发事件
-									var active = {
-											offset: function(othis){
-												var type = othis.data('type')
-												layer.open({
-													type: 1
-													,offset: type 
-													,area: ['300px','400px;']
-													,id: 'work_plan'+type //防止重复弹出
-													,key:'id'
-													,content: $("#work_plan_tree")
-													,btn: ['确认',"取消"]
-													,btnAlign: 'c' //按钮居中
-													,yes: function(){
-														
-														var check = tree1.getChecked(); //获得被勾选的节点
-														
-														for (var i = 0; i < check.length; i++) {
-															usernames += check[i][0].innerText;
-															if (i!=check.length-1) {
-																usernames +=",";
-															}
-														}
-														
-														workPlan(obj,usernames);
-														
-														console.log(usernames);
-														
-														layer.closeAll();
-													}
-												,success:function(){
-													//console.log(data);
-													//开启复选框
-													tree1 = tree.render({
-
-														elem: '#work_plan_tree'
-														,data: data
-														,showCheckbox: true
-													})
-												}
-												});
-											}
-									};
-
-									$('#work_plan').on('click', function(){
-										var othis = $(this), method = othis.data('method');
-										active[method] ? active[method].call(this, othis) : '';
-									});
-
-								});
-
-
-							});
-
-			}
-
-		}  
-	});
-
-}
-
 
 /**
- * 全厂人员
+ * 作业安排
  * @param obj
  * @returns
  */
-function workPlanBtnAll(obj){
-							/*//tree
-							layui.use('tree', function(){
-								var tree = layui.tree
-								,layer = layui.layer
-								,data = [{label: "超级管理员"
-									//,id: 1
-									,children: tree_data}];*/
-	
+var usernames="";
+	//如果为这个几个部门这显示全厂人员
+		//var era = "生产办公室";
+		var url = area=='生产办公室' || area == 'HSE办公室' || area == '设备办公室'?'../html/organization_tree.html':'../html/organization_tree_problemtype.html?era='+area;
+	console.log(area);
+	//弹出层
+	layui.use('layer', function(){ //独立版的layer无需执行这一句
+		var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+		//触发事件
+		var active = {
+				offset: function(othis){
+					var type = othis.data('type')
+					layer.open({
+						type: 1
+						,offset: type 
+						,area: ['300px','400px;']
+					,id: 'work_plan'+type //防止重复弹出
+					,key:'id'
+						//../html/organization_tree.html
+						,content: '<iframe id="addFrame" src="'+url+'" style="width:293px;height:290px;"></iframe>'
+							,btn: ['确认',"取消"]
+					,btnAlign: 'c' //按钮居中
+						,yes: function(){
 
-								//弹出层
-								layui.use('layer', function(){ //独立版的layer无需执行这一句
-									var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
-									//触发事件
-									var active = {
-											offset: function(othis){
-												var type = othis.data('type')
-												layer.open({
-													type: 1
-													,offset: type 
-													,area: ['300px','400px;']
-													,id: 'work_plan'+type //防止重复弹出
-													,key:'id'
-													,content: '<iframe id="addFrame" src="../html/organization_tree.html" style="width:293px;height:290px;"></iframe>'
-													,btn: ['确认',"取消"]
-													,btnAlign: 'c' //按钮居中
-													,yes: function(){
+							var childWindow = $("#addFrame")[0].contentWindow;
+							var checkData = childWindow.getCheckedData();
+							console.log(checkData);
+							for (var i = 0; i < checkData.length; i++) {
 
-														var childWindow = $("#addFrame")[0].contentWindow;
-														var checkData = childWindow.getCheckedData();
-														for (var i = 0; i < checkData.length; i++) {
-															
-															//console.log(checkData[i][1]);
-															var user=userOrDept(checkData[i][1]);
-															if (user!="") {
-																usernames +=user;
-																if (i!=checkData.length-1) {
-																	usernames +=",";
-																}
-															}
-															//console.log(usernames);
-														}
-														
-														workPlan(obj,usernames);
-														
-														layer.closeAll();
-													}
-												/*,success:function(){
-													//console.log(data);
-													//开启复选框
-													tree1 = tree.render({
+								//console.log(checkData[i][1]);
+								var user=userOrDept(checkData[i][1]);
+								if (user!="") {
+									usernames +=user;
+									if (i!=checkData.length-1) {
+										usernames +=",";
+									}
+								}
+							}
+							console.log(usernames);
 
-														elem: '#work_plan_tree'
-														,data: data
-														,showCheckbox: true
-													})
-												}*/
-												});
+							workPlan(this,usernames);
+							usernames="";
+							
+							layer.closeAll();
+						}
+					});
+				}
+		};
+
+		$('#work_plan').on('click', function(){
+			var othis = $(this), method = othis.data('method');
+			active[method] ? active[method].call(this, othis) : '';
+		});
+
+	});
+
+/**
+ * 外部协调
+ */
+$("#coordinate_tree").hide();
+var coordinate_tree ;
+
+//数据初tree数据声明
+var coordinate_tree_data=[];
+$.ajax({  
+	url : "http://localhost:8080/iot_process/estimates/problemtype",  
+	type : "get",
+	data : {problemtype:area},
+	dataType : "json",  
+	success: function( json) {
+		//console.log(json.state);
+		if (json.state == 0) {
+			var datapro = json.data;
+
+			//数据初始化
+			coordinate_tree_data = buildTree(datapro);
+			//tree
+			layui.use('tree', function(){
+				var tree = layui.tree
+				,layer = layui.layer
+				,data = coordinate_tree_data;
+
+
+				//弹出层
+				layui.use('layer', function(){ //独立版的layer无需执行这一句
+					var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+					//触发事件
+					var active = {
+							offset: function(othis){
+								var type = othis.data('type')
+								layer.open({
+									type: 1
+									,offset: type 
+									,area: ['300px','400px;']
+								,id: 'coordinate'+type //防止重复弹出
+								,key:'id'
+									,content: $("#coordinate_tree")
+									,btn: ['确认',"取消"]
+								,btnAlign: 'c' //按钮居中
+									,yes: function(){
+
+										var check = coordinate_tree.getChecked(); //获得被勾选的节点
+
+										for (var i = 0; i < check.length; i++) {
+											usernames += check[i][0].innerText;
+											if (i!=check.length-1) {
+												usernames +=",";
 											}
-									};
+										}
 
-									$('#work_plan').on('click', function(){
-										var othis = $(this), method = othis.data('method');
-										active[method] ? active[method].call(this, othis) : '';
-									});
+										workPlan(this,usernames);
 
+										console.log(usernames);
+										
+										usernames="";
+										
+										layer.closeAll();
+									}
+								,success:function(){
+									//console.log(data);
+									//开启复选框
+									coordinate_tree = tree.render({
+
+										elem: '#coordinate_tree'
+											,data: data
+											,showCheckbox: true
+									})
+								}
 								});
+							}
+					};
+
+					$('#coordinate').on('click', function(){
+						var othis = $(this), method = othis.data('method');
+						active[method] ? active[method].call(this, othis) : '';
+					});
+
+				});
 
 
-}
+			});
+
+		}
+
+	}  
+});
 
 /**
  * 指定日期禁用
@@ -318,56 +294,34 @@ $("#sele").change(function(){
 	if ($("#sele").val()=="大修时整改") {
 		$("#sdate").val("");
 		$("#sdate").attr("disabled","disabled");
+		$("#sdateall").hide()
 	}else{
+		$("#sdateall").show()
 		$("#sdate").removeAttr("disabled");
 	}
 });
-
-//更新问题描述
-/*$(".problem_describe").click(function(){
-		//alert($(this).html());
-		var problem_describe = $("#problem_describe").val();
-		//alert(problem_describe =="");
-		if (pd!=problem_describe && problem_describe!="") {
-			$.ajax({  
-		    	url : "/iot_process/estimates/problemdescribe",  
-		        type : "post",
-		        data : {piid : piidp,problemdescribe:$("#problem_describe").val()},
-		        dataType : "json",  
-		        success: function( json) {
-
-		        	if (json.state==1) {
-		        		alert(json.message);
-
-					}
-		        }  
-		   });
-		}else if (problem_describe == "") {
-			alert("问题描述不能为空！！");
-		}
-	});*/
 
 /**
  * 问题处理储存
  */
 
-var rolena="生公室";
+//var rolena="生产办公室";
 $(".problem_describe").click(function(){
 	
-	if ($(this).attr("id")=="work_plan") {
+	/*if ($(this).attr("id")=="work_plan") {
 		if (rolena=="生产办公室" || rolena == "HSE办公室" || rolena == "设备办公室") {
-			workPlanBtnAll(this);
+			//workPlanBtnAll(this);
 		}else{
-			workPlanBtn(this);
+			//workPlanBtn(this);
 			
 		}
 		
-	}
+	}*/
 	
 	if ($(this).html()=="回退" || $(this).html()=="闭环处理") {
 		//验证处理说明不能为空
 		if ($("#comment").val()=="") {
-			alert("处理说明不能为空");
+			layer.msg('处理说明不能为空！！！');
 		}else{
 			modifyEstimated(this);
 		}
@@ -400,9 +354,9 @@ function modifyEstimated(obj) {
 	}
 
 	if (($("#sele").val() =="指定日期" && period=="") || ($("#sele").val() =="指定日期" && date_amtch == null)) {
-		alert("请正确输入指定日期！");
+		layer.msg('请正确输入指定日期！！！');
 	}else if(problem_describe == ""){
-		alert("问题描述不能为空！！");
+		layer.msg('问题描述不能为空！！！');
 	}else{
 		$.ajax({  
 			url : "/iot_process/estimates/modifyestimated",  
@@ -413,8 +367,7 @@ function modifyEstimated(obj) {
 
 				if (json.state==0) {
 					if ($(obj).html()=="回退" || $(obj).html()=="闭环处理") {
-						
-						alert(json.message);
+						layer.msg(json.message);
 					}
 
 				}
@@ -425,7 +378,7 @@ function modifyEstimated(obj) {
 }
 
 /**
- * 作业安排
+ * 作业安排确认提交
  * 
  * @param obj 当前对象
  * @param usernames 人名用“，”隔开
@@ -486,15 +439,23 @@ layui.use('table', function(){
 	  //第一个实例
 	  table.render({
 	    elem: '#process'
-	    ,height: 200
-	    ,width:800
-	    ,url: '/iot_process/process/nodes/historyTask/piid/'+piidp //数据接口
-	    ,page: true //开启分页
+	    //,height: 200
+	    //,width:'90%'
+	    ,url: '/iot_process/process/nodes/historyTask/piid/processPure2:3:32523' //数据接口
+	   // ,page: true //开启分页
+	    ,parseData: function(res) { //res 即为原始返回的数据
+            return {
+                "code": res.state, //解析接口状态
+                "msg": res.message, //解析提示文本
+                "count": res.length, //解析数据长度
+                "data": res.data //解析数据列表
+            }
+        }
 	    ,cols: [[ //表头
-	      {field: 'id', title: '处理人', width:200}
-	      ,{field: 'username', title: '处理节点', width:200}
-	      ,{field: 'sex', title: '处理说明', width:200}
-	      ,{field: 'city', title: '时间', width:200} 
+	      {field: 'nodeExecutor', title: '处理人', width:'25%'}
+	      ,{field: 'nodeName', title: '处理节点', width:'25%'}
+	      ,{field: 'nodeComment', title: '处理说明', width:'25%'}
+	      ,{field: 'nodeEndTime', title: '时间', width:'25%'} 
 	    ]]
 	  });
 	  

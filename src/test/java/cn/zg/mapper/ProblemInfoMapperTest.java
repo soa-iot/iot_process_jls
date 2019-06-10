@@ -13,6 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import cn.soa.IotprocessApplication;
 import cn.soa.dao.ProblemInfoMapper;
 import cn.soa.entity.ProblemInfo;
+import cn.soa.entity.UserOrganization;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { IotprocessApplication.class })
@@ -51,5 +52,13 @@ public class ProblemInfoMapperTest {
 	public void findApplyPeople() {
 		String parentId = problemInfoMapper.findApplyPeople("周广浩");
 		System.out.println("parentId: " + parentId);
+	}
+	
+	@Test
+	public void findDeptByProblemtypeTest() {
+		
+		List<UserOrganization> row = problemInfoMapper.findDeptByProblemtype("超级管理员");
+		System.err.println(row);
+
 	}
 }

@@ -110,17 +110,18 @@
 	     type: "PUT"
 	     ,url: '/iot_process/process/nodes/next/{piid}'    //piid为流程实例id
 	     ,data: {
-	     	"isIngroup": "",    //流程变量名称,流程变量值(前端选择"作业安排"时，值为1；
+	     	"isIngroup": ""    //流程变量名称,流程变量值(前端选择"作业安排"时，值为1；
 			     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 			     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )
-	     	"comment": ""     //节点的处理信息
-	     	"estimators": ""     //问题评估节点执行人变量名：estimators
+	     	,"comment": ""     //节点的处理信息
+	     	,"estimators": ""     //问题评估节点执行人变量名：estimators
 	     						         净化分配节点执行人变量名：puror
 	     						         维修分配节点执行人变量名：repairor
 	     						         作业安排节点执行人变量名：arrangor
 	     						         接收作业节点执行人变量名：receivor
 	     						         完成作业节点执行人变量名：complementor
 	     						         作业验收节点执行人变量名：checkor
+	     	,"userName": ""    //当前任务的完成人
 	     }   //问题上报表单的内容
 	     ,contentType: "application/x-www-form-urlencoded"
 	     ,dataType: "json"

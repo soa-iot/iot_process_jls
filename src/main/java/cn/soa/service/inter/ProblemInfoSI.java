@@ -1,8 +1,11 @@
 package cn.soa.service.inter;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import cn.soa.entity.ProblemInfo;
+import cn.soa.entity.UserOrganization;
 
 /**
  * 问题评估业务逻辑层接口
@@ -32,5 +35,12 @@ public interface ProblemInfoSI {
 	 * @return: Integer  受影响行数      
 	 */ 
 	Integer ModifyEstiByPiid(ProblemInfo info);
+	
+	/**
+	 * 根据属地名称去找另外的属地
+	 * @param problemtype
+	 * @return
+	 */
+	public List<UserOrganization> getDeptByProblemtype(String problemtype);
 	
 }
