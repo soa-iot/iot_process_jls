@@ -801,6 +801,24 @@
 	
 	</update>
 	
+	<sql id="userOrganization">
+		ORGID, USERNUM, NAME, PARENT_ID, USER_PASSWORD, STATE,
+		IS_PARENT, NOTE,
+		REMARK1,
+		REMARK2
+	</sql>
+	
+	<!-- 根据属地名称去找另外的属地 -->
+	<!-- public List<UserOrganization> findDeptByProblemtype(String problemtype); -->
+	<select id="findDeptByProblemtype" resultType="cn.soa.entity.UserOrganization">
+		SELECT
+			<include refid="userOrganization"></include>
+		FROM 
+			iot_user_organization
+		WHERE 
+			name != #{problemtype} AND is_parent = 0
+	</select>
+	
 </mapper>
  
 

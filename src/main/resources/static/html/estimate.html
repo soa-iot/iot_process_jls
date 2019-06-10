@@ -25,6 +25,7 @@
 					<button class="layui-btn layui-btn-normal layui-btn-sm btn problem_describe" id="coordinate"   data-method="offset" data-type="t" >外部协调</button>
 				</div>
 				<div id="work_plan_tree"></div>
+				<div id="coordinate_tree"></div>
 				
 				<div class="layui-colla-content layui-show" >
 					<form id="estimate">
@@ -51,7 +52,7 @@
 							</select>
 							</div>
 						</div>
-						<div class="layui-inline">
+						<div class="layui-inline" id="sdateall">
 							<label class="layui-form-label">指定日期</label>
 							<div class="layui-input-inline  layui-input-top">
 								<input type="text" class="layui-input layui-input-one" id="sdate"
@@ -180,7 +181,7 @@
 					<div class="layui-form-item layui-form-text bott">
 						<label class="layui-form-label">问题图片</label>
 						<div class="layui-input-block">
-							<div class="layui-carousel" id="test2" lay-filter="test1">
+							<div class="layui-carousel imgshow" lay-filter="test1">
 								<div carousel-item="" id="imag">
 									
 								</div>
@@ -205,12 +206,11 @@
 		</div>
 
 	</div>
-	<script type="text/javascript" src="../jsPackage/js/jquery-1.9.1.min.js"></script>
-	<script type="text/javascript" src="../js/tree_util.js"></script>
-	<script src="../jsPackage/layui-v2.4.2/layui.js" charset="utf-8"></script>
-	<script type="text/javascript" src="../js/estimate.js"></script>
+	<!-- <script type="text/javascript" src="../jsPackage/js/jquery-1.9.1.min.js"></script> -->
 	<script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
-	<!-- <script type="text/javascript" src="../js/alone_dept_organization_tree.js"></script> -->
+	<script src="../jsPackage/layui-v2.4.2/layui.js" charset="utf-8"></script>
+	<script type="text/javascript" src="../js/tree_util.js"></script>
+	<script type="text/javascript" src="../js/estimate.js"></script>
 	<script type="text/javascript" src="../js/organization_tree.js"></script>
 </body>
 </html>

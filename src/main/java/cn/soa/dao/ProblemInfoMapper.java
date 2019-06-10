@@ -1,10 +1,13 @@
 package cn.soa.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoVO;
+import cn.soa.entity.UserOrganization;
 
 /**
  * 问题评估持久层接口
@@ -70,4 +73,11 @@ public interface ProblemInfoMapper {
 	 * @return: Integer  受影响行数      
 	 */ 
 	public Integer updateEstiByPiid(ProblemInfo info);
+	
+	/**
+	 * 根据属地名称去找另外的属地
+	 * @param problemtype
+	 * @return
+	 */
+	public List<UserOrganization> findDeptByProblemtype(String problemtype);
 }

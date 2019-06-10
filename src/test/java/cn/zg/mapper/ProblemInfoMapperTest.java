@@ -13,6 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import cn.soa.IotprocessApplication;
 import cn.soa.dao.ProblemInfoMapper;
 import cn.soa.entity.ProblemInfo;
+import cn.soa.entity.UserOrganization;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { IotprocessApplication.class })
@@ -44,6 +45,13 @@ public class ProblemInfoMapperTest {
 		
 		info.setRectificationperiod(null);
 		Integer row = problemInfoMapper.updateEstiByPiid(info);
+		System.err.println(row);
+	}
+	
+	@Test
+	public void findDeptByProblemtypeTest() {
+		
+		List<UserOrganization> row = problemInfoMapper.findDeptByProblemtype("超级管理员");
 		System.err.println(row);
 	}
 }
