@@ -108,16 +108,18 @@ public class ReportC {
 			@RequestParam("file") MultipartFile file, 
 			@RequestParam("resavepeople") String resavepeople, 
 			@RequestParam("piid") String piid,
+			@RequestParam("num") String num,
 			@RequestParam("tProblemRepId") String tProblemRepId, HttpServletRequest request){
 		
 		System.out.println("进入ReportC...saveUpload...");
 		
 		log.info("上传图片名为：{}", file.getOriginalFilename());
 		log.info("当前系统登录人为：{}", resavepeople);
+		log.info("用户编号：{}", num);
 		log.info("问题报告piid：{}", piid);
 		log.info("上报问题报告id：{}", tProblemRepId);
 		
-		if("".equals(resavepeople) || "".equals(tProblemRepId)) {
+		if("".equals(resavepeople) || "".equals(tProblemRepId) || "".equals(num)) {
 			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		}
 		
@@ -130,7 +132,7 @@ public class ReportC {
 		
 		//生成图片存储位置，数据库保存的是虚拟映射路径
 		Date date = new Date();
-		File imagePath = CommonUtil.imageSaved(resavepeople, rootPath, date);
+		File imagePath = CommonUtil.imageSaved(num, rootPath, date);
 		
 		try {
 			file.transferTo(new File(imagePath, phoName));
@@ -142,7 +144,7 @@ public class ReportC {
 			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		}
 		//request.getContextPath() 或  request.getServletPath()
-		String phoAddress =  new StringBuilder(request.getServletPath()+"/image/").append(resavepeople).append("/")
+		String phoAddress =  new StringBuilder(request.getServletPath()+"/image/").append(num).append("/")
 				.append(CommonUtil.dateFormat(date)).append("/").append(phoName).toString();
 		
 		//将上传图片信息封装实体类中
@@ -181,6 +183,16 @@ public class ReportC {
 		}else {
 			return new ResultJson<>(ResultJson.ERROR, "暂存图片更新失败");
 		}
+	}
+	
+	@PostMapping("/verifyuser")
+	public ResultJson<Void> verifyUser(@RequestParam(value="userList[]") String[] userList){
+		System.out.println("进入ReportC...verifyUser...");
+		log.info("上报人列表为:{}"+Arrays.toString(userList));
+		
+		
+		
+		 return new ResultJson<>(ResultJson.SUCCESS, "上报人校验成功");
 	}
 	
 }

@@ -41,11 +41,22 @@
 		  	 <div class="layui-col-xs1 layui-col-md2">&nbsp;</div>
 		  	 <div class="layui-col-xs11 layui-col-md10">
 		  	 <form class="layui-form" lay-filter="report-form">
+		  	 	<!-- 隐藏字段 问题上报时间和上报部门-->
+		  	    <div class="layui-form-item">
+			    <div class="layui-inline"> 
+			      <div class="layui-input-inline">
+			      	<!-- 问题上报时间 -->
+			        <input type="text" name="applydate" style="display: none;" class="layui-input">
+			        <!-- 问题上报部门 -->
+			      	<input type="text" name="dept" style="display: none;" class="layui-input">
+			      </div>
+			    </div>
+		  	 	</div>
 			   <div class="layui-form-item">
 			    <div class="layui-inline"> 
 			      <label class="text-font layui-form-label">上 报 人</label>
 			      <div class="layui-input-inline">
-			        <input type="text" id="input-report" name="applypeople" lay-verify="required" placeholder="请输入上报人" class="layui-input">
+			        <input type="text" id="input-report" name="applypeople" lay-verify="required|applypeople" placeholder="请输入上报人" class="layui-input">
 			      </div>
 			    </div>
 			    <div class="layui-inline">
@@ -147,18 +158,18 @@
 			    </div>
 			  </div>
 			  
-			  <div class="layui-form-item ">
+			  <div class="layui-form-item" id="div-notsafe" style="display: none">
 			    <div class="layui-inline">
 			      <label class="text-font layui-form-label">不安全行为</label>
 			      <div class="layui-input-inline notsafe-select layui-form" lay-filter="notsafe-select">
-			        <select name="remarkfive" id="notsafe-select" lay-filter="notsafe" disabled>
+			        <select name="remarkfive" id="notsafe-select" lay-filter="notsafe" >
 			        </select>
 			      </div>
 			    </div>
 			    <div class="layui-inline">
 			      <label class="text-font layui-form-label">具体行为</label>
 			      <div class="layui-input-inline notsafe-select layui-form" lay-filter="notsafe-select">
-			        <select name="remarksix" id="detail-select" disabled>
+			        <select name="remarksix" id="detail-select">
 				    </select>
 			      </div>
 			    </div>
