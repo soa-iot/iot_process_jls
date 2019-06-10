@@ -200,7 +200,7 @@ public class ProcessC {
 	 * @return: ResultJson<String>        
 	 */ 
 	@PutMapping("/nodes/next/{piid}")
-	public ResultJson<Boolean> nextNodeByPIID( 
+	public ResultJson<Boolean> nextGroupNodeByPIID( 
 			@PathVariable("piid") String piid,
 			Map<String,Object> map){
 		logger.debug( "--C-------- 执行流程的下一步     -------------" );
