@@ -28,7 +28,7 @@ public class ProblemReportphoMapperTest {
 
 	@Test
 	public void findByPiidTest() {
-		  List<ProblemReportpho> problemReportphos = problemReportphoMapper.findByPiid("13");
+		  List<ProblemReportpho> problemReportphos = problemReportphoMapper.findByPiid("13",null);
 		System.err.println(problemReportphos);
 	}
 	

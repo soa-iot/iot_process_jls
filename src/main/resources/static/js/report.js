@@ -1,5 +1,5 @@
 //加载layui内置模块
-layui.use(['jquery','form','upload','layedit'], function(){
+layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var form = layui.form
 	,layer = layui.layer
 	,layedit = layui.layedit
@@ -7,8 +7,8 @@ layui.use(['jquery','form','upload','layedit'], function(){
 	,upload = layui.upload;
 	
 	//从cookie中获取当前登录用户
-	var resavepeople = getCookie1("name");
-	//var resavepeople = "测试员";
+	//var resavepeople = getCookie1("name");
+	var resavepeople = "苟列生";
 	console.log("当前登录人为:"+resavepeople);
 	//用户编号
 	var num = getCookie1("num");
@@ -30,22 +30,29 @@ layui.use(['jquery','form','upload','layedit'], function(){
 	  })
 	  
 	  //上报人输入框校验
-	  form.verify({
+	  var ch,msg=null;
+	  var userVerify = form.verify({
 		  "applypeople": function(value, item){ 
 			  if(!(value.indexOf(resavepeople) >= 0)){
 				  return "上报人必须包含当前登录人";
 			  }
 			  
-			  var ch = value.split("，");
+			  ch = value.split("，");
 			  for(var i=0;i<ch.length;i++){
 				  if(ch[i].length == 0 || !new RegExp("^[_\u4e00-\u9fa5\\s·]+$").test(ch[i])){
 					  return '上报人不能有特殊字符，用户名之间请以中文逗号(，)隔开';
 				  }
 			  }
 			  
-			  //后台校验每个用户名是否合法
-			  var result = false;
-			  var msg = "上报人填写不符合要求"
+			  if(msg != null){
+				  return msg;
+			  }
+		  }
+	  })
+	  
+	  $("#applypeople").blur(function(){
+		  ch = $(this).val().split("，");
+		  //后台校验每个用户名是否合法
 			  $.ajax({
 				 async: false,
 				 type: "POST",
@@ -54,17 +61,12 @@ layui.use(['jquery','form','upload','layedit'], function(){
 				 dataType: "json",
 				 success: function(data){
 					 if(data.state == 0){
-						 result = true; 
+						msg = null; 
 					 }else{
 						 msg = data.message;
 					 }
 				 }
-			  })
-			  
-			  if(!result){
-				  return msg;
-			  }
-		  }
+			  })  
 	  })
 	
 	
@@ -318,10 +320,10 @@ layui.use(['jquery','form','upload','layedit'], function(){
 		  data.field.applydate = new Date();
 		  console.log(data.field);
 		 //流程上报：
-		 //dfid为流程定义id（暂时就是dfid="processPure2:3:32523"）
+		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
-		     ,url: '/iot_process/process/processPure2:3:32523'    //dfid为流程定义id（暂时就是dfid="processPure2:3:32523"）
+		     ,url: '/iot_process/process/processPure2:4:47506'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
