@@ -189,10 +189,16 @@ public class ReportC {
 	public ResultJson<Void> verifyUser(@RequestParam(value="userList[]") String[] userList){
 		System.out.println("进入ReportC...verifyUser...");
 		log.info("上报人列表为:{}"+Arrays.toString(userList));
+		if(userList.length < 1) {
+			return new ResultJson<>(ResultJson.ERROR, "上报人填写不符合要求");
+		}
+		String result = reportS.verifyApplyPeople(userList);
+		if(result == null) {
+			return new ResultJson<>(ResultJson.SUCCESS, "上报人校验成功");
+		}else {
+			return new ResultJson<>(ResultJson.ERROR, result);
+		}
 		
-		
-		
-		 return new ResultJson<>(ResultJson.SUCCESS, "上报人校验成功");
 	}
 	
 }

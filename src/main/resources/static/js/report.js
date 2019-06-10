@@ -7,12 +7,12 @@ layui.use(['jquery','form','upload','layedit'], function(){
 	,upload = layui.upload;
 	
 	//从cookie中获取当前登录用户
-	//var resavepeople = getCookie1("name");
-	var resavepeople = "测试员";
+	var resavepeople = getCookie1("name");
+	//var resavepeople = "测试员";
 	console.log("当前登录人为:"+resavepeople);
 	//用户编号
 	var num = getCookie1("num");
-	num =123;
+	//num =123;
 	console.log("用户编号为:"+num);
 	//上报部门
 	var dept = getCookie1("organ");
@@ -38,7 +38,6 @@ layui.use(['jquery','form','upload','layedit'], function(){
 			  
 			  var ch = value.split("，");
 			  for(var i=0;i<ch.length;i++){
-				  console.log(ch[i]);
 				  if(ch[i].length == 0 || !new RegExp("^[_\u4e00-\u9fa5\\s·]+$").test(ch[i])){
 					  return '上报人不能有特殊字符，用户名之间请以中文逗号(，)隔开';
 				  }
@@ -46,6 +45,7 @@ layui.use(['jquery','form','upload','layedit'], function(){
 			  
 			  //后台校验每个用户名是否合法
 			  var result = false;
+			  var msg = "上报人填写不符合要求"
 			  $.ajax({
 				 async: false,
 				 type: "POST",
@@ -53,15 +53,16 @@ layui.use(['jquery','form','upload','layedit'], function(){
 				 data: {"userList":ch},
 				 dataType: "json",
 				 success: function(data){
-					 console.log(data.message);
 					 if(data.state == 0){
 						 result = true; 
+					 }else{
+						 msg = data.message;
 					 }
 				 }
 			  })
 			  
-			  if(result){
-				  return "上报人填写不合法";
+			  if(!result){
+				  return msg;
 			  }
 		  }
 	  })

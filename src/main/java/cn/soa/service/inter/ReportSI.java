@@ -18,4 +18,12 @@ public interface ReportSI {
 	 * @return: ProblemInfoVO   问题报告数据  
 	 */
 	public ProblemInfoVO getByResavepeople(String resavepeople);
+	
+	/**   
+	 * @Title: verifyApplyPeople   
+	 * @Description: 校验问题上报申请人
+	 * @return: String  验证结果
+	 */
+	public String verifyApplyPeople(String[] userList);
+	
 }

@@ -46,4 +46,10 @@ public class ProblemInfoMapperTest {
 		Integer row = problemInfoMapper.updateEstiByPiid(info);
 		System.err.println(row);
 	}
+	
+	@Test
+	public void findApplyPeople() {
+		String parentId = problemInfoMapper.findApplyPeople("周广浩");
+		System.out.println("parentId: " + parentId);
+	}
 }

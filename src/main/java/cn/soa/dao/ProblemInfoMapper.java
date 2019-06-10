@@ -70,4 +70,11 @@ public interface ProblemInfoMapper {
 	 * @return: Integer  受影响行数      
 	 */ 
 	public Integer updateEstiByPiid(ProblemInfo info);
+	
+	/**   
+	 * @Title: findApplyPeople   
+	 * @Description: 根据用户名查找上报申请用户
+	 * @return: String  用户的PARENT_ID    
+	 */ 
+	public String findApplyPeople(String name);
 }
