@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.fastjson.JSONObject;
+
 import cn.soa.entity.ResultJson;
 import cn.soa.entity.UserOrganization;
 import cn.soa.service.inter.UserManagerSI;
@@ -146,14 +148,14 @@ public class UserManagerS implements UserManagerSI {
 	public List<UserOrganization> findUserByArea( String area ){
 		HashMap<String, String> map = new HashMap<>();
 		map.put( "roleName", area );
-		String url = "http://" + ip + ":" + port + "/iot_usermanager/user/roleName";
+		String url = "http://" + ip + ":" + port + "/iot_usermanager/user/roleName?roleName={roleName}";
 		ResponseEntity<ResultJson> organ = restTemplate.getForEntity( url, ResultJson.class, map);
 		ResultJson r = organ.getBody();
-		if( r.getState() == 1 || r.getData() != null ) {
+		if( r.getState() == 1 || r.getData() == null ) {
 			logger.debug( "-------获取人员数据失败--------" );
 			return null;
 		}		
-		List<UserOrganization> users = (List<UserOrganization>) r.getData(); 
+		List<UserOrganization> users =  (List<UserOrganization>) r.getData();
 		logger.debug( users.toString() );		
 		return users;
 	}

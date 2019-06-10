@@ -4,7 +4,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 
-public class Test1 implements ExecutionListener {
+public class Test1 implements ExecutionListener  {
 
 //	 private Expression fixedValue;
 //
