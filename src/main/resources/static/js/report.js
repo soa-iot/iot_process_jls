@@ -7,8 +7,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	,upload = layui.upload;
 	
 	//从cookie中获取当前登录用户
-	//var resavepeople = getCookie1("name");
-	var resavepeople = "苟列生";
+	var resavepeople = getCookie1("name");
+	//var resavepeople = "苟列生";
 	console.log("当前登录人为:"+resavepeople);
 	//用户编号
 	var num = getCookie1("num");
