@@ -2,11 +2,12 @@
  * 全局变量——问题描述piid
  */
 var piidp = "ADAA80DB601C4470BE8BB224705F5F9C";
-
+var era;
 /**
  * 地址解析
  * @returns
  */
+
 getUrlPara();
 function getUrlPara(){
 	var url = window.location.href;
@@ -70,13 +71,14 @@ $.ajax({
 	success: function( json) {
 		if (json.state == 0) {
 			var problem = json.data;
+			era=problem.problemtype;
 			$("#parea").val(problem.welName);
 			$("#major").val(problem.profession);
 			$("#rfid").val(problem.rfid);
 			$("#prob").val(problem.problemclass);
 			$("#applypeople").val(problem.applypeople);
 			$("#problemtype").val(problem.problemtype);
-
+			
 			if (problem.problemclass=="不安全行为/状态") {
 				$("#remark1").val(problem.remarkfive);
 				$("#remark2").val(problem.remarksix);
@@ -136,9 +138,8 @@ $.ajax({
 //作业安排
 $("#work_plan_tree").hide();
 $("#organization_tree").hide();
-function estimate_btn(){
-//$("#work_plan").click(function(){
-
+var usernames="";
+function workPlanBtn(obj){
 	var tree1 ;
 
 	//数据初tree数据声明
@@ -146,7 +147,7 @@ function estimate_btn(){
 	$.ajax({  
 		url : "http://localhost:10238/iot_usermanager/user/rolename",  
 		type : "get",
-		data : {roleName:"超级管理员"},
+		data : {roleName:era},
 		dataType : "json",  
 		success: function( json) {
 			if (json.state == 0) {
@@ -155,22 +156,17 @@ function estimate_btn(){
 				//数据初始化
 				tree_data = buildTree(datapro);
 
-				$.ajax({  
-					url : "http://localhost:10238/iot_usermanager/role/rolid",  
+					/*url : "http://localhost:10238/iot_usermanager/role/rolid",  
 					type : "get",
 					data : {rolid:"A291958C761347159F28FBDF70ADC12D"},
-					dataType : "json",  
-					success: function( json) {
-						if (json.state == 0) {
-							var userRole = json.data;
-							console.log(userRole);
+					dataType : "json",  */
 
 							//tree
 							layui.use('tree', function(){
 								var tree = layui.tree
 								,layer = layui.layer
-								,data = [{label: userRole.name
-									,id: 1
+								,data = [{label: era
+									//,id: 1
 									,children: tree_data}];
 
 
@@ -193,12 +189,18 @@ function estimate_btn(){
 													,yes: function(){
 														
 														var check = tree1.getChecked(); //获得被勾选的节点
-														var usernames;
 														
 														for (var i = 0; i < check.length; i++) {
 															usernames += check[i][0].innerText;
+															if (i!=check.length-1) {
+																usernames +=",";
+															}
 														}
+														
+														workPlan(obj,usernames);
+														
 														console.log(usernames);
+														
 														layer.closeAll();
 													}
 												,success:function(){
@@ -225,21 +227,93 @@ function estimate_btn(){
 
 							});
 
-						}
-
-					}  
-				});
-
 			}
 
 		}  
 	});
 
-//});
 }
 
 
-//指定日期禁用
+/**
+ * 全厂人员
+ * @param obj
+ * @returns
+ */
+function workPlanBtnAll(obj){
+							/*//tree
+							layui.use('tree', function(){
+								var tree = layui.tree
+								,layer = layui.layer
+								,data = [{label: "超级管理员"
+									//,id: 1
+									,children: tree_data}];*/
+	
+
+								//弹出层
+								layui.use('layer', function(){ //独立版的layer无需执行这一句
+									var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+									//触发事件
+									var active = {
+											offset: function(othis){
+												var type = othis.data('type')
+												layer.open({
+													type: 1
+													,offset: type 
+													,area: ['300px','400px;']
+													,id: 'work_plan'+type //防止重复弹出
+													,key:'id'
+													,content: '<iframe id="addFrame" src="../html/organization_tree.html" style="width:293px;height:290px;"></iframe>'
+													,btn: ['确认',"取消"]
+													,btnAlign: 'c' //按钮居中
+													,yes: function(){
+
+														var childWindow = $("#addFrame")[0].contentWindow;
+														var checkData = childWindow.getCheckedData();
+														for (var i = 0; i < checkData.length; i++) {
+															
+															//console.log(checkData[i][1]);
+															var user=userOrDept(checkData[i][1]);
+															if (user!="") {
+																usernames +=user;
+																if (i!=checkData.length-1) {
+																	usernames +=",";
+																}
+															}
+															//console.log(usernames);
+														}
+														
+														workPlan(obj,usernames);
+														
+														layer.closeAll();
+													}
+												/*,success:function(){
+													//console.log(data);
+													//开启复选框
+													tree1 = tree.render({
+
+														elem: '#work_plan_tree'
+														,data: data
+														,showCheckbox: true
+													})
+												}*/
+												});
+											}
+									};
+
+									$('#work_plan').on('click', function(){
+										var othis = $(this), method = othis.data('method');
+										active[method] ? active[method].call(this, othis) : '';
+									});
+
+								});
+
+
+}
+
+/**
+ * 指定日期禁用
+ */
 $("#sele").change(function(){
 	if ($("#sele").val()=="大修时整改") {
 		$("#sdate").val("");
@@ -276,13 +350,17 @@ $("#sele").change(function(){
 /**
  * 问题处理储存
  */
+
+var rolena="生公室";
 $(".problem_describe").click(function(){
 	
-	workPlan(this);
-	
 	if ($(this).attr("id")=="work_plan") {
-		
-		estimate_btn();
+		if (rolena=="生产办公室" || rolena == "HSE办公室" || rolena == "设备办公室") {
+			workPlanBtnAll(this);
+		}else{
+			workPlanBtn(this);
+			
+		}
 		
 	}
 	
@@ -294,7 +372,7 @@ $(".problem_describe").click(function(){
 			modifyEstimated(this);
 		}
 	}else{
-		modifyEstimated(this);
+		//modifyEstimated(this);
 	}
 
 });
@@ -346,9 +424,14 @@ function modifyEstimated(obj) {
 
 }
 
-
-
-function workPlan(obj){
+/**
+ * 作业安排
+ * 
+ * @param obj 当前对象
+ * @param usernames 人名用“，”隔开
+ * @returns
+ */
+function workPlan(obj,usernames){
 	var isIngroup;
 	if($(obj).attr("id")=="work_plan"){
 		isIngroup=1;
@@ -359,21 +442,60 @@ function workPlan(obj){
 	
 $.ajax({
     type: "PUT"
-    ,url: '/iot_process/process/nodes/next/{piid}'    //piid为流程实例id
+    ,url: '/iot_process/process/nodes/next/'+piidp    //piid为流程实例id
     ,data: {
     	"isIngroup": isIngroup,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
 		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-    	"comment": $("comment").val()     //节点的处理信息
-    	//"estimators":
+    	"comment": $("comment").val(),     //节点的处理信息
+    	"estimators":usernames
     	
     }   //问题上报表单的内容
     ,contentType: "application/x-www-form-urlencoded"
     ,dataType: "json"
     ,success: function(jsonData){
     	//后端返回值： ResultJson<Boolean>
+    	if (jsonData.data) {
+    		modifyEstimated(this);
+		}
     },
     //,error:function(){}		       
 });
 }
+
+/**
+ * 判断是人还是部门
+ * @returns是人返回人名，是部门返回空串
+ */
+function userOrDept(checData){
+	var u = checData.split(",");
+	if (u[1]==1) {
+		return u[0];
+	}else{
+		return ""
+	}
+}
+
+/**
+ * 处理过程表格
+ */
+layui.use('table', function(){
+	  var table = layui.table;
+	  
+	  //第一个实例
+	  table.render({
+	    elem: '#process'
+	    ,height: 200
+	    ,width:800
+	    ,url: '/iot_process/process/nodes/historyTask/piid/'+piidp //数据接口
+	    ,page: true //开启分页
+	    ,cols: [[ //表头
+	      {field: 'id', title: '处理人', width:200}
+	      ,{field: 'username', title: '处理节点', width:200}
+	      ,{field: 'sex', title: '处理说明', width:200}
+	      ,{field: 'city', title: '时间', width:200} 
+	    ]]
+	  });
+	  
+	});
