@@ -99,7 +99,7 @@ public class ReportS implements ReportSI {
 		for(int i=0;i<userList.length;i++) {
 			String parentID = reportMapper.findApplyPeople(userList[i]);
 			if(parentID == null) {
-				return "用户"+userList[i]+"不存在";
+				return "上报人("+userList[i]+")不存在";
 			}
 			if(temp == null) {
 				temp = parentID;

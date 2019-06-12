@@ -97,7 +97,7 @@ layui.use(['form', 'jquery','layer'], function(){
  $.ajax({  
  	url : "/iot_process/estimates/problemreportpho",  
  	type : "get",
- 	data : {piid : piidp,remark:0},
+ 	data : {"piid":piid,"remark":0},
  	dataType : "json",  
  	success: function( json) {
  		if (json.state == 0) {
