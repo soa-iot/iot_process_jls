@@ -22,6 +22,7 @@ layui.use([ 'element', 'layer' ], function() {
 
 });
 
+<<<<<<< HEAD
 
 /**
  * 处理过程表格
@@ -56,6 +57,8 @@ layui.use('table', function(){
 
 	});
 
+=======
+>>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 layui.use(['form', 'jquery','layer'], function(){
   var form = layui.form
   ,	$ = layui.$
@@ -131,7 +134,6 @@ layui.use(['form', 'jquery','layer'], function(){
 
  	}  
  });
-  
   
 	//点击下一步按钮操作
 	form.on('submit(next_step)', function(data){

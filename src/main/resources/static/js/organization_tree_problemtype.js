@@ -1,6 +1,6 @@
 
 
-var era = GetQueryString('era');
+var era = GetQueryString('area');
 /**
  * 获取url中的参数
  * @param name 需要的参数名称

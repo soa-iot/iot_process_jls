@@ -7,12 +7,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	,upload = layui.upload;
 	
 	//从cookie中获取当前登录用户
-	//var resavepeople = getCookie1("name");
-	var resavepeople = "孙超";
+	var resavepeople = getCookie1("name");
+	//var resavepeople = "孙超";
 	console.log("当前登录人为:"+resavepeople);
 	//用户编号
-	//var num = getCookie1("num");
-	num =123;
+	var num = getCookie1("num");
+	//num =123;
 	console.log("用户编号为:"+num);
 	//上报部门
 	var dept = getCookie1("organ");
@@ -323,7 +323,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
-		     ,url: '/iot_process/process/processPure2:4:47506'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+		     ,url: '/iot_process/process/processPure2:1:4'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"

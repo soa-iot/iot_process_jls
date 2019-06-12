@@ -189,7 +189,7 @@ public class ActivityS implements ActivitySI{
      */
     @Override
     public String getPiidByTsid( String tsid ) {
-    	if( StringUtils.isNotBlank( tsid )) {
+    	if( StringUtils.isBlank( tsid )) {
     		logger.debug( "------tsid为null--------" );
     		return null;
     	}
@@ -215,12 +215,12 @@ public class ActivityS implements ActivitySI{
      */ 
     @Override
     public boolean saveCommentByTsid( String tsid, String comment ) {
-    	if( StringUtils.isNotBlank( tsid )) {
+    	if( StringUtils.isBlank( tsid )) {
     		logger.debug( "------tsid为null--------" );
     		return false;
     	}
     	String piid = getPiidByTsid( tsid );
-    	if( StringUtils.isNotBlank( piid )) {
+    	if( StringUtils.isBlank( piid )) {
     		logger.debug( "------piid为null--------" );
     		return false;
     	}
@@ -240,12 +240,12 @@ public class ActivityS implements ActivitySI{
      */  
     @Override
     public boolean saveCommentByPiid( String piid, String comment ) {
-    	if( StringUtils.isNotBlank( piid )) {
+    	if( StringUtils.isBlank( piid )) {
     		logger.debug( "------piid为null--------" );
     		return false;
     	}
     	String tsid = getTsidByPiid( piid );
-    	if( StringUtils.isNotBlank( tsid )) {
+    	if( StringUtils.isBlank( tsid )) {
     		logger.debug( "------tsid为null--------" );
     		return false;
     	}
