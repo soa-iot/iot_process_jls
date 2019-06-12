@@ -143,6 +143,12 @@
 		SELECT MAX(PROBLEMNUM) ma FROM CZ_TASK_PROBLEM_REPORT
 	</select>
 	
+	<!-- 1.4、根据用户名查找上报申请用户    -->
+	<!-- public String findApplyPeople(String name) -->
+	<select id="findApplyPeople" resultType="string">
+		SELECT PARENT_ID FROM IOT_USER_ORGANIZATION WHERE NAME = #{name, jdbcType=VARCHAR}
+	</select>
+	
 	<!-- ===========================2、新增===============================  -->
 	<!-- 2.1、添加一条问题报告数据 	-->
 	<!-- public Integer insertOne(ProblemInfo info)	 -->
@@ -800,6 +806,24 @@
 			piid=#{piid}
 	
 	</update>
+	
+	<sql id="userOrganization">
+		ORGID, USERNUM, NAME, PARENT_ID, USER_PASSWORD, STATE,
+		IS_PARENT, NOTE,
+		REMARK1,
+		REMARK2
+	</sql>
+	
+	<!-- 根据属地名称去找另外的属地 -->
+	<!-- public List<UserOrganization> findDeptByProblemtype(String problemtype); -->
+	<select id="findDeptByProblemtype" resultType="cn.soa.entity.UserOrganization">
+		SELECT
+			<include refid="userOrganization"></include>
+		FROM 
+			iot_user_organization
+		WHERE 
+			name != #{problemtype} AND is_parent = 0
+	</select>
 	
 </mapper>
  

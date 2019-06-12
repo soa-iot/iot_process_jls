@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>问题评估（净化）</title>
+<title>问题评估（班组长评估）</title>
 <link rel="stylesheet" href="../jsPackage/layui-v2.4.2/css/layui.css" media="all">
 <link rel="stylesheet" href="../css/estimate.css" media="all">
 <style type="text/css">
@@ -22,10 +22,8 @@
 					<button class="layui-btn layui-btn-normal layui-btn-sm btn problem_describe">回退</button>
 					<button class="layui-btn layui-btn-normal layui-btn-sm btn problem_describe" id="complete">闭环处理</button>
 					<button class="layui-btn layui-btn-normal layui-btn-sm btn problem_describe" id="work_plan"  data-method="offset" data-type="t" >作业安排</button>
-					<button class="layui-btn layui-btn-normal layui-btn-sm btn problem_describe" id="coordinate"   data-method="offset" data-type="t" >外部协调</button>
+					<button class="layui-btn layui-btn-normal layui-btn-sm btn problem_describe" id="coordinate"   data-method="offset" data-type="t" >下一步</button>
 				</div>
-				<div id="work_plan_tree"></div>
-				<div id="coordinate_tree"></div>
 				
 				<div class="layui-colla-content layui-show" >
 					<form id="estimate">
@@ -188,18 +186,6 @@
 
 							</div>
 						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="layui-collapse" lay-accordion="">
-			<div class="layui-colla-item">
-				<h2 class="layui-colla-title h2c">工单信息</h2>
-				<div class="layui-colla-content layui-show">
-					<div class="btn-div">
-						<button class="layui-btn layui-btn-normal layui-btn-sm pbtn problem_describe">脚手架搭拆申请单</button>
-						<button class="layui-btn layui-btn-normal layui-btn-sm pbtn problem_describe">防腐（保温）申请单</button>
 					</div>
 				</div>
 			</div>

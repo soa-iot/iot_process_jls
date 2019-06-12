@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemReportpho;
 import cn.soa.entity.ResultJson;
+import cn.soa.entity.UserOrganization;
 import cn.soa.service.inter.ProblemInfoSI;
 import cn.soa.service.inter.ProblemReportphoSI;
 
@@ -38,9 +39,9 @@ public class EstimateC {
 	 * @return
 	 */
 	@GetMapping("/problemreportpho")
-	public ResultJson<List<ProblemReportpho>> getEstimatePho(String piid) {
-
-		 List<ProblemReportpho> problemReportphos = problemReportphoSI.getByPiid(piid);
+	public ResultJson<List<ProblemReportpho>> getEstimatePho(String piid,String remark) {
+		System.err.println(piid+","+remark);
+		 List<ProblemReportpho> problemReportphos = problemReportphoSI.getByPiid(piid,remark);
 
 		if (problemReportphos != null) {
 			return new ResultJson<List<ProblemReportpho>>(0, "数据获取成功", problemReportphos);
@@ -84,11 +85,30 @@ public class EstimateC {
 		}
 	}
 	
+	/**
+	 * 修改问题描述
+	 * @param problemInfo 问题描述内容
+	 * @return 是否修改成功
+	 */
 	@PostMapping("/modifyestimated")
 	public ResultJson<Integer> ModifyEstiByPiid(ProblemInfo problemInfo){
 		
 		Integer row = problemInfoSI.ModifyEstiByPiid(problemInfo);
 		return row > 0 ? new ResultJson<Integer>(0, "数据更新成功"): new ResultJson<Integer>(1, "问题描述更新失败");
+		
+	}
+	
+	/**
+	 * 以属地名称获取其他的属地信息
+	 * @param problemtype 属地名称
+	 * @return 其他的属地信息集合
+	 */
+	@GetMapping("/problemtype")
+	public ResultJson<List<UserOrganization>> getDeptByProblemtype(String problemtype){
+		
+		System.err.println(problemtype);
+		List<UserOrganization> userOrganizations = problemInfoSI.getDeptByProblemtype(problemtype);
+		return userOrganizations != null ? new ResultJson<List<UserOrganization>>(0, "数据获取成功",userOrganizations): new ResultJson<List<UserOrganization>>(1, "数据获取失败",userOrganizations);
 		
 	}
 	

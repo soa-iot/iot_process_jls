@@ -146,7 +146,7 @@ public class ProcessC {
 		logger.debug( "--C--------启动流程（同时业务处理）  -------------" );
 		logger.debug( dfid );
 		logger.debug( problemInfo.toString() );
-		
+				
 		/*
 		 * 执行业务处理（具体业务处理需要实现以下接口）
 		 */
@@ -183,13 +183,14 @@ public class ProcessC {
 			boolean beforeHandler = processStartHandler.before();
 			if( beforeHandler ) logger.debug( "--C--------流程启动前的流程其他业务处理  -------------" + beforeHandler);
 			
+			//流程启动
 			String piid = activityS.startProcess( dfid, bsid, vars );
 			logger.debug( "--C--------piid  -------------" + piid);
 			
 			/*
 			 * 流程启动后的流程其他业务处理 - 修改为观察者模式
 			 */
-			boolean afterHandler =processStartHandler.after( piid );
+			boolean afterHandler =processStartHandler.after( piid, problemInfo );
 			if( beforeHandler ) logger.debug( "--C--------流程启动后的流程其他业务处理  -------------" + beforeHandler);
 			
 			return new ResultJson<String>( 0, "流程启动成功", piid + "," + bsid);

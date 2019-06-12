@@ -1,10 +1,13 @@
 package cn.soa.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.soa.dao.ProblemInfoMapper;
 import cn.soa.entity.ProblemInfo;
+import cn.soa.entity.UserOrganization;
 import cn.soa.service.inter.ProblemInfoSI;
 
 /**
@@ -85,6 +88,15 @@ public class ProblemInfoS implements ProblemInfoSI {
 		}
 	}
 	
+	/**
+	 * 根据属地名称去找另外的属地
+	 * @param problemtype
+	 * @return
+	 */
+	public List<UserOrganization> getDeptByProblemtype(String problemtype){
+		return findDeptByProblemtype(problemtype);
+	}
+	
 	/**   
 	 * @Title: updateEstiByPiid   
 	 * @Description: 更新一条问题评估实现方法
@@ -99,5 +111,21 @@ public class ProblemInfoS implements ProblemInfoSI {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+	
+	/**
+	 * 根据属地名称去找另外的属地
+	 * @param problemtype
+	 * @return
+	 */
+	private List<UserOrganization> findDeptByProblemtype(String problemtype){
+		try {
+			List<UserOrganization> userOrganizations = problemInfoMapper.findDeptByProblemtype(problemtype);
+			return userOrganizations;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }

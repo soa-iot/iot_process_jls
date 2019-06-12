@@ -1,4 +1,16 @@
-//日期插件
+/**
+ * 全局变量——piid
+ */
+var piidp = GetQueryString('piid');
+
+/**
+ * 全局变量——属地单位
+ */
+var area = GetQueryString('area');
+//console.log(era+","+piidp);
+
+
+/*//日期插件
 	layui.use('laydate', function(){
 		  var laydate = layui.laydate;
 		  
@@ -7,7 +19,7 @@
 		    elem: '#sdate'
 		  });
 		  
-	});
+	});*/
 	
 //轮播图
 layui.use(['carousel', 'form'], function(){
@@ -16,11 +28,11 @@ layui.use(['carousel', 'form'], function(){
 
 	//常规轮播
 	carousel.render({
-		elem: '#test1'
+		elem: '.imgshow'
 			,arrow: 'always'
 	});
 });  
-//轮播图
+/*//轮播图
 layui.use(['carousel', 'form'], function(){
 	var carousel = layui.carousel
 	,form = layui.form;
@@ -30,7 +42,7 @@ layui.use(['carousel', 'form'], function(){
 		elem: '#test11'
 			,arrow: 'always'
 	});
-});  
+});  */
 
 //折叠
 layui.use([ 'element', 'layer' ], function() {
@@ -44,7 +56,7 @@ layui.use([ 'element', 'layer' ], function() {
 	$.ajax({  
     	url : "/iot_process/estimates/estim",  
         type : "get",
-        data : {piid : "ADAA80DB601C4470BE8BB224705F5F9C"},
+        data : {piid :piidp},//"11122312"
         dataType : "json",  
         success: function( json) {
         	if (json.state == 0) {
@@ -53,6 +65,14 @@ layui.use([ 'element', 'layer' ], function() {
         		$("#major").val(problem.profession);
         		$("#rfid").val(problem.rfid);
         		$("#prob").val(problem.problemclass);
+        		$("#ticketNo").val(problem.ticketNo);
+        		$("#sele").val(problem.remark);
+        		if (problem.remark=="指定日期") {
+        			$("#sdate").val(problem.rectificationperiod);
+					$("#sdateall").show();
+				}else{
+					$("#sdateall").hide();
+				}
         		if (problem.problemclass=="不安全行为/状态") {
 					$("#remark1").val(problem.remarkfive);
 					$("#remark2").val(problem.remarksix);
@@ -71,7 +91,7 @@ layui.use([ 'element', 'layer' ], function() {
 	$.ajax({  
     	url : "/iot_process/estimates/problemreportpho/",  
         type : "get",
-        data : {piid : "13"},
+        data : {piid : piidp,remark:0},
         dataType : "json",  
         success: function( json) {
         	if (json.state == 0) {
@@ -107,13 +127,83 @@ layui.use([ 'element', 'layer' ], function() {
    });
 	
 	//指定日期禁用
-	$("#sele").change(function(){
+	/*$("#sele").change(function(){
 		if ($("#sele").val()=="overhaul") {
 			$("#sdate").val("");
 			$("#sdate").attr("disabled","disabled");
 		}else{
 			$("#sdate").removeAttr("disabled");
 		}
-	});
+	});*/
 	
-	 
+	/**
+	  *作业完成图片
+	  */
+	$.ajax({  
+		url : "/iot_process/estimates/problemreportpho",  
+		type : "get",
+		data : {piid : piidp,remark:1},//"12323213123"
+		dataType : "json",  
+		success: function( json) {
+			//console.log(json.state);
+			if (json.state == 0) {
+				var imgs = json.data;
+				var mode = imgs.length%3;
+				var img_id = 0;
+				
+
+				for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
+					var img_div='<div>';
+					if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
+						//img_div = '';
+
+						for (var i = 0; i < mode; i++) {
+							img_div = img_div+'<img alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+							img_id++;
+						}
+
+					}else{
+
+						for (var i = 0; i < 3; i++) {
+							img_div = img_div+'<img alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+							img_id++;
+						}
+
+					}
+					img_div = img_div+'</div>'
+					$("#doimg").append(img_div);
+				}
+			}
+
+		}  
+	});
+	/**
+	 * 处理过程表格
+	 */
+	layui.use('table', function(){
+		  var table = layui.table;
+		  
+		  //第一个实例
+		  table.render({
+		    elem: '#process'
+		    //,height: 200
+		    //,width:'90%'
+		    ,url: '/iot_process/process/nodes/historyTask/piid/'+piidp //数据接口processPure2:3:32523
+		   // ,page: true //开启分页
+		    ,parseData: function(res) { //res 即为原始返回的数据
+	            return {
+	                "code": res.state, //解析接口状态
+	                "msg": res.message, //解析提示文本
+	                "count": res.length, //解析数据长度
+	                "data": res.data //解析数据列表
+	            }
+	        }
+		    ,cols: [[ //表头
+		      {field: 'nodeExecutor', title: '处理人', width:'25%'}
+		      ,{field: 'nodeName', title: '处理节点', width:'25%'}
+		      ,{field: 'nodeComment', title: '处理说明', width:'25%'}
+		      ,{field: 'nodeEndTime', title: '时间', width:'25%'} 
+		    ]]
+		  });
+		  
+		}); 
