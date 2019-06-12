@@ -25,7 +25,7 @@ public class ProblemReportphoSTest {
 	
 	@Test
 	public void getByPiidTest() {
-		 List<ProblemReportpho> problemReportphos = problemReportphoSI.getByPiid("13");
+		 List<ProblemReportpho> problemReportphos = problemReportphoSI.getByPiid("13",null);
 		System.err.println(problemReportphos);
 	}
 }

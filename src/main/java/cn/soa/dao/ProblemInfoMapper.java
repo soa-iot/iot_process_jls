@@ -74,6 +74,12 @@ public interface ProblemInfoMapper {
 	 */ 
 	public Integer updateEstiByPiid(ProblemInfo info);
 	
+	/**   
+	 * @Title: findApplyPeople   
+	 * @Description: 根据用户名查找上报申请用户
+	 * @return: String  用户的PARENT_ID    
+	 */ 
+	public String findApplyPeople(String name);
 	/**
 	 * 根据属地名称去找另外的属地
 	 * @param problemtype

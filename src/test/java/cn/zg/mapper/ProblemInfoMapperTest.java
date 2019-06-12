@@ -49,9 +49,16 @@ public class ProblemInfoMapperTest {
 	}
 	
 	@Test
+	public void findApplyPeople() {
+		String parentId = problemInfoMapper.findApplyPeople("周广浩");
+		System.out.println("parentId: " + parentId);
+	}
+	
+	@Test
 	public void findDeptByProblemtypeTest() {
 		
 		List<UserOrganization> row = problemInfoMapper.findDeptByProblemtype("超级管理员");
 		System.err.println(row);
+
 	}
 }

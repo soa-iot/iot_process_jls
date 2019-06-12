@@ -1,5 +1,5 @@
 //加载layui内置模块
-layui.use(['jquery','form','upload','layedit'], function(){
+layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var form = layui.form
 	,layer = layui.layer
 	,layedit = layui.layedit
@@ -7,30 +7,83 @@ layui.use(['jquery','form','upload','layedit'], function(){
 	,upload = layui.upload;
 	
 	//从cookie中获取当前登录用户
-	//var resavepeople = getCookie1("currentName");
-	var resavepeople = "test4";
-	console.log("currentLoginUser:"+resavepeople);
+	var resavepeople = getCookie1("name");
+	//var resavepeople = "苟列生";
+	console.log("当前登录人为:"+resavepeople);
+	//用户编号
+	var num = getCookie1("num");
+	//num =123;
+	console.log("用户编号为:"+num);
+	//上报部门
+	var dept = getCookie1("organ");
+	console.log("用户所在组织:"+dept);
 	//上报问题报告id和piid
 	var tProblemRepId = null, piid = null;
 	//暂存的问题报告id
 	var tempRepId = null;
 	
+	
+	  //隐藏字段初始赋值
+	  form.val('report-form', {
+	    "dept": dept,
+	    "applypeople": resavepeople
+	  })
+	  
+	  //上报人输入框校验
+	  var ch,msg=null;
+	  var userVerify = form.verify({
+		  "applypeople": function(value, item){ 
+			  if(!(value.indexOf(resavepeople) >= 0)){
+				  return "上报人必须包含当前登录人";
+			  }
+			  
+			  ch = value.split("，");
+			  for(var i=0;i<ch.length;i++){
+				  if(ch[i].length == 0 || !new RegExp("^[_\u4e00-\u9fa5\\s·]+$").test(ch[i])){
+					  return '上报人不能有特殊字符，用户名之间请以中文逗号(，)隔开';
+				  }
+			  }
+			  
+			  if(msg != null){
+				  return msg;
+			  }
+		  }
+	  })
+	  
+	  $("#applypeople").blur(function(){
+		  ch = $(this).val().split("，");
+		  //后台校验每个用户名是否合法
+			  $.ajax({
+				 async: false,
+				 type: "POST",
+				 url: "/iot_process/report/verifyuser",
+				 data: {"userList":ch},
+				 dataType: "json",
+				 success: function(data){
+					 if(data.state == 0){
+						msg = null; 
+					 }else{
+						 msg = data.message;
+					 }
+				 }
+			  })  
+	  })
+	
+	
 	//不安全行为下拉框事件监听
-	$(".notsafe-select").click(function(){
+	/*$(".notsafe-select").click(function(){
 	   var select = this.children[0];
 	   if(select.disabled){
 		 layer.msg("需要问题类别选择：不安全行为/状态");
 	   }
-	});
+	});*/
 	
 	//监听问题类别select选择
 	  form.on('select(question-type)', function(data){
 	    if(data.value == "不安全行为/状态"){
-	    	$("#notsafe-select").removeAttr("disabled");
-	    	$("#detail-select").removeAttr("disabled");
+	    	$("#div-notsafe").css({"display":"block"});
 	    }else{
-	    	$("#notsafe-select").attr("disabled","true");
-	    	$("#detail-select").attr("disabled","true");
+	    	$("#div-notsafe").css({"display":"none"});
 	    }
 		//更新不安全select渲染
 	    form.render('select','notsafe-select');
@@ -91,8 +144,7 @@ layui.use(['jquery','form','upload','layedit'], function(){
       		  
       		  //判断问题类别是否是 "不安全行为/状态"
       		 if(data.data.problemclass == "不安全行为/状态"){
-         		$("#notsafe-select").removeAttr("disabled");
-       	    	$("#detail-select").removeAttr("disabled");
+      			$("#div-notsafe").css({"display":"block"});
        	    	
        	    	for( x in unsafeList){
        		      if(data.data.remarkfive == unsafeList[x].typesID){
@@ -162,6 +214,8 @@ layui.use(['jquery','form','upload','layedit'], function(){
 		  }
 		  //保存当前登录人
 		  data.field.resavepeople = resavepeople;
+		  //设置上报时间
+		  data.field.applydate = new Date();
 		  console.log(data.field);
 		  
 		  $(".imgList").each(function(index){
@@ -188,6 +242,7 @@ layui.use(['jquery','form','upload','layedit'], function(){
 		   				tempRepId = tProblemRepId = data.data;
 			   			//上传问题图片
 				   		uploadList.upload();
+				   		console.log("报告暂存成功...")
 		   			}
 		   			
 		   		}
@@ -201,8 +256,9 @@ layui.use(['jquery','form','upload','layedit'], function(){
           , url: '/iot_process/report/upload'
           , data: {		resavepeople: function(){ return resavepeople;}, 
         	  			piid: function(){console.log("piid: "+piid); return piid;},
-        	  	   		tProblemRepId: function(){ console.log("tProblemRepId=="+tProblemRepId); return tProblemRepId;}
-          			}
+        	  	   		tProblemRepId: function(){ console.log("tProblemRepId: "+tProblemRepId); return tProblemRepId;},
+        	  			num: function(){ console.log("num: "+num); return num; }
+          		 }
           , accept: 'images'
           , number: 3
           , multiple: true
@@ -258,12 +314,16 @@ layui.use(['jquery','form','upload','layedit'], function(){
  	//监听流程上报提交事件
 	  form.on('submit(problem_report)', function(data){
 		 console.log("问题上报开始...");
-		 console.log(data.field);
+		  //保存当前登录人
+		  data.field.resavepeople = resavepeople;
+		  //设置上报时间
+		  data.field.applydate = new Date();
+		  console.log(data.field);
 		 //流程上报：
-		 //dfid为流程定义id（暂时就是dfid="processPure2:1:37516"）
+		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
-		     ,url: '/iot_process/process/processPure2:1:37516'    //dfid为流程定义id（暂时就是dfid="processPure2:1:37516"）
+		     ,url: '/iot_process/process/processPure2:4:47506'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"

@@ -90,4 +90,24 @@ public class ReportS implements ReportSI {
 		 
 		return reportMapper.findByResavepeople(resavepeople);
 	}
+	
+	@Override
+	public String verifyApplyPeople(String[] userList) {
+		
+		String temp = null;
+		String msg = null;
+		for(int i=0;i<userList.length;i++) {
+			String parentID = reportMapper.findApplyPeople(userList[i]);
+			if(parentID == null) {
+				return "用户"+userList[i]+"不存在";
+			}
+			if(temp == null) {
+				temp = parentID;
+			}else {
+				msg = (temp.equals(parentID) ? null:("多个上报人必须属于相同上报部门"));
+			}
+		}
+		
+		return msg;
+	}
 }

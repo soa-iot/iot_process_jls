@@ -1,16 +1,4 @@
 /**
- * 地址解析
- * @returns
- */
-
-function GetQueryString(name)
-{
-     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-     var r = window.location.search.substr(1).match(reg);
-     if(r!=null)return  decodeURI(r[2]); return null;
-}
-
-/**
  * 全局变量——piid
  */
 var piidp = GetQueryString('piid');
@@ -22,7 +10,7 @@ var area = GetQueryString('area');
 //console.log(era+","+piidp);
 
 
-//日期插件
+/*//日期插件
 	layui.use('laydate', function(){
 		  var laydate = layui.laydate;
 		  
@@ -31,7 +19,7 @@ var area = GetQueryString('area');
 		    elem: '#sdate'
 		  });
 		  
-	});
+	});*/
 	
 //轮播图
 layui.use(['carousel', 'form'], function(){
@@ -68,7 +56,7 @@ layui.use([ 'element', 'layer' ], function() {
 	$.ajax({  
     	url : "/iot_process/estimates/estim",  
         type : "get",
-        data : {piid :"11122312"},
+        data : {piid :piidp},//"11122312"
         dataType : "json",  
         success: function( json) {
         	if (json.state == 0) {
@@ -139,14 +127,14 @@ layui.use([ 'element', 'layer' ], function() {
    });
 	
 	//指定日期禁用
-	$("#sele").change(function(){
+	/*$("#sele").change(function(){
 		if ($("#sele").val()=="overhaul") {
 			$("#sdate").val("");
 			$("#sdate").attr("disabled","disabled");
 		}else{
 			$("#sdate").removeAttr("disabled");
 		}
-	});
+	});*/
 	
 	/**
 	  *作业完成图片
@@ -154,7 +142,7 @@ layui.use([ 'element', 'layer' ], function() {
 	$.ajax({  
 		url : "/iot_process/estimates/problemreportpho",  
 		type : "get",
-		data : {piid : "12323213123",remark:1},
+		data : {piid : piidp,remark:1},//"12323213123"
 		dataType : "json",  
 		success: function( json) {
 			//console.log(json.state);
@@ -200,7 +188,7 @@ layui.use([ 'element', 'layer' ], function() {
 		    elem: '#process'
 		    //,height: 200
 		    //,width:'90%'
-		    ,url: '/iot_process/process/nodes/historyTask/piid/processPure2:3:32523' //数据接口
+		    ,url: '/iot_process/process/nodes/historyTask/piid/'+piidp //数据接口processPure2:3:32523
 		   // ,page: true //开启分页
 		    ,parseData: function(res) { //res 即为原始返回的数据
 	            return {
