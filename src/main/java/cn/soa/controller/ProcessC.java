@@ -156,42 +156,49 @@ public class ProcessC {
 		}
 		logger.debug( "--C--------bsid  -------------" + bsid);
 		
-		/*
-		 * 处理数据库配置流程变量
-		 */
-		Map<String, Object> basicVars = configS.setVarsAtStart();
-		logger.debug( "--C--------basicVars  -------------" + basicVars);
-		
-		/*
-		 * 处理临时流程变量
-		 */
-		Map<String, Object> tempVars = processVariableS.addVarsStartProcess( problemInfo );
-		logger.debug( "--C--------tempVars  -------------" + tempVars);
-				
-		/*
-		 * 流程启动
-		 */
-		Map<String, Object> vars = new HashMap<String, Object>();
-		vars.putAll(basicVars);
-		vars.putAll(tempVars);
-		logger.debug( "--C--------vars  -------------" + vars);
-		
-		/*
-		 * 流程启动前的流程其他业务处理
-		 */
-		boolean beforeHandler = processStartHandler.before();
-		if( beforeHandler ) logger.debug( "--C--------流程启动前的流程其他业务处理  -------------" + beforeHandler);
-		
-		String piid = activityS.startProcess( dfid, bsid, vars );
-		logger.debug( "--C--------piid  -------------" + piid);
-		
-		/*
-		 * 流程启动后的流程其他业务处理 - 修改为观察者模式
-		 */
-		boolean afterHandler =processStartHandler.after( piid );
-		if( beforeHandler ) logger.debug( "--C--------流程启动后的流程其他业务处理  -------------" + beforeHandler);
-		
-		return new ResultJson<String>( 0, "流程启动成功", piid + "," + bsid);
+		try {
+			/*
+			 * 处理数据库配置流程变量
+			 */
+			Map<String, Object> basicVars = configS.setVarsAtStart();
+			logger.debug( "--C--------basicVars  -------------" + basicVars);
+			
+			/*
+			 * 处理临时流程变量
+			 */
+			Map<String, Object> tempVars = processVariableS.addVarsStartProcess( problemInfo );
+			logger.debug( "--C--------tempVars  -------------" + tempVars);
+					
+			/*
+			 * 流程启动
+			 */
+			Map<String, Object> vars = new HashMap<String, Object>();
+			vars.putAll(basicVars);
+			vars.putAll(tempVars);
+			logger.debug( "--C--------vars  -------------" + vars);
+			
+			/*
+			 * 流程启动前的流程其他业务处理
+			 */
+			boolean beforeHandler = processStartHandler.before();
+			if( beforeHandler ) logger.debug( "--C--------流程启动前的流程其他业务处理  -------------" + beforeHandler);
+			
+			String piid = activityS.startProcess( dfid, bsid, vars );
+			logger.debug( "--C--------piid  -------------" + piid);
+			
+			/*
+			 * 流程启动后的流程其他业务处理 - 修改为观察者模式
+			 */
+			boolean afterHandler =processStartHandler.after( piid );
+			if( beforeHandler ) logger.debug( "--C--------流程启动后的流程其他业务处理  -------------" + beforeHandler);
+			
+			return new ResultJson<String>( 0, "流程启动成功", piid + "," + bsid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			//删除业务问题上报表新增数据
+			
+			return new ResultJson<String>( 1, "流程启动失败", null);
+		}		
 	}
 	
 	/**   
@@ -199,10 +206,10 @@ public class ProcessC {
 	 * @Description: 执行流程的下一步（流程实例piid）   
 	 * @return: ResultJson<String>        
 	 */ 
-	@PutMapping("/nodes/next/{piid}")
+	@PutMapping("/nodes/next/piid/{piid}")
 	public ResultJson<Boolean> nextGroupNodeByPIID( 
 			@PathVariable("piid") String piid,
-			Map<String,Object> map){
+			@RequestParam Map<String,Object> map){
 		logger.debug( "--C-------- 执行流程的下一步     -------------" );
 		logger.debug( piid );
 		logger.debug( map.toString() );
@@ -219,7 +226,7 @@ public class ProcessC {
 	 * @Description: 执行流程的下一步（任务tsid）   
 	 * @return: ResultJson<String>        
 	 */ 
-	@PutMapping("/nodes/next/{tsid}")
+	@PutMapping("/nodes/next/tsid/{tsid}")
 	public ResultJson<Boolean> nextNodeByTSID( 
 			@PathVariable("tsid") String tsid,
 			@RequestParam(value="var",required=false) String var,
