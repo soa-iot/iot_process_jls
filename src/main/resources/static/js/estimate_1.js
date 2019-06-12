@@ -8,6 +8,7 @@ var piidp = GetQueryString('piid');
  * 全局变量——属地单位
  */
 var area = GetQueryString('area');
+console.log(area);
 
 /**
  * 日期插件
@@ -148,11 +149,12 @@ layui.use('table', function(){
 					"data": res.data //解析数据列表
 				}
 			}
+	//,format:'yyyy-MM-dd'
 	,cols: [[ //表头
 		{field: 'nodeExecutor', title: '处理人', width:'25%'}
 		,{field: 'nodeName', title: '处理节点', width:'25%'}
 		,{field: 'nodeComment', title: '处理说明', width:'25%'}
-		,{field: 'nodeEndTime', title: '时间', width:'25%'} 
+		,{field: 'nodeEndTime', title: '时间', width:'25%',templet:"<div>{{layui.util.toDateString(d.nodeEndTime,'yyyy-MM-dd HH:mm:ss')}}</div>"} 
 		]]
 	});
 
@@ -170,7 +172,6 @@ function modifyEstimated(obj) {
 	var str = "problemdescribe="+problem_describe+"&piid="+piidp+"&"+$("#estimate").serialize();
 
 	var period = $("#sdate").val();
-	var date_amtch = period.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
 
 	//日期格式处理
 	if (period == "") {
@@ -180,11 +181,6 @@ function modifyEstimated(obj) {
 		str = str.replace(/rectificationperiod=(\d+-\d+-\d+)/,"rectificationperiod="+period);
 	}
 
-	if (($("#sele").val() =="指定日期" && period=="") || ($("#sele").val() =="指定日期" && date_amtch == null)) {
-		layer.msg('请正确输入指定日期！！！');
-	}else if(problem_describe == ""){
-		layer.msg('问题描述不能为空！！！');
-	}else{
 		$.ajax({  
 			url : "/iot_process/estimates/modifyestimated",  
 			type : "post",
@@ -193,13 +189,44 @@ function modifyEstimated(obj) {
 			success: function( json) {
 
 				if (json.state==0) {
+					layer.msg(json.message);
+					
+					window.location.href=getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
+					//
 					if ($(obj).html()=="回退" || $(obj).html()=="闭环处理") {
-						layer.msg(json.message);
 					}
 
 				}
 			}  
 		});
-	}
 
+}
+
+/**
+ * 问题评估前端验证
+ * @returns true or false
+ */
+function yesCompare(){
+	
+	//问题描述
+	var problem_describe = $("#problem_describe").val();
+
+	//问题处理信息
+	var str = "problemdescribe="+problem_describe+"&piid="+piidp+"&"+$("#estimate").serialize();
+
+	var period = $("#sdate").val();
+	var date_amtch = period.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
+
+	if (($("#sele").val() =="指定日期" && period=="") || ($("#sele").val() =="指定日期" && date_amtch == null)) {
+		layer.msg('请正确输入指定日期！！！');
+		return false;
+	}else if(problem_describe == ""){
+		layer.msg('问题描述不能为空！！！');
+		return false;
+	}else if ($("#comment").val()=="") {
+		layer.msg('处理说明不能为空！！！');
+		return false;
+	}else{
+		return true;
+	}
 }

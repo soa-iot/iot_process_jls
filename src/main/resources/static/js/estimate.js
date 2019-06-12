@@ -28,7 +28,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	var active = {
 			offset: function(othis){
 				var type = othis.data('type')
-				layer.open({
+				var ope = layer.open({
 					type: 1
 					,offset: type 
 					,area: ['300px','400px;']
@@ -44,7 +44,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 						var checkData = childWindow.getCheckedData();
 						console.log(checkData);
 						for (var i = 0; i < checkData.length; i++) {
-
+				
 							//console.log(checkData[i][1]);
 							var user=userOrDept(checkData[i][1]);
 							if (user!="") {
@@ -54,12 +54,16 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 								}
 							}
 						}
-						console.log(usernames);
-
-						workPlan(this,usernames);
-						usernames="";
-
-						layer.closeAll();
+						console.log(usernames=="");
+	
+						if (usernames=="") {
+							layer.msg('至少选定一人！！！');
+						}else if (yesCompare()) {
+							workPlan(this,usernames);
+							usernames="";	
+	
+							layer.close(ope);
+						}
 					}
 				});
 			}
@@ -184,22 +188,12 @@ $("#sele").change(function(){
 //var rolena="生产办公室";
 $(".problem_describe").click(function(){
 
-	/*if ($(this).attr("id")=="work_plan") {
-		if (rolena=="生产办公室" || rolena == "HSE办公室" || rolena == "设备办公室") {
-			//workPlanBtnAll(this);
-		}else{
-			//workPlanBtn(this);
-
-		}
-
-	}*/
-
+	console.log(yesCompare());
 	if ($(this).html()=="回退" || $(this).html()=="闭环处理") {
 		//验证处理说明不能为空
-		if ($("#comment").val()=="") {
-			layer.msg('处理说明不能为空！！！');
-		}else{
+		if (yesCompare()) {
 			modifyEstimated(this);
+			//layer.msg('处理说明不能为空！！！');
 		}
 	}else{
 		//modifyEstimated(this);
@@ -221,7 +215,7 @@ function workPlan(obj,usernames){
 		}else if ($(obj).attr("id")=="coordinate" && $("#problemtype").val()!="维修工段" && $("#problemtype").val()!="净化工段") {
 			isIngroup=2;
 		}*/
-	//console.log(isIngroup);
+	//console.log($("#comment").val());
 
 	$.ajax({
 		type: "PUT"
@@ -231,9 +225,9 @@ function workPlan(obj,usernames){
 		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-				"comment": $("comment").val(),     //节点的处理信息
-				"receivor":usernames
-
+				"comment": $("#comment").val(),     //节点的处理信息
+				"receivor":usernames,
+				"userName":$.cookie("name")
 			}   //问题上报表单的内容
 	,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
