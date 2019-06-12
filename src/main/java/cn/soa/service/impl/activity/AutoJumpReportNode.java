@@ -1,5 +1,7 @@
 package cn.soa.service.impl.activity;
 
+import java.util.HashMap;
+
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +42,15 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 		Task task = taskService.createTaskQuery().processInstanceId(piid).singleResult();
 		if( task != null ) {
 			logger.debug("---------tsid-----------" + task.getId() );
-			taskService.complete( task.getId() );
+			Object var = taskService.getVariable( task.getId() , "area");
+			if( var == null ) {
+				logger.debug("---------属地单位为null-----------"); 
+				return false;
+			}else {
+				HashMap<String, Object> areaVar = new HashMap<String,Object>();
+				areaVar.put( "area", areaVar);
+				taskService.complete( task.getId(), areaVar, true);
+			}			
 			return true;
 		}
 		logger.debug("---------task为null-----------");
