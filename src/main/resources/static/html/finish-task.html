@@ -89,32 +89,7 @@
 					<div>
 						<label class="layui-form-label">处理过程</label>
 						<div class="layui-input-block right-marg">
-							<table class="layui-table layui-input-block tdp">
-								<colgroup>
-									<col width="150">
-									<col width="150">
-									<col width="200">
-									<col  width="200">
-								</colgroup>
-								<thead>
-									<tr>
-										<th>处理人</th>
-										<th>处理节点</th>
-										<th>操作</th>
-										<th>处理说明</th>
-										<th>时间</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
-								</tbody>
-							</table>
+							<table id="process-table"></table>
 						</div>
 					</div>
 
@@ -191,13 +166,10 @@
 					<div class="layui-form-item layui-form-text bott">
 						<label class="layui-form-label">问题图片</label>
 						<div class="layui-input-block">
-							<div class="layui-carousel" id="problem_image" lay-filter="test1">
-								<div carousel-item="" >
-									<div><img alt="图片1" style="width:700px; height:400px; margin: 0px;" src="/iot_process/image/test4/2019-06-05/11411730697916.png"></div>
-									<div><img alt="图片2" style="width:700px; height:400px; margin: 0px;" src="/iot_process/image/test4/2019-06-05/11411730712427.png"></div>
-									<div><img alt="图片3" style="width:700px; height:400px; margin: 0px;" src="/iot_process/image/test4/2019-06-05/11411736962566.png"></div>
+							<div class="layui-carousel imgshow" lay-filter="test1">
+								<div carousel-item="" id="imag">
+									
 								</div>
-
 							</div>
 						</div>
 					</div>

@@ -22,6 +22,43 @@ layui.use([ 'element', 'layer' ], function() {
 
 });
 
+<<<<<<< HEAD
+
+/**
+ * 处理过程表格
+ */
+//从cookie中获得piid
+var piid = getCookie1("piid");
+
+layui.use('table', function(){
+	  var table = layui.table;
+	  
+	  //第一个实例
+	  table.render({
+	    elem: '#process-table'
+	    ,url: '/iot_process/process/nodes/historyTask/piid/'+piid //数据接口
+	   // ,page: true //开启分页
+	    ,parseData: function(res) { //res 即为原始返回的数据
+	    	//后端返回值： ResultJson<List<Map<String,Object>>>
+            return {
+                "code": res.state, //解析接口状态
+                "msg": res.message, //解析提示文本
+                "count": res.length, //解析数据长度
+                "data": res.data //解析数据列表
+            }
+        }
+	    ,cols: [[ //表头
+	      {field: 'nodeExecutor', title: '处理人', width:'25%'}
+	      ,{field: 'nodeName', title: '处理节点', width:'25%'}
+	      ,{field: 'nodeComment', title: '处理说明', width:'25%'}
+	      ,{field: 'nodeEndTime', title: '时间', width:'25%'} 
+	    ]]
+	  });
+
+	});
+
+=======
+>>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 layui.use(['form', 'jquery','layer'], function(){
   var form = layui.form
   ,	$ = layui.$
@@ -57,6 +94,46 @@ layui.use(['form', 'jquery','layer'], function(){
 	  }
   });
   
+  /**
+   *问题图片
+   */
+ $.ajax({  
+ 	url : "/iot_process/estimates/problemreportpho",  
+ 	type : "get",
+ 	data : {"piid":piid,"remark":0},
+ 	dataType : "json",  
+ 	success: function( json) {
+ 		if (json.state == 0) {
+ 			var imgs = json.data;
+ 			var mode = imgs.length%3;
+ 			var img_id = 0;
+ 			//alert(img[i]);
+
+ 			for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
+ 				var img_div='<div>';
+ 				if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
+ 					//img_div = '';
+
+ 					for (var i = 0; i < mode; i++) {
+ 						img_div = img_div+'<img alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+ 						img_id++;
+ 					}
+
+ 				}else{
+
+ 					for (var i = 0; i < 3; i++) {
+ 						img_div = img_div+'<img alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+ 						img_id++;
+ 					}
+
+ 				}
+ 				img_div = img_div+'</div>'
+ 				$("#imag").append(img_div);
+ 			}
+ 		}
+
+ 	}  
+ });
   
 	//点击下一步按钮操作
 	form.on('submit(next_step)', function(data){

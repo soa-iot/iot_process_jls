@@ -80,6 +80,7 @@ public interface ProblemInfoMapper {
 	 * @return: String  用户的PARENT_ID    
 	 */ 
 	public String findApplyPeople(String name);
+
 	/**
 	 * 根据属地名称去找另外的属地
 	 * @param problemtype
