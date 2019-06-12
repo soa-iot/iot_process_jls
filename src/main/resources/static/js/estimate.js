@@ -54,7 +54,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 								}
 							}
 						}
-						console.log(usernames=="");
+						console.log($(this).attr("id"));
 	
 						if (usernames=="") {
 							layer.msg('至少选定一人！！！');

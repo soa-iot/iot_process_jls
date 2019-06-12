@@ -189,12 +189,14 @@ function modifyEstimated(obj) {
 			success: function( json) {
 
 				if (json.state==0) {
-					layer.msg(json.message);
-					
-					window.location.href=getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
-					//
-					if ($(obj).html()=="回退" || $(obj).html()=="闭环处理") {
+					if ($(obj).attr("id")=="work_plant") {
+						
+						layer.msg(json.message,{time: 3000},function() {
+							location.href = getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
+						});
 					}
+					
+					//window.location.href=getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
 
 				}
 			}  
