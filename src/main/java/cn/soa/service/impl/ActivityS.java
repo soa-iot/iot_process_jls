@@ -32,6 +32,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -369,20 +370,22 @@ public class ActivityS implements ActivitySI{
     		logger.debug( "-------comment参数不存在--------" );
     	}
     	String comment = map.get( "comment" ).toString();
-    	map.remove( "comment" );
-    	logger.debug( map.toString() );
-    	
+    	logger.debug( "-------流程节点备注信息--------" + comment );
+	
     	try {     
     		//拾取任务
-    		taskService.claim( tsid, map.get( "userName" ).toString() );
+    		taskService.claim( tsid, map.get( "userName" ).toString() );    		
     		
     		/*
     		 * 增加备注信息
     		 */
     		boolean b = saveCommentByPiid( piid, comment );
     		if( b ) {
-    			logger.debug( "---执行流转下一个节点，保存备注信息---------" + b );
+    			logger.debug( "---执行流转下一个节点，保存备注信息成功---------" );
+    		}else {
+    			logger.debug( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
+    		map.remove( "comment" );
     		
         	/*
         	 *设置流程变量
@@ -1115,11 +1118,12 @@ public class ActivityS implements ActivitySI{
 					todoTask.setName( t.getName() );
 					todoTask.setCurrentnode( t.getName() );
 					todoTask.setDescrible( t.getDescription() );
-					Map<String, Object> vars = t.getProcessVariables();
+					Object areaVar = taskService.getVariable( t.getId(), "area" );
+					
 					//添加属地变量
-					Object area = vars.get("area");
-					if( area != null  ) {
-						todoTask.setArea( area.toString() );
+					if( areaVar != null  ) {
+						logger.debug( "---------属地单位：------------" + areaVar.toString() );
+						todoTask.setArea( areaVar.toString() );
 					}
 					//添加超期记录
 					LocalDate today = LocalDate.now();
