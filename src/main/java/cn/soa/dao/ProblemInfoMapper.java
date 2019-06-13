@@ -86,4 +86,25 @@ public interface ProblemInfoMapper {
 	 * @return
 	 */
 	public List<UserOrganization> findDeptByProblemtype(String problemtype);
+	
+	/**   
+	 * @Title: deleteByPiid   
+	 * @Description: 根据piid删除问题上报记录  
+	 * @return: int        
+	 */  
+	public int deleteByPiid( @Param("piid") String piid ); 
+	
+	/**   
+	 * @Title: deleteByPiid   
+	 * @Description: 根据bsid删除问题上报记录  
+	 * @return: int        
+	 */  
+	public int deleteByBsid( @Param("bsid") String bsid ); 
+	
+	/**   
+	 * @Title: updatePiidByBsid   
+	 * @Description: 根据bsid，更新业务表数据的piid   
+	 * @return: int        
+	 */  
+	public int updatePiidByBsid( @Param("bsid") String bsid, @Param("piid") String piid );
 }

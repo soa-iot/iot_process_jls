@@ -45,4 +45,6 @@ public interface ReportMapper {
 	 */ 
 	public Integer updateOne(ProblemInfo info);
 	
+	
+	
 }
