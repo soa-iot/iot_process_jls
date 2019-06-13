@@ -23,7 +23,7 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 	private TaskService taskService;
 
 	@Override
-	public boolean before() {
+	public boolean before( String bsid, ProblemInfo problemInfo ) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -36,7 +36,7 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 	 * @see cn.soa.service.inter.activiti.ProcessStartHandler#after(java.lang.String)   
 	 */ 
 	@Override
-	public boolean after( String piid, ProblemInfo problemInfo ) {
+	public boolean after( String bsid, String piid, ProblemInfo problemInfo ) {
 		if( StringUtils.isBlank(piid) ) {
 			logger.debug("---------piid为null或空-----------");
 			return false;
@@ -62,16 +62,23 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 					logger.debug("---------问题上报增加备注信息失败-----------");
 				}				
 			}
-			//增加流程变量-属地单位
-			Object var = taskService.getVariable( tsid , "area");
-			if( var == null ) {
+			
+			//增加流程变量-业务主键\属地单位
+			Object bsidVar = taskService.getVariable( tsid , "bsid");
+			Object areaVar = taskService.getVariable( tsid , "area");
+			if( bsidVar == null ) {
+				logger.debug("---------业务主键为null-----------"); 
+				return false;
+			}	
+			if( areaVar == null ) {
 				logger.debug("---------属地单位为null-----------"); 
 				return false;
-			}else {				
-				HashMap<String, Object> areaVar = new HashMap<String,Object>();
-				areaVar.put( "area", areaVar);
-				taskService.complete( task.getId(), areaVar, true);
-			}	
+			}
+			
+			HashMap<String, Object> var = new HashMap<String,Object>();
+			var.put( "bsid", bsidVar.toString() );
+			var.put( "area", areaVar.toString() );
+			taskService.complete( task.getId(), var, true);			
 			
 			return true;
 		}

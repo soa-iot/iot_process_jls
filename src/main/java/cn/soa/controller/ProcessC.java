@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 
 import org.activiti.engine.repository.Deployment;
@@ -27,6 +28,7 @@ import cn.soa.entity.TodoTask;
 import cn.soa.service.inter.ActivitySI;
 import cn.soa.service.inter.BussinessSI;
 import cn.soa.service.inter.ConfigSI;
+import cn.soa.service.inter.ProblemInfoSI;
 import cn.soa.service.inter.ProcessVariableSI;
 import cn.soa.service.inter.activiti.ProcessStartHandler;
 
@@ -55,6 +57,9 @@ public class ProcessC {
 	
 	@Autowired
 	private ProcessStartHandler processStartHandler;
+		
+	@Autowired
+	private ProblemInfoSI problemInfoS;
 		
 	/**   
 	 * @Title: startProcessC   
@@ -180,7 +185,7 @@ public class ProcessC {
 			/*
 			 * 流程启动前的流程其他业务处理
 			 */
-			boolean beforeHandler = processStartHandler.before();
+			boolean beforeHandler = processStartHandler.before( bsid, problemInfo);
 			if( beforeHandler ) logger.debug( "--C--------流程启动前的流程其他业务处理  -------------" + beforeHandler);
 			
 			//流程启动
@@ -190,14 +195,19 @@ public class ProcessC {
 			/*
 			 * 流程启动后的流程其他业务处理 - 修改为观察者模式
 			 */
-			boolean afterHandler =processStartHandler.after( piid, problemInfo );
+			boolean afterHandler =processStartHandler.after( bsid, piid, problemInfo );
 			if( beforeHandler ) logger.debug( "--C--------流程启动后的流程其他业务处理  -------------" + beforeHandler);
 			
 			return new ResultJson<String>( 0, "流程启动成功", piid + "," + bsid);
 		} catch (Exception e) {
 			e.printStackTrace();
-			//删除业务问题上报表新增数据
-			
+			try {
+				int i = problemInfoS.deleteByBsid( bsid );
+				logger.debug( "--C--------流程启动失败后，删除新增的业务记录成功  -------------" + bsid);
+			} catch (Exception e2) {
+				e.printStackTrace();		
+				logger.debug( "--C--------流程启动失败后，删除新增的业务记录失败  -------------" + bsid);
+			}			
 			return new ResultJson<String>( 1, "流程启动失败", null);
 		}		
 	}

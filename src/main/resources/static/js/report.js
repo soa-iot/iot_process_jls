@@ -7,15 +7,15 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	,upload = layui.upload;
 	
 	//从cookie中获取当前登录用户
-	var resavepeople = getCookie1("name");
+	var resavepeople = getCookie1("name").replace(/"/g,'');
 	//var resavepeople = "孙超";
 	console.log("当前登录人为:"+resavepeople);
 	//用户编号
-	var num = getCookie1("num");
+	var num = getCookie1("num").replace(/"/g,'');
 	//num =123;
 	console.log("用户编号为:"+num);
 	//上报部门
-	var dept = getCookie1("organ");
+	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
 	//上报问题报告id和piid
 	var tProblemRepId = null, piid = null;
@@ -323,7 +323,11 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
+<<<<<<< HEAD
 		     ,url: '/iot_process/process/processPure2:1:4'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+=======
+		     ,url: '/iot_process/process/processPure2:2:30004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+>>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"

@@ -22,13 +22,12 @@ layui.use([ 'element', 'layer' ], function() {
 
 });
 
-<<<<<<< HEAD
 
 /**
  * 处理过程表格
  */
 //从cookie中获得piid
-var piid = getCookie1("piid");
+var piid = GetQueryString("piid");
 
 layui.use('table', function(){
 	  var table = layui.table;
@@ -57,8 +56,7 @@ layui.use('table', function(){
 
 	});
 
-=======
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
+
 layui.use(['form', 'jquery','layer'], function(){
   var form = layui.form
   ,	$ = layui.$
@@ -68,7 +66,7 @@ layui.use(['form', 'jquery','layer'], function(){
   $.ajax({
 	  type: "GET",
 	  url: "/iot_process/estimates/estim",
-	  data:{piid: "ADAA80DB601C4470BE8BB224705F5F9C"},
+	  data:{"piid": piid},
 	  dataType: "json",
 	  success: function(json){
 		  if(json.state == 0){
@@ -134,25 +132,33 @@ layui.use(['form', 'jquery','layer'], function(){
 
  	}  
  });
-  
+  	
+ 	//从cookie中获取处理人
+    var userName = getCookie1("name").replace(/"/g,'')
 	//点击下一步按钮操作
 	form.on('submit(next_step)', function(data){
 		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
-		    	url : "#",   ///iot_process/estimates/problemdescribe
-		        type : "post",
-		        data : {piid : "ADAA80DB601C4470BE8BB224705F5F9C",problemdescribe:$("#problem_describe").val()},
+		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
+		        type : "PUT",
+		        data : {
+		        		"comment": data.field.comment,
+		        		"userName": name
+		        },
+		        contentType: "application/x-www-form-urlencoded",
 		        dataType : "json",  
-		        success: function( json) {
-		        	
-		        	if (json.state==1) {
-		        		alert(json.message);						
-					}
-		        }  
+		        success: function(jsonData) {
+		        	if(jsonData.data == true){
+		        		layer.msg("接收作业成功");
+		        	}else{
+		        		layer.msg("接收作业失败");
+		        	}
+		        } 
+		        ,error:function(){}	
 		   });		  
 		  
-		  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+		  //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
    });
 		  
 	  

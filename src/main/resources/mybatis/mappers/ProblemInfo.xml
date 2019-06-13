@@ -784,6 +784,17 @@
 	
 	</update>
 	
+	<!-- 根据bsid，更新业务表数据的piid -->
+	<update id="updatePiidByBsid">
+		UPDATE 
+			cz_task_problem_report 
+		SET 
+			piid=#{piid} 
+		WHERE 
+			T_PROBLEM_REP_ID=#{bsid}
+	
+	</update>
+	
 	
 	<!-- 更新一条问题报告数据  -->
 	<!-- public Integer updateEstiByPiid(ProblemInfo info); -->
@@ -825,6 +836,16 @@
 			name != #{problemtype} AND is_parent = 0
 	</select>
 	
+	
+	<delete id="deleteByPiid" parameterType="string">
+		delete from cz_task_problem_report
+		where piid=#{piid}
+	</delete>
+	
+	<delete id="deleteByBsid" parameterType="string">
+		delete from cz_task_problem_report
+		where T_PROBLEM_REP_ID=#{bsid}
+	</delete>
 </mapper>
  
 
