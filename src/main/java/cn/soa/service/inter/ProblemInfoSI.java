@@ -42,5 +42,26 @@ public interface ProblemInfoSI {
 	 * @return
 	 */
 	public List<UserOrganization> getDeptByProblemtype(String problemtype);
+
+	/**   
+	 * @Title: deleteByPiid   
+	 * @Description: 根据piid删除问题上报记录   
+	 * @return: int        
+	 */  
+	int deleteByPiid(String piid);
+
+	/**   
+	 * @Title: deleteByBsid   
+	 * @Description: 根据tsid删除问题上报记录   
+	 * @return: int        
+	 */  
+	int deleteByBsid(String tsid);
+
+	/**   
+	 * @Title: updatePiidByBsid   
+	 * @Description: 根据bsid，更新业务表数据的piid    
+	 * @return: int        
+	 */  
+	int updatePiidByBsid( String bsid, String piid );
 	
 }

@@ -33,10 +33,10 @@ layui.use(['carousel', 'form'], function(){
 	//常规轮播
 	carousel.render({
 		elem: '.imgshow'
-			//,arrow: 'always'
+		//,arrow: 'always'
 			//,width: '778px'
-			    //,height: '440px'
-			    ,interval: 5000
+		,height: '150px'
+		,interval: 5000
 	});
 });  
 
@@ -102,19 +102,20 @@ $.ajax({
 			var img_id = 0;
 
 			for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
-				var img_div='<div>';
+				var img_div='<div class="img_p">';
 				if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
 					//img_div = '';
 
 					for (var i = 0; i < mode; i++) {
-						img_div = img_div+'<img alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						img_div = img_div+'<img  class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
 						img_id++;
 					}
 
 				}else{
 
 					for (var i = 0; i < 3; i++) {
-						img_div = img_div+'<img alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						
 						img_id++;
 					}
 
@@ -164,7 +165,6 @@ layui.use('table', function(){
  * 非净化工段问题处理更新ajax
  */
 function modifyEstimated(obj) {
-
 	//问题描述
 	var problem_describe = $("#problem_describe").val();
 
@@ -180,6 +180,7 @@ function modifyEstimated(obj) {
 		period = period.replace(/-/g, "/");
 		str = str.replace(/rectificationperiod=(\d+-\d+-\d+)/,"rectificationperiod="+period);
 	}
+	console.log("日期格式处理："+str);
 
 		$.ajax({  
 			url : "/iot_process/estimates/modifyestimated",  
@@ -187,17 +188,22 @@ function modifyEstimated(obj) {
 			data : str,
 			dataType : "json",  
 			success: function( json) {
-
+				console.log("问题处理json："+json);
 				if (json.state==0) {
-					if ($(obj).attr("id")=="work_plant") {
+					//if ($(obj).attr("id")=="work_plant") {
 						
-						layer.msg(json.message,{time: 3000},function() {
+						layer.msg("提交成功！",{time: 3000,icon:1},function() {
+							
 							location.href = getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
 						});
-					}
+//					}else{
+//						layer.msg("提交成功！",{time: 3000,icon:1});
+//					}
 					
 					//window.location.href=getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
 
+				}else{
+					layer.msg("提交失败！",{time: 3000,icon:2});
 				}
 			}  
 		});
@@ -220,15 +226,48 @@ function yesCompare(){
 	var date_amtch = period.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
 
 	if (($("#sele").val() =="指定日期" && period=="") || ($("#sele").val() =="指定日期" && date_amtch == null)) {
-		layer.msg('请正确输入指定日期！！！');
+		layer.msg('请正确输入指定日期！！！',{icon:7});
 		return false;
 	}else if(problem_describe == ""){
-		layer.msg('问题描述不能为空！！！');
+		layer.msg('问题描述不能为空！！！',{icon:7});
 		return false;
 	}else if ($("#comment").val()=="") {
-		layer.msg('处理说明不能为空！！！');
+		layer.msg('处理说明不能为空！！！',{icon:7});
 		return false;
 	}else{
 		return true;
 	}
+	
 }
+
+//弹出层
+layui.use('layer', function(){ //独立版的layer无需执行这一句
+	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+	
+	
+	//触发事件
+	var active = {
+			offset: function(othis){
+				
+			var imgHtml= "<img src='"+$(this).attr("src")+"'width='800px'  height='600px'/>";
+				//var type = othis.data('type')
+				layer.open({
+				type: 1
+				//,offset: type 
+				,area: ['800px','600px']
+				,content: imgHtml
+				,title:false
+				//,shadeClose:true
+				//,cancel:false
+				,offset:'auto'
+				
+				});
+			}
+	};
+
+	$('.big-img').on('click', function(){
+		var othis = $(this), method = othis.data('method');
+		active[method] ? active[method].call(this, othis) : '';
+	});
+
+});

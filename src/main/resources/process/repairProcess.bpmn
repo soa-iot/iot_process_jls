@@ -6,6 +6,7 @@
     <userTask id="report" name="问题上报" activiti:assignee="${reporter}">
       <extensionElements>
         <activiti:executionListener event="start" class="cn.soa.service.impl.activity.FindEstimatorByArea"></activiti:executionListener>
+        <activiti:executionListener event="end" class="cn.soa.service.impl.activity.AddPiidToBussTable"></activiti:executionListener>
       </extensionElements>
     </userTask>
     <userTask id="estimate" name="问题评估" activiti:candidateUsers="${estimators}">
@@ -20,19 +21,23 @@
     <userTask id="pure" name="净化分配" activiti:candidateUsers="${puror}"></userTask>
     <userTask id="repair" name="维修分配" activiti:candidateUsers="${repairor}"></userTask>
     <userTask id="arrange" name="作业安排" activiti:candidateUsers="${arrangor}"></userTask>
-    <userTask id="receive" name="作业接收" activiti:candidateUsers="${receivor}"></userTask>
+    <userTask id="receive" name="作业接收" activiti:candidateUsers="${receivor}">
+      <extensionElements>
+        <activiti:executionListener event="end" class="cn.soa.service.impl.activity.SetReceivorToComplementor"></activiti:executionListener>
+      </extensionElements>
+    </userTask>
     <userTask id="complement" name="作业完成" activiti:assignee="${complementor}"></userTask>
     <userTask id="check" name="作业验收" activiti:candidateUsers="${checkor}"></userTask>
     <endEvent id="end" name="闭环流程"></endEvent>
     <sequenceFlow id="flow12" name="分支1流向2" sourceRef="node1" targetRef="pure">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${area == '净化工段' and  'isIngroup'==3 }  ]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${area == '净化工段' and  'isIngroup'==3 }]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="pure" targetRef="repair"></sequenceFlow>
     <sequenceFlow id="flow11" name="分支1流向1" sourceRef="node1" targetRef="repair">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${area == '维修工段' and  isIngroup=='3' }  ]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${area == '维修工段' and  isIngroup=='3' }]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow13" name="分支1流向3" sourceRef="node1" targetRef="receive">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isIngroup=='1' }  ]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isIngroup=='1' }]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow8" sourceRef="repair" targetRef="arrange"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="arrange" targetRef="receive"></sequenceFlow>
@@ -91,7 +96,7 @@
         <omgdi:waypoint x="550.0" y="187.0"></omgdi:waypoint>
         <omgdi:waypoint x="610.0" y="187.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="550.0" y="187.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="60.0" x="550.0" y="187.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
@@ -103,7 +108,7 @@
         <omgdi:waypoint x="665.0" y="27.0"></omgdi:waypoint>
         <omgdi:waypoint x="832.0" y="160.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="470.0" y="107.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="60.0" x="470.0" y="107.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
@@ -113,7 +118,7 @@
         <omgdi:waypoint x="1152.0" y="286.0"></omgdi:waypoint>
         <omgdi:waypoint x="1152.0" y="215.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="530.0" y="207.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="60.0" x="530.0" y="207.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">

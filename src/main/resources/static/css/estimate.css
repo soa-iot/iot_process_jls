@@ -51,11 +51,14 @@
 			width: 800px;
 			margin-left: 50px;
 		} */
-	img{
-		width: 181px;
-		height: 280px;
+	.big-img{
+		width: 180px;
+		height: 150px;
 		/* margin-top: 50px;
 		margin-left: 10px; */
+	}
+	.img_p{
+		text-align: center;
 	}
 	.bott{
 		margin-bottom: 30px;

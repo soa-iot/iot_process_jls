@@ -125,7 +125,54 @@ public class ProblemInfoS implements ProblemInfoSI {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}	
+	}
+	
+	/**   
+	 * @Title: deleteByPiid   
+	 * @Description: 根据piid删除问题上报记录 
+	 * @return: int        
+	 */  
+	@Override
+	public int deleteByPiid( String piid ) {
+		try {
+			int i = problemInfoMapper.deleteByPiid(piid);
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
 		}
-		
+	}
+	
+	/**   
+	 * @Title: deleteByPiid   
+	 * @Description: 根据tsid删除问题上报记录 
+	 * @return: int        
+	 */  
+	@Override
+	public int deleteByBsid( String bsid ) {
+		try {
+			int i = problemInfoMapper.deleteByBsid( bsid );
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	/**   
+	 * @Title: updatePiidByBsid   
+	 * @Description: 根据bsid，更新业务表数据的piid    
+	 * @return: int        
+	 */ 
+	@Override
+	public int updatePiidByBsid( String bsid, String biid ) {
+		try {
+			int i = problemInfoMapper.updatePiidByBsid( bsid, biid );
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
 	}
 }
