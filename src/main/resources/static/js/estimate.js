@@ -219,7 +219,7 @@ function workPlan(obj,usernames){
 
 	$.ajax({
 		type: "PUT"
-			,url: '/iot_process/process/nodes/next/'+piidp    //piid为流程实例id
+			,url: '/iot_process/process/nodes/next/piid/'+piidp    //piid为流程实例id
 			,data: {
 				"isIngroup": "1",    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
 		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；

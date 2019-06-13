@@ -22,13 +22,13 @@ layui.use([ 'element', 'layer' ], function() {
 
 });
 
-<<<<<<< HEAD
+
 
 /**
  * 处理过程表格
  */
 //从cookie中获得piid
-var piid = getCookie1("piid");
+var piid = GetQueryString("piid");
 
 layui.use('table', function(){
 	  var table = layui.table;
@@ -57,8 +57,7 @@ layui.use('table', function(){
 
 	});
 
-=======
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
+
 layui.use(['form', 'jquery','layer'], function(){
   var form = layui.form
   ,	$ = layui.$
@@ -68,7 +67,7 @@ layui.use(['form', 'jquery','layer'], function(){
   $.ajax({
 	  type: "GET",
 	  url: "/iot_process/estimates/estim",
-	  data:{piid: "ADAA80DB601C4470BE8BB224705F5F9C"},
+	  data:{"piid": piid},
 	  dataType: "json",
 	  success: function(json){
 		  if(json.state == 0){
@@ -142,7 +141,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		  $.ajax({  
 		    	url : "#",   ///iot_process/estimates/problemdescribe
 		        type : "post",
-		        data : {piid : "ADAA80DB601C4470BE8BB224705F5F9C",problemdescribe:$("#problem_describe").val()},
+		        data : {piid :piid,problemdescribe:$("#problem_describe").val()},
 		        dataType : "json",  
 		        success: function( json) {
 		        	
