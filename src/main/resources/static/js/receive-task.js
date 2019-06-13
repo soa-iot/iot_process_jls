@@ -28,7 +28,6 @@ layui.use([ 'element', 'layer' ], function() {
  */
 //从cookie中获得piid
 var piid = GetQueryString("piid");
-
 layui.use('table', function(){
 	  var table = layui.table;
 	  
@@ -56,7 +55,7 @@ layui.use('table', function(){
 
 	});
 
-
+var tProblemRepId = null;
 layui.use(['form', 'jquery','layer'], function(){
   var form = layui.form
   ,	$ = layui.$
@@ -70,7 +69,7 @@ layui.use(['form', 'jquery','layer'], function(){
 	  dataType: "json",
 	  success: function(json){
 		  if(json.state == 0){
-			  
+			  tProblemRepId = json.data.tproblemRepId;
 			//表单初始赋值
 			form.val('receive-task', {
 			  "incident_sign": json.data.ticketNo
@@ -150,12 +149,14 @@ layui.use(['form', 'jquery','layer'], function(){
 		        dataType : "json",  
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
-		        		layer.msg("接收作业成功");
+		        		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"接收作业成功");
 		        	}else{
-		        		layer.msg("接收作业失败");
+		        		layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"接收作业失败");
 		        	}
 		        } 
-		        ,error:function(){}	
+		        ,error:function(){
+		        	layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"接收作业失败");
+		        }	
 		   });		  
 		  
 		  //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
