@@ -78,6 +78,13 @@ $.ajax({
 				$("#remark").hide();
 			}
 			$("#problem_describe").val(problem.problemdescribe);
+			if (problem.ticketNo != null && problem.remark != null) {
+				$("#ticketNo").val(problem.ticketNo);
+				$("#sele").val(problem.remark);
+			}
+			if (problem.rectificationperiod != null) {
+				$("#sdate").val(json.data.rectificationperiod.match(/\d+-\d+-\d+/));
+			}
 			pd=problem.problemdescribe;
 		}
 
