@@ -220,35 +220,31 @@ $(".problem_describe").click(function(){
  * @returns
  */
 function workPlan(obj,usernames){
-	/*var isIngroup;
-	if($(obj).attr("id")=="work_plan"){
-		isIngroup=1;
-		}else if ($(obj).attr("id")=="coordinate" && $("#problemtype").val()!="维修工段" && $("#problemtype").val()!="净化工段") {
-			isIngroup=2;
-		}*/
-	//console.log($("#comment").val());
 
 	$.ajax({
 		type: "PUT"
-			,url: '/iot_process/process/nodes/next/piid/'+piidp    //piid为流程实例id
-			,data: {
-				"isIngroup": "1",    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+		,data: {
+			"isIngroup": "1",    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
 		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-				"comment": $("#comment").val(),     //节点的处理信息
-				"receivor":usernames,
-				"userName":$.cookie("name")
-			}   //问题上报表单的内容
-	,contentType: "application/x-www-form-urlencoded"
+			"comment": $("#comment").val(),     //节点的处理信息
+			"receivor":usernames,
+			"userName":$.cookie("name")
+		}   //问题上报表单的内容
+		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
-			,success: function(jsonData){
-				//后端返回值： ResultJson<Boolean>
-				if (jsonData.data) {
-					modifyEstimated(this);
-				}
-			},
-			//,error:function(){}		       
+		,success: function(jsonData){
+			//后端返回值： ResultJson<Boolean>
+			console.log("人员提交："+jsonData.data);
+			if (jsonData.data) {
+				modifyEstimated(this);
+			}else{
+				layer.msg('安排人员发送失败！！！',{icon:7});
+			}
+		},
+		//,error:function(){}		       
 	});
 }
 

@@ -22,7 +22,7 @@
     <userTask id="repair" name="维修分配" activiti:candidateUsers="${repairor}"></userTask>
     <userTask id="arrange" name="作业安排" activiti:candidateUsers="${arrangor}"></userTask>
     <userTask id="receive" name="作业接收" activiti:candidateUsers="${receivor}"></userTask>
-    <userTask id="complement" name="作业完成" activiti:assignee="${complementor}">
+    <userTask id="complement" name="作业完成" activiti:candidateUsers="${complementor}">
       <extensionElements>
         <activiti:executionListener event="end" class="cn.soa.service.impl.activity.FindCheckor"></activiti:executionListener>
       </extensionElements>
@@ -96,7 +96,7 @@
         <omgdi:waypoint x="550.0" y="187.0"></omgdi:waypoint>
         <omgdi:waypoint x="610.0" y="187.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="60.0" x="550.0" y="187.0"></omgdc:Bounds>
+          <omgdc:Bounds height="48.0" width="60.0" x="550.0" y="187.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
@@ -108,7 +108,7 @@
         <omgdi:waypoint x="665.0" y="27.0"></omgdi:waypoint>
         <omgdi:waypoint x="832.0" y="160.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="60.0" x="470.0" y="107.0"></omgdc:Bounds>
+          <omgdc:Bounds height="48.0" width="60.0" x="470.0" y="107.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
@@ -118,7 +118,7 @@
         <omgdi:waypoint x="1152.0" y="286.0"></omgdi:waypoint>
         <omgdi:waypoint x="1152.0" y="215.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="60.0" x="530.0" y="207.0"></omgdc:Bounds>
+          <omgdc:Bounds height="48.0" width="60.0" x="530.0" y="207.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">

@@ -50,12 +50,11 @@ layui.use('table', function(){
 	      {field: 'nodeExecutor', title: '处理人', width:'25%'}
 	      ,{field: 'nodeName', title: '处理节点', width:'25%'}
 	      ,{field: 'nodeComment', title: '处理说明', width:'25%'}
-	      ,{field: 'nodeEndTime', title: '时间', width:'25%'} 
+	      ,{field: 'nodeEndTime', title: '时间', width:'25%',templet:"<div>{{layui.util.toDateString(d.nodeEndTime,'yyyy-MM-dd HH:mm:ss')}}</div>"} 
 	    ]]
 	  });
 
-	});
-
+});
 
 var tProblemRepId = null;
 
@@ -105,6 +104,9 @@ layui.use(['form', 'jquery','layer'], function(){
  	success: function( json) {
  		if (json.state == 0) {
  			var imgs = json.data;
+ 			if (imgs.length==0) {
+				$("#imag").html("无图");
+			}else{
  			var mode = imgs.length%3;
  			var img_id = 0;
  			//alert(img[i]);
@@ -130,6 +132,7 @@ layui.use(['form', 'jquery','layer'], function(){
  				img_div = img_div+'</div>'
  				$("#imag").append(img_div);
  			}
+			}
  		}
 
  	}  
@@ -142,19 +145,14 @@ layui.use(['form', 'jquery','layer'], function(){
 		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
-<<<<<<< HEAD
-		    	url : "#",   ///iot_process/estimates/problemdescribe
-		        type : "post",
-		        data : {piid :piid,problemdescribe:$("#problem_describe").val()},
-=======
-		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
+		    	url : "/iot_process/process/nodes/next/group/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "PUT",
 		        data : {
 		        		"comment": data.field.comment,
-		        		"userName": name
+		        		"complementor":userName,
+		        		"userName": userName
 		        },
 		        contentType: "application/x-www-form-urlencoded",
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 		        dataType : "json",  
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
@@ -170,6 +168,36 @@ layui.use(['form', 'jquery','layer'], function(){
 		  
 		  //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
    });
-		  
-	  
+		    
+});
+
+//弹出层
+layui.use('layer', function(){ //独立版的layer无需执行这一句
+	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+	
+	//触发事件
+	var active = {
+			offset: function(othis){
+				
+			var imgHtml= "<img src='"+$(this).attr("src")+"'width='800px'  height='600px'/>";
+				//var type = othis.data('type')
+				layer.open({
+				type: 1
+				//,offset: type 
+				,area: ['800px','600px']
+				,content: imgHtml
+				,title:false
+				//,shadeClose:true
+				//,cancel:false
+				,offset:'auto'
+				
+				});
+			}
+	};
+
+	$('.big-img').on('click', function(){
+		var othis = $(this), method = othis.data('method');
+		active[method] ? active[method].call(this, othis) : '';
+	});
+
 });

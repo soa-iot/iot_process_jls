@@ -43,6 +43,8 @@
 		        console.log(data);
 		        if (data) {
 		        	//需要的基本信息写入cookie
+		        	$.cookie('name',data.name);
+		        	$.cookie('organ',data.organ);
 		  		  table.render({
 					    elem: '#pending'
 					    ,height: 420
@@ -69,7 +71,7 @@
 		    ,layEvent = obj.event; //获得 lay-event 对应的值
 		    if(layEvent === 'edit'){
 		    	//根据属地判断跳转页面
-		    	var  toHtml={"作业接收":"receive-task.html","完成作业":"finish-task.html","作业验收":"acceptance.html"};
+		    	var  toHtml={"作业接收":"receive-task.html","作业完成":"finish-task.html","作业验收":"acceptance.html"};
 		    	if(data.currentnode=="问题评估"){
 			    	switch(data.area){
 			    	case "HSE办公室":
