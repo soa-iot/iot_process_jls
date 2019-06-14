@@ -145,10 +145,11 @@ layui.use(['form', 'jquery','layer'], function(){
 		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
-		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
+		    	url : "/iot_process/process/nodes/next/group/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "PUT",
 		        data : {
 		        		"comment": data.field.comment,
+		        		"complementor":userName,
 		        		"userName": userName
 		        },
 		        contentType: "application/x-www-form-urlencoded",

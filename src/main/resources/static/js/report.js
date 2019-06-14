@@ -241,9 +241,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   				tempRepId = tProblemRepId = data.data;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报成功");
+				   		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题暂存成功");
 		   			}else{
-		   				layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"问题上报失败");
+		   				layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"问题暂存失败");
 		   			}
 		   			
 		   		}
@@ -356,6 +356,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		    		
 		    		//上传问题图片
 			    	uploadList.upload();
+			    	layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报成功");
+		    	}else{
+		    		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报失败");
 		    	}
 		     }
 		     ,error:function(){}		       
