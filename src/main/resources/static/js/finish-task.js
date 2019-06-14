@@ -21,8 +21,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "put",
 		        data : {
-	        		"comment": data.field.comment,
-	         		"userName": name
+	        		"comment": data.field.comment
 	            },
 	            contentType: "application/x-www-form-urlencoded",
 		        dataType : "json",  

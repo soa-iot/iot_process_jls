@@ -1,6 +1,7 @@
 package cn.soa.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,6 +17,13 @@ import cn.soa.entity.UserOrganization;
  */
 @Mapper
 public interface ProblemInfoMapper {
+	/**
+	 * lixuefeng 新增问题统计功能
+	 * 根据流程标识字段查询问题评估信息
+	 * @param  时间参数
+	 * @return 问题评估信息实体
+	 */
+	List<Map<String ,Object>> statisticalTaskProblempro(@Param("beginTime")String beginTime,@Param("endTime")String endTime);
 
 	/**
 	 * 根据流程标识字段查询问题评估信息

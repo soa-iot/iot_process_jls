@@ -1,6 +1,7 @@
 package cn.soa.service.inter;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,10 @@ import cn.soa.entity.UserOrganization;
  */
 @Service
 public interface ProblemInfoSI {
-
+	/**
+	 * 统计问题整改情况
+	 */
+	public List<Map<String ,Object>> statisticalTaskProblempro(String beginTime,String endTime);
 	/**
 	 * 根据流程标识字段查询问题评估信息
 	 * @param piid 流程标识字段

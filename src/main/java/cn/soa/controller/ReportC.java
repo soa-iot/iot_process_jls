@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import cn.soa.entity.ProblemInfoVO;
 import cn.soa.entity.ProblemReportpho;
 import cn.soa.entity.ResultJson;
 import cn.soa.entity.UnsafeType;
+import cn.soa.service.impl.ProblemInfoS;
 import cn.soa.service.impl.ReportPhoS;
 import cn.soa.service.inter.ReportSI;
 import cn.soa.service.inter.UnsafeSI;
@@ -46,7 +48,17 @@ public class ReportC {
 	private ReportSI reportS;
 	@Autowired
 	private ReportPhoS reportPhoS;
-	
+	@Autowired
+	private  ProblemInfoS  problemInfoS;
+	/**   
+	 * @Title: showUnsafeList   
+	 * @Description: 查询出所有不安全行为数据 
+	 * @return: ResultJson<List<UnsafeType>> 返回不安全行为数据列表   
+	 */
+	@GetMapping("/problemCount")
+	public ResultJson<List<Map<String ,Object>>> statisticalTaskProblempro(String beginTime,String endTime){
+		return new ResultJson<List<Map<String ,Object>>>(ResultJson.SUCCESS, null, problemInfoS.statisticalTaskProblempro(beginTime, endTime));
+	};
 	/**   
 	 * @Title: showUnsafeList   
 	 * @Description: 查询出所有不安全行为数据 
