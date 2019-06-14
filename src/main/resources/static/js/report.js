@@ -6,16 +6,18 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	,$ = layui.$ //重点处,使用jQuery
 	,upload = layui.upload;
 	
+
 	//从cookie中获取当前登录用户
-	var resavepeople = getCookie1("name");
-	//var resavepeople = "苟列生";
-	console.log("当前登录人为:"+resavepeople);
+	var resavepeople = getCookie1("name").replace(/"/g,'');
+
 	//用户编号
 	var num = getCookie1("num").replace(/"/g,'');
 	//num =123;
-	console.log("用户编号为:"+num);
+
+
+
 	//上报部门
-	var dept = getCookie1("organ");
+	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
 	//上报问题报告id和piid
 	var tProblemRepId = null, piid = null;
@@ -242,7 +244,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   				tempRepId = tProblemRepId = data.data;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		console.log("报告暂存成功...")
+				   		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报成功");
+		   			}else{
+		   				layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"问题上报失败");
 		   			}
 		   			
 		   		}
@@ -257,7 +261,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           , data: {		resavepeople: function(){ return resavepeople;}, 
         	  			piid: function(){console.log("piid: "+piid); return piid;},
         	  	   		tProblemRepId: function(){ console.log("tProblemRepId: "+tProblemRepId); return tProblemRepId;},
-        	  			num: function(){ console.log("num: "+num); return num; }
+        	  			num: function(){ console.log("num: "+num); return num; },
+        	  			remark: "0"
           		 }
           , accept: 'images'
           , number: 3
@@ -307,7 +312,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           ,error: function(index, upload){
         	 // layer.closeAll('loading'); //关闭loading
         	 // upload();   //重新上传
-        	  console.log("error");
+        	  layer.msg("图片上传失败");
           }
       });
      
@@ -322,8 +327,10 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //流程上报：
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
+
 		     type: "POST"
 		     ,url: '/iot_process/process/processPure2:2:30004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"

@@ -1,3 +1,4 @@
+/**作业安排*/
 
 /**
  * 全局变量——piid
@@ -29,14 +30,14 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 			offset: function(othis){
 				var type = othis.data('type')
 				var ope = layer.open({
-					type: 1
-					,offset: type 
-					,area: ['300px','400px;']
+				type: 1
+				,offset: type 
+				,area: ['300px','400px;']
 				,id: 'work_plan'+type //防止重复弹出
 				,key:'id'
 					//../html/organization_tree.html
-					,content: '<iframe id="addFrame" src="'+url+'" style="width:293px;height:290px;"></iframe>'
-					,btn: ['确认',"取消"]
+				,content: '<iframe frameborder="no" id="addFrame" src="'+url+'" style="width:98%;height:98%;"></iframe>'
+				,btn: ['确认',"取消"]
 				,btnAlign: 'c' //按钮居中
 					,yes: function(){
 
@@ -44,20 +45,29 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 						var checkData = childWindow.getCheckedData();
 						console.log(checkData);
 						for (var i = 0; i < checkData.length; i++) {
-				
+							
 							//console.log(checkData[i][1]);
 							var user=userOrDept(checkData[i][1]);
 							if (user!="") {
+								//对比是否为同一部门
+								if (i<checkData.length-2) {
+									if (!compareTodept(checkData[i][1],checkData[i+1][1])) {
+										layer.msg('请选择同一部门的人！！！',{icon:7});
+										return;
+									}
+									
+								}
+								
 								usernames +=user;
 								if (i!=checkData.length-1) {
 									usernames +=",";
 								}
 							}
 						}
-						console.log($(this).attr("id"));
+						console.log("选中的人："+usernames);
 	
 						if (usernames=="") {
-							layer.msg('至少选定一人！！！');
+							layer.msg('至少选定一人！！！',{icon:7});
 						}else if (yesCompare()) {
 							workPlan(this,usernames);
 							usernames="";	
@@ -111,33 +121,34 @@ $.ajax({
 							offset: function(othis){
 								var type = othis.data('type')
 								layer.open({
-									type: 1
-									,offset: type 
-									,area: ['300px','400px;']
+								type: 1
+								,offset: type 
+								,area: ['300px','400px;']
 								,id: 'coordinate'+type //防止重复弹出
 								,key:'id'
-									,content: $("#coordinate_tree")
-									,btn: ['确认',"取消"]
+								,content: $("#coordinate_tree")
+								,btn: ['确认',"取消"]
 								,btnAlign: 'c' //按钮居中
-									,yes: function(){
+								,yes: function(){
 
-										var check = coordinate_tree.getChecked(); //获得被勾选的节点
+									var check = coordinate_tree.getChecked(); //获得被勾选的节点
+									console.log(check);
 
-										for (var i = 0; i < check.length; i++) {
-											usernames += check[i][0].innerText;
-											if (i!=check.length-1) {
-												usernames +=",";
-											}
+									for (var i = 0; i < check.length; i++) {
+										usernames += check[i][1];
+										if (i!=check.length-1) {
+											usernames +=",";
 										}
+										}
+									console.log("选中的部门："+usernames);
 
-										workPlan(this,usernames);
+										//workPlan(this,usernames);
 
-										console.log(usernames);
 
-										usernames="";
+									usernames="";
 
-										layer.closeAll();
-									}
+									layer.closeAll();
+								}
 								,success:function(){
 									//console.log(data);
 									//开启复选框
@@ -188,7 +199,7 @@ $("#sele").change(function(){
 //var rolena="生产办公室";
 $(".problem_describe").click(function(){
 
-	console.log(yesCompare());
+	console.log("前端验证"+yesCompare());
 	if ($(this).html()=="回退" || $(this).html()=="闭环处理") {
 		//验证处理说明不能为空
 		if (yesCompare()) {
@@ -242,14 +253,65 @@ function workPlan(obj,usernames){
 }
 
 /**
+ * 闭环处理
+ * @returns
+ */
+
+$("#complete").click(function(){
+
+	if (yesCompare()){
+
+		$.ajax({
+			type: "PUT"
+			,url: '/iot_process/process/nodes/next/piid/'+piidp    //piid为流程实例id
+			,data: {
+
+				"comment": $("#comment").val()     //节点的处理信息
+
+			}   //问题上报表单的内容
+			,contentType: "application/x-www-form-urlencoded"
+			,dataType: "json"
+			,success: function(jsonData){
+				//后端返回值： ResultJson<Boolean>
+				
+				if (jsonData.data) {
+					modifyEstimated(this);
+				}else{
+					layer.msg("数据提交失败！！",{icon:2});
+				}
+			},
+				//,error:function(){}		       
+		});
+	}
+
+})
+
+/**
  * 判断是人还是部门
  * @returns是人返回人名，是部门返回空串
  */
 function userOrDept(checData){
-	var u = checData.split(",");
-	if (u[1]==1) {
-		return u[0];
+	var checDatas = checData.split(",");
+	if (checDatas[1]==1) {
+		return checDatas[0];
 	}else{
 		return ""
+	}
+}
+
+/**
+ * 两人判断是否为同一部门
+ * @param checData1 
+ * @param checData2
+ * @returns
+ */
+function compareTodept(checData1,checData2){
+	
+	var checData1s = checData1.split(",");
+	var checData2s = checData2.split(",");
+	if (checData1s[2]==checData2s[2]) {
+		return true;
+	}else{
+		return false;
 	}
 }

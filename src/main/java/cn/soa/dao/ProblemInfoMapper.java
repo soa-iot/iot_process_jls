@@ -94,6 +94,7 @@ public interface ProblemInfoMapper {
 	 * @param problemtype
 	 * @return
 	 */
+
 	public List<UserOrganization> findDeptByProblemtype(String problemtype);
 	
 	/**   

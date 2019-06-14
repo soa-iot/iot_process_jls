@@ -62,8 +62,8 @@
 					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">处理说明</label>
 						<div class="layui-input-block right-marg">
-							<textarea name="title" id="input_localName" placeholder="请输入内容"
-								class="layui-textarea" lay-verify="required" name="desc">250-GT-115分析化验one</textarea>
+							<textarea name="comment" id="input_localName" placeholder="请输入内容"
+								class="layui-textarea" lay-verify="required" name="desc"></textarea>
 						</div>
 					</div>
 
@@ -71,6 +71,9 @@
 						<label class="layui-form-label">处理过程</label>
 						<div class="layui-input-block right-marg">
 							<table id="process-table"></table>
+						</div>
+					</div>
+
 
 		<div class="layui-collapse" lay-filter="test">
 			<div class="layui-colla-item">
@@ -123,7 +126,7 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">问题类别</label>
 							<div class="layui-input-inline layui-input-top">
-								<input type="text" name="problemclass" lay-verify="email"
+								<input type="text" name="problemclass" lay-verify="required"
 									class="layui-input  layui-input-one" disabled="disabled">
 							</div>
 						</div>

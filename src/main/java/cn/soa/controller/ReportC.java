@@ -121,6 +121,7 @@ public class ReportC {
 			@RequestParam("resavepeople") String resavepeople, 
 			@RequestParam("piid") String piid,
 			@RequestParam("num") String num,
+			@RequestParam("remark") String remark,
 			@RequestParam("tProblemRepId") String tProblemRepId, HttpServletRequest request){
 		
 		System.out.println("进入ReportC...saveUpload...");
@@ -130,6 +131,7 @@ public class ReportC {
 		log.info("用户编号：{}", num);
 		log.info("问题报告piid：{}", piid);
 		log.info("上报问题报告id：{}", tProblemRepId);
+		log.info("图片来源remark：{}", remark);
 		
 		if("".equals(resavepeople) || "".equals(tProblemRepId) || "".equals(num)) {
 			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
@@ -165,7 +167,7 @@ public class ReportC {
 		reportPho.setTProblemRepId(tProblemRepId);
 		reportPho.setPiid(piid);
 		reportPho.setPhoUploadDate(date);
-		reportPho.setRemark("1");
+		reportPho.setRemark(remark);
 		reportPho.setRemarkone("0");
 		reportPho.setPhoDispiayName(file.getOriginalFilename());
 		reportPho.setPhoName(phoName);
