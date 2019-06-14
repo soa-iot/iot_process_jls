@@ -142,11 +142,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
-<<<<<<< HEAD
-		    	url : "#",   ///iot_process/estimates/problemdescribe
-		        type : "post",
-		        data : {piid :piid,problemdescribe:$("#problem_describe").val()},
-=======
+
 		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "PUT",
 		        data : {
@@ -154,7 +150,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		        		"userName": name
 		        },
 		        contentType: "application/x-www-form-urlencoded",
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
+
 		        dataType : "json",  
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
