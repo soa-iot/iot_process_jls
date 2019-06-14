@@ -21,12 +21,12 @@
     <userTask id="pure" name="净化分配" activiti:candidateUsers="${puror}"></userTask>
     <userTask id="repair" name="维修分配" activiti:candidateUsers="${repairor}"></userTask>
     <userTask id="arrange" name="作业安排" activiti:candidateUsers="${arrangor}"></userTask>
-    <userTask id="receive" name="作业接收" activiti:candidateUsers="${receivor}">
+    <userTask id="receive" name="作业接收" activiti:candidateUsers="${receivor}"></userTask>
+    <userTask id="complement" name="作业完成" activiti:candidateUsers="${complementor}">
       <extensionElements>
-        <activiti:executionListener event="end" class="cn.soa.service.impl.activity.SetReceivorToComplementor"></activiti:executionListener>
+        <activiti:executionListener event="end" class="cn.soa.service.impl.activity.FindCheckor"></activiti:executionListener>
       </extensionElements>
     </userTask>
-    <userTask id="complement" name="作业完成" activiti:assignee="${complementor}"></userTask>
     <userTask id="check" name="作业验收" activiti:candidateUsers="${checkor}"></userTask>
     <endEvent id="end" name="闭环流程"></endEvent>
     <sequenceFlow id="flow12" name="分支1流向2" sourceRef="node1" targetRef="pure">
