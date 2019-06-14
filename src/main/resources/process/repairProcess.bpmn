@@ -22,7 +22,7 @@
     <userTask id="repair" name="维修分配" activiti:candidateUsers="${repairor}"></userTask>
     <userTask id="arrange" name="作业安排" activiti:candidateUsers="${arrangor}"></userTask>
     <userTask id="receive" name="作业接收" activiti:candidateUsers="${receivor}"></userTask>
-    <userTask id="complement" name="作业完成" activiti:candidateUsers="${complementor}">
+    <userTask id="complement" name="作业完成" activiti:assignee="${complementor}">
       <extensionElements>
         <activiti:executionListener event="end" class="cn.soa.service.impl.activity.FindCheckor"></activiti:executionListener>
       </extensionElements>

@@ -214,10 +214,10 @@ public class ProcessC {
 	
 	/**   
 	 * @Title: nextNode   
-	 * @Description: 执行流程的下一步（流程实例piid）   
+	 * @Description: 执行流程的下一步（流程实例piid）   - 需要传递执行当前任务的人（变量userName）
 	 * @return: ResultJson<String>        
 	 */ 
-	@PutMapping("/nodes/next/piid/{piid}")
+	@PutMapping("/nodes/next/group/piid/{piid}")
 	public ResultJson<Boolean> nextGroupNodeByPIID( 
 			@PathVariable("piid") String piid,
 			@RequestParam Map<String,Object> map){
@@ -234,10 +234,30 @@ public class ProcessC {
 	
 	/**   
 	 * @Title: nextNode   
+	 * @Description: 执行流程的下一步（流程实例piid）   - 需要传递执行当前任务的人（变量userName）
+	 * @return: ResultJson<String>        
+	 */ 
+	@PutMapping("/nodes/next/piid/{piid}")
+	public ResultJson<Boolean> nextNodeByPIID( 
+			@PathVariable("piid") String piid,
+			@RequestParam Map<String,Object> map){
+		logger.debug( "--C-------- 执行流程的下一步     -------------" );
+		logger.debug( piid );
+		logger.debug( map.toString() );
+				
+		boolean b = activityS.nextNodeByPIID1( piid, map );
+		if( b ) {
+			return new ResultJson<Boolean>( 0, "流程流转下一个节点任务成功", true );
+		}
+		return new ResultJson<Boolean>( 1, "流程流转下一个节点任务失败", false );
+	}
+	
+	/**   
+	 * @Title: nextNode   
 	 * @Description: 执行流程的下一步（任务tsid）   
 	 * @return: ResultJson<String>        
 	 */ 
-	@PutMapping("/nodes/next/tsid/{tsid}")
+	@PutMapping("/nextnodes/tsid/{tsid}")
 	public ResultJson<Boolean> nextNodeByTSID( 
 			@PathVariable("tsid") String tsid,
 			@RequestParam(value="var",required=false) String var,
