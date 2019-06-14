@@ -77,7 +77,32 @@
 			inter_or_outer interOrOuter,
 			outer_deal_describe outerDealDescribe
 	</sql>
-	
+	<!-- lixuefeng新增用于问题统计 -->
+	<select id="statisticalTaskProblempro" resultType="map">
+			select  CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
+								 when  PROBLEMTYPE='净化工段' then  '净化工段' 
+								 when  PROBLEMTYPE='电站' then  '维修工段'
+								 when  PROBLEMTYPE='电机' then  '维修工段' 
+								 when  PROBLEMTYPE='维修工段' then  '维修工段' 
+								 when  PROBLEMTYPE='HSE办公室' then  'HSE办公室' 
+								when  PROBLEMTYPE='财务经营办' then  '财务经营办' 
+								when  PROBLEMTYPE='设备办' then  '设备办' 
+								when  PROBLEMTYPE='生产办' then  '生产办' 
+								when  PROBLEMTYPE='综合办' then  '综合办' 
+								else null end area ,  count(1) count,PROBLEMSTATE
+  			from  CZ_TASK_PROBLEM_REPORT where TO_CHAR(APPLYDATE,'YYYY-MM-DD')  BETWEEN  #{beginTime} AND  #{endTime} AND PIID IS NOT NULL
+  			GROUP BY  CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
+								 when  PROBLEMTYPE='净化工段' then  '净化工段' 
+								 when  PROBLEMTYPE='电站' then  '维修工段'
+								 when  PROBLEMTYPE='电机' then  '维修工段' 
+								 when  PROBLEMTYPE='维修工段' then '维修工段' 
+								 when  PROBLEMTYPE='HSE办公室' then 'HSE办公室' 
+								when  PROBLEMTYPE='财务经营办' then '财务经营办' 
+								when  PROBLEMTYPE='设备办' then  '设备办' 
+								when  PROBLEMTYPE='生产办' then  '生产办' 
+								when  PROBLEMTYPE='综合办' then  '综合办' 
+								 else null end,PROBLEMSTATE
+	</select>
 	<select id="findByPiid"  resultType="cn.soa.entity.ProblemInfo">
 		select 
 			<include refid="problemInfoSelectSql"></include>

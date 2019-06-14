@@ -28,6 +28,7 @@ layui.use([ 'element', 'layer' ], function() {
  */
 //从cookie中获得piid
 var piid = GetQueryString("piid");
+
 layui.use('table', function(){
 	  var table = layui.table;
 	  
@@ -56,6 +57,7 @@ layui.use('table', function(){
 	});
 
 var tProblemRepId = null;
+
 layui.use(['form', 'jquery','layer'], function(){
   var form = layui.form
   ,	$ = layui.$
@@ -143,7 +145,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		        type : "PUT",
 		        data : {
 		        		"comment": data.field.comment,
-		        		"userName": name
+		        		"userName": userName
 		        },
 		        contentType: "application/x-www-form-urlencoded",
 		        dataType : "json",  

@@ -1,6 +1,7 @@
 package cn.soa.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,17 @@ public class ProblemInfoS implements ProblemInfoSI {
 
 	@Autowired
 	private ProblemInfoMapper problemInfoMapper;
-
+	/**
+	 * 根据流程标识字段查询问题评估信息
+	 * @param piid 流程标识字段
+	 * @return 问题评估信息实体
+	 */
+	public List<Map<String ,Object>> statisticalTaskProblempro(String beginTime,String endTime){
+		
+		return problemInfoMapper.statisticalTaskProblempro(beginTime, endTime);
+		
+		
+	};
 	/**
 	 * 根据流程标识字段查询问题评估信息
 	 * 
