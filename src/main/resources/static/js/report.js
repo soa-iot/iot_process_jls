@@ -9,10 +9,11 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
+	resavepeople = "钟月";
 	console.log("resavepeople-----"+resavepeople)
 	//用户编号
-	var num = getCookie1("num").replace(/"/g,'');
-	//num =123;
+	//var num = getCookie1("num").replace(/"/g,'');
+	var num =123;
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
@@ -20,7 +21,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var tProblemRepId = null, piid = null;
 	//暂存的问题报告id
 	var tempRepId = null;
-	
+	//0-表示暂存，1-表示上报
+	var type = 0;
 	
 	  //隐藏字段初始赋值
 	  form.val('report-form', {
@@ -99,7 +101,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           	unsafeList = data.data;
           	for( x in unsafeList){
           		var $option1 = $("<option></option>");
-          		$option1.val(unsafeList[x].typesID);
+          		$option1.val(unsafeList[x].typesName);
           		$option1.text(unsafeList[x].typesName);
           		$("#notsafe-select").append($option1);            		
           	}
@@ -107,7 +109,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           	var actionList = unsafeList[0].unsafeAction;
       		for( y in actionList){
       			var $option2 = $("<option></option>");
-          		$option2.val(actionList[y].actionsID);
+          		$option2.val(actionList[y].actionsName);
           		$option2.text(actionList[y].actionsName);
           		$("#detail-select").append($option2);
       		}
@@ -146,12 +148,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
       			$("#div-notsafe").css({"display":"block"});
        	    	
        	    	for( x in unsafeList){
-       		      if(data.data.remarkfive == unsafeList[x].typesID){
+       		      if(data.data.remarkfive == unsafeList[x].typesName){
        		    	var actionList = unsafeList[x].unsafeAction;
        		    	$("#detail-select").empty();  //清空子选项
        	            for( y in actionList){
        	            	var $option2 = $("<option></option>");
-       		            $option2.val(actionList[y].actionsID);
+       		            $option2.val(actionList[y].actionsName);
        		            $option2.text(actionList[y].actionsName);
        		            $("#detail-select").append($option2);
        	            }
@@ -189,12 +191,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	form.on('select(notsafe)', function(data){
 	   var value = data.value;
 	   for( x in unsafeList){
-	      if(value == unsafeList[x].typesID){
+	      if(value == unsafeList[x].typesName){
 	    	var actionList = unsafeList[x].unsafeAction;
 	    	$("#detail-select").empty();  //清空子选项
             for( y in actionList){
             	var $option2 = $("<option></option>");
-	            $option2.val(actionList[y].actionsID);
+	            $option2.val(actionList[y].actionsName);
 	            $option2.text(actionList[y].actionsName);
 	            $("#detail-select").append($option2);
             }
@@ -239,17 +241,26 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   		success: function(data){
 		   			if(data.data != null){
 		   				tempRepId = tProblemRepId = data.data;
+		   				type = 0;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题暂存成功");
+				   		layer.msg("问题暂存成功", {icon: 6});
 		   			}else{
-		   				layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"问题暂存失败");
+		   				layer.msg("问题暂存失败", {icon: 5});
 		   			}
 		   			
 		   		}
 		  })
 	    return false;
 	  });
+	
+	function imgCount(){
+		 var len = $('#imgZmList').children().length;
+     	 if(len <= 0){
+     		 $("#problem-img").css("display", "none");
+     	 }
+	}  
+	  
 	  
 	//多图片上传功能
      var uploadList = upload.render({
@@ -276,14 +287,11 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
            obj.preview(function (index, file, result) {
                console.log(index);
                // $('#imgZmList').append('<li style="position:relative"><img name="imgZmList" src="' + result + '"width="150" height="113"><div class="title_cover" name="imgZmName" onclick="divClick(this)"></div><div class="img_edit layui-icon" onclick="croppers_pic(this)">&#xe642;</div><div class="img_close" onclick="deleteElement(this)">X</div></li>');
-               $('#imgZmList').append('<li style="position:relative"><img name="imgZmList" src="' + result + '"width="180" height="150"><div class="img_close" onclick="deleteElement(this)">X</div></li>');
+               $('#imgZmList').append('<li style="position:relative" id="'+ index +'"><img name="imgZmList"  src="' + result + '"width="180" height="150"><div class="img_close" onclick="deleteElement(this)">X</div></li>');
                //删除列表中对应的文件
                $(".img_close").click(function(){
               	 delete files[index]; //删除对应的文件
-              	 var len = $('#imgZmList').children().length;
-             	 if(len <= 0){
-             		 $("#problem-img").css("display", "none");
-             	 }
+              	 imgCount();
               	 console.log(index);
               	 uploadList.config.elem.next()[0].value = ''; //清空 input file值，以免删除后出现同名文件不可选
                })
@@ -302,14 +310,14 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
         	  if(res.state == 0){
         		  delete this.files[index];  //删除上传成功的文件
         	  }else{
-        		 // this.error(index, upload);
+        		 if(type == 1){
+        		  delete this.files[index];
+        		 }     		
         	  }
           }
            //上传失败时，回调函数
           ,error: function(index, upload){
-        	 // layer.closeAll('loading'); //关闭loading
-        	 // upload();   //重新上传
-        	  layer.msg("图片上传失败");
+        	  //layer.msg("图片上传失败");
           }
       });
      
@@ -353,12 +361,15 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		    				console.log("暂存图片流程实例piid,业务数据bsid更新完毕");
 		    			}
 		    		});
-		    		
+			    	type = 1;
 		    		//上传问题图片
 			    	uploadList.upload();
-			    	layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报成功");
+			    	layer.msg("问题上报成功",{icon: 6});
+			    	$("#problemdescribe").val("");
+			    	$('#imgZmList').empty();
+			    	imgCount();
 		    	}else{
-		    		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报失败");
+		    		layer.msg("问题上报失败",{icon: 5});
 		    	}
 		     }
 		     ,error:function(){}		       

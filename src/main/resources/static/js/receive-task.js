@@ -89,6 +89,15 @@ layui.use(['form', 'jquery','layer'], function(){
 			  ,"problemclass": json.data.problemclass
 			  ,"problem_describe": json.data.problemdescribe
 			})
+			
+			 //判断问题类别是否是 "不安全行为/状态"
+     		 if(data.data.problemclass == "不安全行为/状态"){
+     			$("#div-notsafe").css({"display":"block"});
+	       		form.val('report-form', {
+	       			"remarkfive":json.data.remarkfive
+	       			,"remarksix":json.data.remarksix
+	       		})
+        	 }
 		  }
 	  }
   });

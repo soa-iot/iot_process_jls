@@ -30,12 +30,8 @@
 					<div class="layui-inline">
 						<label class="layui-form-label labelr">事件/隐患标记</label>
 						<div class="layui-input-inline layui-input-top">
-							<select class="layui-input  layui-input-one" name="incident_sign"
-								lay-verify="required" disabled="disabled">
-								<option value="0">其他</option>
-								<option value="1">事故事件</option>
-								<option value="2">隐患事件</option>
-							</select>
+							<input name="incident_sign" type="text"
+									class="layui-input layui-input-one" lay-verify="required"  disabled="disabled">
 						</div>
 					</div>
 					
@@ -43,11 +39,8 @@
 						<div class="layui-inline">
 							<label class="layui-form-label labelr">整改日期</label>
 							<div class="layui-input-inline layui-input-top">
-								<select id="sele" class="layui-input layui-input-one" name="remark"
-								lay-verify="required" lay-search="" disabled="disabled">
-								<option value="指定日期">指定日期</option>
-								<option value="大修时整改">大修时整改</option>
-							</select>
+								<input name="remark" type="text"
+									class="layui-input layui-input-one" lay-verify="required"  disabled="disabled">
 							</div>
 						</div>
 						<div class="layui-inline">
@@ -128,6 +121,24 @@
 							<label class="layui-form-label">问题类别</label>
 							<div class="layui-input-inline layui-input-top">
 								<input type="text" name="problemclass" lay-verify="required"
+									class="layui-input  layui-input-one" disabled="disabled">
+							</div>
+						</div>
+					</div>
+					
+					<div class="layui-form-item" id="div-notsafe" style="display: none">
+						<div class="layui-inline">
+							<label class="layui-form-label">不安全行为</label>
+							<div class="layui-input-inline layui-input-top layui-row">
+								<input type="text" name="remarkfive" class="layui-input layui-input-one" disabled="disabled" >
+								<!-- <button class="layui-btn layui-btn-xs layui-col-md4 layui-col-md-offset1" style="height: 25px;">定位设备</button> -->
+							</div>
+				
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">具体行为</label>
+							<div class="layui-input-inline layui-input-top">
+								<input type="text" name="remarksix" lay-verify="required"
 									class="layui-input  layui-input-one" disabled="disabled">
 							</div>
 						</div>
