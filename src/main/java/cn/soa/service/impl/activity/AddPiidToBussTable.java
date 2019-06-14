@@ -18,10 +18,8 @@ public class AddPiidToBussTable implements ExecutionListener{
 
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
-		String bsid  = (String) execution.getVariable("bsid");
-		logger.debug( "------------业务主键1------------" + bsid );
-		String processBusinessKey = execution.getProcessBusinessKey();
-		logger.debug( "------------业务主键2------------" + processBusinessKey );
+		String bsid = execution.getProcessBusinessKey();
+		logger.debug( "------------业务主键2------------" + bsid );
 		String piid = execution.getProcessInstanceId();
 		logger.debug( "------------流程实例id------------" + piid );
 		
@@ -34,8 +32,11 @@ public class AddPiidToBussTable implements ExecutionListener{
 		}
 		
 		try {
-			ProblemInfoSI problemInfoS = SpringUtils.getObject(ProblemInfoSI.class);
-			problemInfoS.updatePiidByBsid( bsid, piid );			
+			if( !StringUtils.isBlank( bsid ) && !StringUtils.isBlank( piid )) {
+				ProblemInfoSI problemInfoS = SpringUtils.getObject(ProblemInfoSI.class);
+				problemInfoS.updatePiidByBsid( bsid, piid );	
+			}
+					
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug( "------------业务表加入piid失败------------" );

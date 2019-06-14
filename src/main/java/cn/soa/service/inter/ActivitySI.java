@@ -271,5 +271,19 @@ public interface ActivitySI {
 	 */  
 	List<Map<String, Object>> getHisTaskNodeInfosByPiid(String piid);
 
+	/**   
+	 * @Title: nextNodeByPIID1   
+	 * @Description: 执行流转下一个节点 (根据任务piid) - 非组任务  
+	 * @return: boolean        
+	 */  
+	boolean nextNodeByPIID1(String piid, Map<String, Object> map);
+
+	/**   
+	 * @Title: getHisTaskNodesByTsid   
+	 * @Description: 根据流程tsid，查询该流程的历史任务节点    
+	 * @return: List<HistoricTaskInstance>        
+	 */  
+	List<HistoricTaskInstance> getHisTaskNodesByTsid(String tsid);
+
 	
 }

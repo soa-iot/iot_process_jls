@@ -46,6 +46,7 @@ import cn.soa.entity.TodoTask;
 import cn.soa.service.abs.BussinessSA;
 import cn.soa.service.inter.ActivitySI;
 import cn.soa.service.inter.BussinessSI;
+import cn.soa.service.inter.ProblemInfoSI;
 
 /**
  * @ClassName: ActivityS
@@ -251,11 +252,11 @@ public class ActivityS implements ActivitySI{
     	}
     	try {   		
     		taskService.addComment( tsid, piid, comment );
+    		return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
-    	return false;
     }
     
     /**   
@@ -346,7 +347,7 @@ public class ActivityS implements ActivitySI{
     
     /**   
      * @Title: nextNodeByPIID   
-     * @Description:   执行流转下一个节点 (根据任务piid)
+     * @Description:   执行流转下一个节点 (根据任务piid)- 组任务
      * @return: void        
      */  
     @Override
@@ -394,6 +395,67 @@ public class ActivityS implements ActivitySI{
     		for( Entry<String, Object> e : map.entrySet() ) {
     			if(StringUtils.isBlank( e.getKey() ) ) {
     				logger.debug( "---key---------" + e.getKey() );
+    			}
+    			taskService.setVariable(tsid, e.getKey(), e.getValue());
+    		}
+    		
+    		/*
+    		 * 流程流转下一个节点
+    		 */
+    		taskService.complete( tsid );
+        	return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}   	
+    }
+    
+    /**   
+     * @Title: nextNodeByPIID   
+     * @Description:   执行流转下一个节点 (根据任务piid) - 非组任务
+     * @return: void        
+     */  
+    @Override
+    @Transactional
+    public boolean nextNodeByPIID1( String piid, Map<String,Object> map ) { 
+    	logger.debug( "-------执行流转下一个节点 (根据任务piid)- 非组任务--------" );
+    	if( StringUtils.isBlank(piid) ) {
+    		logger.debug( "-------piid为空或者null--------" );
+    	}
+    	
+    	/*
+    	 * 根据piid获取tsid
+    	 */
+    	String tsid = getTsidByPiid( piid );
+    	
+    	Object commentObj = map.get( "comment" );
+    	if( commentObj == null ) {
+    		logger.debug( "-------comment参数不存在--------" );
+    	}
+    	String comment = map.get( "comment" ).toString();
+    	logger.debug( "-------流程节点备注信息--------" + comment );
+	
+    	try {     	
+    		
+    		/*
+    		 * 增加备注信息
+    		 */
+    		boolean b = saveCommentByPiid( piid, comment );
+    		if( b ) {
+    			logger.debug( "---执行流转下一个节点，保存备注信息成功---------" );
+    		}else {
+    			logger.debug( "---执行流转下一个节点，保存备注信息失败---------" );
+    		}
+    		map.remove( "comment" );
+    		
+        	/*
+        	 *设置流程变量
+        	 */
+    		HashMap<String, Object> vars = new HashMap<String,Object>();
+    		for( Entry<String, Object> e : map.entrySet() ) {
+    			if(StringUtils.isBlank( e.getKey() ) ) {
+    				logger.debug( "---key---------" + e.getKey() );
+    				continue;
     			}
     			taskService.setVariable(tsid, e.getKey(), e.getValue());
     		}
@@ -676,7 +738,7 @@ public class ActivityS implements ActivitySI{
     
     /**   
      * @Title: endProcess   
-     * @Description: 终止流程
+     * @Description: 终止流程（tsid）
      * @return: void        
      */  
     @Override
@@ -1093,7 +1155,8 @@ public class ActivityS implements ActivitySI{
 					.taskAssignee( userName )
 					.orderByTaskCreateTime()
 					.desc()
-					.list();			
+					.list();	
+			logger.debug( "-------personalTasks--------" + personalTasks );
 			if( personalTasks != null && personalTasks.size() > 0 ) {
 				logger.debug( personalTasks.toString() );
 				allTasks.addAll( personalTasks );
@@ -1104,6 +1167,7 @@ public class ActivityS implements ActivitySI{
 					.orderByTaskCreateTime()
 					.desc()
 					.list();
+			logger.debug( "-------candidatetasks--------" + personalTasks );
 			if( candidatetasks != null && candidatetasks.size() > 0 ) {
 				logger.debug( candidatetasks.toString() );
 				allTasks.addAll( candidatetasks );
@@ -1116,15 +1180,55 @@ public class ActivityS implements ActivitySI{
 					todoTask.setDfid( t.getProcessDefinitionId() );
 					todoTask.setPiid( t.getProcessInstanceId() );
 					todoTask.setName( t.getName() );
-					todoTask.setCurrentnode( t.getName() );
-					todoTask.setDescrible( t.getDescription() );
-					Object areaVar = taskService.getVariable( t.getId(), "area" );
-					
+					todoTask.setCurrentnode( t.getName() );					
+		
+					//获取问题上报信息和上报人
+					List<HistoricTaskInstance> hisTasks = getHisTaskNodesByTsid( t.getId() );
+					if(  hisTasks != null &&  hisTasks.size() > 0 &&hisTasks.get(0) != null ) {
+						//上报信息
+						String firstTsid = hisTasks.get(0).getId().toString() ;
+						logger.debug( "---------问题上报节点id：------------" + firstTsid );
+						List<Comment> taskComments = taskService.getTaskComments( firstTsid );
+						logger.debug( "---------问题上报信息：------------" + taskComments.get(0).toString() );
+						if( taskComments != null && taskComments.size() > 0 ) {
+							Comment c = taskComments.get(0);
+							if( c != null && StringUtils.isNotBlank( c.getFullMessage() )) {
+								todoTask.setDescrible( c.getFullMessage() );
+								logger.debug( "---------获取备注信息成功------------" + c.getFullMessage() );
+							}else {
+								logger.debug( "---------获取备注信息失败------------" + c.getFullMessage() );
+							}
+						}
+						
+						//上报人
+						HistoricTaskInstance firstTisTaskNode = historyService.createHistoricTaskInstanceQuery().taskId(firstTsid).singleResult();
+						logger.debug( "---------问题上报节点firstTisTaskNode ：------------" + firstTisTaskNode );
+						if( firstTisTaskNode != null ) {
+							String reportor = firstTisTaskNode.getAssignee();
+							todoTask.setReportperson( reportor );
+							logger.debug( "---------问题上报人 ：------------" + reportor );
+							
+							//上报时间
+							Object reportTimeObj = firstTisTaskNode.getCreateTime();
+							logger.debug( "---------问题上报时间 ：------------" + reportTimeObj );
+							if( reportTimeObj != null ) {
+								String reportTime = reportTimeObj.toString();
+								todoTask.setReporttime( reportTime );
+								logger.debug( "---------问题上报时间 获取成功：------------" + reportTime );
+							}	
+						}else {
+							logger.debug( "---------问题上报节点Task为null------------" );
+						}
+										
+					}
+								
 					//添加属地变量
+					Object areaVar = taskService.getVariable( t.getId(), "area" );
 					if( areaVar != null  ) {
 						logger.debug( "---------属地单位：------------" + areaVar.toString() );
 						todoTask.setArea( areaVar.toString() );
 					}
+					
 					//添加超期记录
 					LocalDate today = LocalDate.now();
 					java.util.Date date = t.getCreateTime();
@@ -1135,6 +1239,7 @@ public class ActivityS implements ActivitySI{
 					long p2 = ChronoUnit.DAYS.between(createDay, today);
 					logger.debug( "---------待办任务的时间间隔，检验超期------------" + p2 );
 					todoTask.setTip( p2 > 2 ? "超期" : "未超期" );
+
 					
 					todoTasks.add( todoTask );					
 				}
@@ -1164,9 +1269,53 @@ public class ActivityS implements ActivitySI{
     		List<HistoricTaskInstance> lists = historyService
     				.createHistoricTaskInstanceQuery()
     				.processInstanceId( piid )
+    				.orderByTaskCreateTime()
     				.finished()
+    				.asc()
     				.list();
-    		logger.debug( lists.toString() );
+    		if( lists != null && lists.size()>0 ) {
+    			logger.debug( lists.toString() );
+    		}else {
+    			logger.debug( "---------根据流程piid，查询该流程的历史任务节点  为null或空-------------" );
+    		}
+    		
+    		return lists;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}   	
+    }
+    
+    /**   
+     * @Title: getHistoryNodesByPiid   
+     * @Description: 根据流程tsid，查询该流程的历史任务节点  
+     * @return: List<HistoricActivityInstance>        
+     */ 
+    @Override
+    public List<HistoricTaskInstance> getHisTaskNodesByTsid( String tsid ){
+    	if( StringUtils.isBlank( tsid ) ) {
+			logger.debug( "---S--------tsid为null-------------" );
+			return null;
+		}	
+    	String piid = getPiidByTsid( tsid );
+    	if( StringUtils.isBlank( piid )) {
+    		logger.debug( "---S--------piid为null-------------" );
+			return null;
+    	}
+    	
+    	try {
+    		List<HistoricTaskInstance> lists = historyService
+    				.createHistoricTaskInstanceQuery()
+    				.processInstanceId( piid )
+    				.orderByTaskCreateTime()
+    				.finished()
+    				.asc()
+    				.list();
+    		if( lists != null && lists.size()>0 ) {
+    			logger.debug( lists.toString() );
+    		}else {
+    			logger.debug( "---------根据流程tsid，查询该流程的历史任务节点  为null或空-------------" );
+    		}
     		return lists;
 		} catch (Exception e) {
 			e.printStackTrace();

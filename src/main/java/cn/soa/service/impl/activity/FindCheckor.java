@@ -35,28 +35,31 @@ public class FindCheckor  implements ExecutionListener{
 			logger.debug( "---------piid-----------" + piid );
 			ActivitySI activityS = SpringUtils.getObject(ActivitySI.class);
 			List<HistoricTaskInstance> hisTasks = activityS.getHisTaskNodesByPiid(piid);
-			logger.debug( "---------hisTasks-----------" + hisTasks.toString() );
 			
 			//初始化
 			nodesName.add( "问题评估" );
 			nodesName.add( "净化分配" );
 			nodesName.add( "维修分配" );
 			
-			for( int i = hisTasks.size() -1 ; i >= 0; i-- ) {
-				HistoricTaskInstance t = hisTasks.get(i);
-				if( t != null && t.getName() != null && nodesName.contains( t.getName().toString().trim() ) ) {
-					String executor = t.getAssignee();
-					logger.debug( "---------executor-----------" + executor );
-					if( StringUtils.isNotBlank(executor) ) {
-						execution.setVariable( "checkor", executor);
-						logger.debug( "---------确定作业验收的执行人成功-----------" );
-						break;
-					}else {
-						logger.debug( "---------确定作业验收的执行人失败-----------" );
-						break;
-					}					
-				}				
-			}			
+			if( hisTasks != null && hisTasks.size() > 0 ) {
+				for( int i = hisTasks.size() -1 ; i >= 0; i-- ) {
+					HistoricTaskInstance t = hisTasks.get(i);
+					if( t != null && t.getName() != null && nodesName.contains( t.getName().toString().trim() ) ) {
+						String executor = t.getAssignee();
+						logger.debug( "---------executor-----------" + executor );
+						if( StringUtils.isNotBlank(executor) ) {
+							execution.setVariable( "checkor", executor);
+							logger.debug( "---------确定作业验收的执行人成功-----------" );
+							break;
+						}else {
+							logger.debug( "---------确定作业验收的执行人失败-----------" );
+							break;
+						}					
+					}				
+				}
+			}else {
+				logger.debug( "---------确定作业验收的执行人失败-----------" );
+			}					
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.debug( "---------确定作业验收的执行人失败-----------" );
