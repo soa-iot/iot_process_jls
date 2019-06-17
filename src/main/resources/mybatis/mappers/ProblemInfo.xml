@@ -871,7 +871,14 @@
 		FROM 
 			iot_user_organization
 		WHERE 
-			name != #{problemtype} AND is_parent = 0
+			name != #{problemtype} AND is_parent = 0 
+		AND PARENT_ID != (
+			select 
+				USERNUM 
+			from
+				IOT_USER_ORGANIZATION 
+			where 
+				name =#{problemtype})
 	</select>
 	
 	

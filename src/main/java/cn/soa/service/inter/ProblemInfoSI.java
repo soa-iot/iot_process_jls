@@ -46,7 +46,7 @@ public interface ProblemInfoSI {
 	 * @return
 	 */
 	public List<UserOrganization> getDeptByProblemtype(String problemtype);
-
+	
 	/**   
 	 * @Title: deleteByPiid   
 	 * @Description: 根据piid删除问题上报记录   
