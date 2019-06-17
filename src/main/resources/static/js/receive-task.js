@@ -74,8 +74,8 @@ layui.use(['form', 'jquery','layer'], function(){
 			  tProblemRepId = json.data.tproblemRepId;
 			//表单初始赋值
 			form.val('receive-task', {
-			  "incident_sign": json.data.ticketNo
-			  ,"remark": json.data.remark
+			  "incident_sign": ((json.data.ticketNo == 1)?"事故事件":((json.data.ticketNo == 2)?"隐患事件":"普通事件"))    //事件/隐患标记
+			  ,"remark": json.data.remark            //整改日期
 			  ,"sdate": function(){
 				  if(json.data.rectificationperiod != null){
 					 return json.data.rectificationperiod.match(/\d+-\d+-\d+/)
@@ -98,6 +98,12 @@ layui.use(['form', 'jquery','layer'], function(){
 	       			,"remarksix":json.data.remarksix
 	       		})
         	 }
+			
+			//判断整改日期
+			if(json.data.remark == "指定日期"){
+				$("#sdate-div").css({"display":"inline-block"})
+			}
+			
 		  }
 	  }
   });
