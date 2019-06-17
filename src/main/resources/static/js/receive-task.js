@@ -5,12 +5,12 @@ layui.use(['carousel', 'form'], function(){
 
 	//常规轮播
 	carousel.render({
-		elem: '#problem_image'
+		elem: '#imag'
 		,width: '700px'
 		,arrow: 'always'
 		,interval: 5000
 		,anim: 'default'
-		,height: '400px'
+		,height: '150px'
 	});
 
 });  
@@ -28,7 +28,7 @@ layui.use([ 'element', 'layer' ], function() {
  */
 //从cookie中获得piid
 var piid = GetQueryString("piid");
-
+piid = 123;
 layui.use('table', function(){
 	  var table = layui.table;
 	  
@@ -91,9 +91,9 @@ layui.use(['form', 'jquery','layer'], function(){
 			})
 			
 			 //判断问题类别是否是 "不安全行为/状态"
-     		 if(data.data.problemclass == "不安全行为/状态"){
+     		 if(json.data.problemclass == "不安全行为/状态"){
      			$("#div-notsafe").css({"display":"block"});
-	       		form.val('report-form', {
+	       		form.val('receive-task', {
 	       			"remarkfive":json.data.remarkfive
 	       			,"remarksix":json.data.remarksix
 	       		})
@@ -107,6 +107,7 @@ layui.use(['form', 'jquery','layer'], function(){
    */
  $.ajax({  
  	url : "/iot_process/estimates/problemreportpho",  
+ 	async: false,
  	type : "get",
  	data : {"piid":piid,"remark":0},
  	dataType : "json",  
@@ -118,28 +119,22 @@ layui.use(['form', 'jquery','layer'], function(){
 			}else{
  			var mode = imgs.length%3;
  			var img_id = 0;
- 			//alert(img[i]);
-
  			for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
- 				var img_div='<div>';
+ 				var $img_div=$('<div></div>');
  				if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
- 					//img_div = '';
-
  					for (var i = 0; i < mode; i++) {
- 						img_div = img_div+'<img alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+ 						$img_div.append('<img data-method="offset" class="big-img" alt="'+imgs[img_id].phoDispiayName+'" src="'+imgs[img_id].phoAddress+'" >');
  						img_id++;
  					}
 
  				}else{
-
  					for (var i = 0; i < 3; i++) {
- 						img_div = img_div+'<img alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+ 						$img_div.append('<img data-method="offset" class="big-img" alt="'+imgs[img_id].phoDispiayName+'" src="'+imgs[img_id].phoAddress+'" >');
  						img_id++;
  					}
 
  				}
- 				img_div = img_div+'</div>'
- 				$("#imag").append(img_div);
+ 				$("#imag").append($img_div);
  			}
 			}
  		}
@@ -165,26 +160,20 @@ layui.use(['form', 'jquery','layer'], function(){
 		        dataType : "json",  
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
-		        		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"接收作业成功");
+		        		layer.msg("接收作业成功", {icon: 1});
 		        	}else{
-		        		layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"接收作业失败");
+		        		layer.msg("接收作业失败",{icon: 2});
 		        	}
 		        } 
 		        ,error:function(){
-		        	layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"接收作业失败");
+		        	layer.msg("接收作业失败",{icon: 2});
 		        }	
 		   });		  
 		  
 		  //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
    });
-		    
-});
-
-//弹出层
-layui.use('layer', function(){ //独立版的layer无需执行这一句
-	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
-	
-	//触发事件
+    
+   //触发事件
 	var active = {
 			offset: function(othis){
 				
@@ -204,9 +193,10 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 			}
 	};
 
-	$('.big-img').on('click', function(){
+	$('.big-img').click(function(){
+		console.log(123);
 		var othis = $(this), method = othis.data('method');
 		active[method] ? active[method].call(this, othis) : '';
 	});
-
+		    
 });

@@ -37,13 +37,18 @@ public class ReportS implements ReportSI {
 	public String addOne(ProblemInfo problemInfo, String[] imgList) {
 		
 		String RepId = problemInfo.getTProblemRepId();
+		String piid = problemInfo.getPiid();
 		/*
 		 * 先判断该问题报告数据是否已存在
 		 * 存在就update，不存在则insert
 		 */
-		ProblemInfo result = reportMapper.findByRepId(RepId);
+		ProblemInfo result = null;
+		if(piid != null && !"".equals(piid)) {
+			result = reportMapper.findByPiid(piid);
+		}else{
+			result = reportMapper.findByRepId(RepId);
+		}
 		
-		problemInfo.setApplydate(new Date());
 		if(result == null) {
 			problemInfo.setProcesstype("7");
 			
@@ -81,14 +86,14 @@ public class ReportS implements ReportSI {
 	}
 	
 	/**   
-	 * @Title: getByResavepeople   
-	 * @Description: 根据当前登录用户查找问题报告数据
-	 * @return: ProblemInfo  查到的问题报告数据 
+	 * @Title: getByResavepeopleOrPiid   
+	 * @Description: 根据当前登录用户或piid查找问题报告数据
+	 * @return: ProblemInfoVO  查到的问题报告数据 
 	 */
 	@Override
-	public ProblemInfoVO getByResavepeople(String resavepeople) {
+	public ProblemInfoVO getByResavepeopleOrPiid(String resavepeople, String piid) {
 		 
-		return reportMapper.findByResavepeople(resavepeople);
+		return reportMapper.findByResavepeopleOrPiid(resavepeople, piid);
 	}
 	
 	@Override

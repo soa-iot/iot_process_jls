@@ -124,8 +124,10 @@
 			T_PROBLEM_REP_ID = #{RepId, jdbcType=VARCHAR} AND PIID is null			
 	</select>
 	
-	<!-- 1.3、根据当前登录人查找暂存的问题报告  -->
-	<!-- public ProblemInfoVO findByResavepeople(String resavepeople) -->
+	<!-- 1.3、根据当前登录人或piid查找问题报告  -->
+	<!-- public ProblemInfoVO findByResavepeopleOrPiid(
+			@Param("resavepeople") String resavepeople, 
+			@Param("pidd") String piid); -->
 	
 	<resultMap type="cn.soa.entity.ProblemInfoVO" id="problemInfoVOResultMap">
 		<id property="tProblemRepId" column="REP_ID" />
@@ -150,7 +152,7 @@
 		</collection>
 	</resultMap>
 	
-	<select id="findByResavepeople"  resultMap="problemInfoVOResultMap">
+	<select id="findByResavepeopleOrPiid"  resultMap="problemInfoVOResultMap">
 		SELECT
 			pr.T_PROBLEM_REP_ID REP_ID, prp.T_PROBLEM_REP_ID REP_ID1, pr.PROBLEMNUM proNum, APPLYPEOPLE, PROBLEMTYPE,WEL_NAME,PROFESSION,
 			RFID,PROBLEMCLASS,REMARKFIVE,REMARKSIX,PROBLEMDESCRIBE,RESAVEPEOPLE,T_PROBLEM_PHO_ID, prp.PHO_NAME phoName,
@@ -158,8 +160,19 @@
 		FROM
 			CZ_TASK_PROBLEM_REPORT pr LEFT JOIN CZ_TASK_PROBLEM_REPORTPHO prp
 			ON pr.T_PROBLEM_REP_ID = prp.T_PROBLEM_REP_ID
-		WHERE
-			RESAVEPEOPLE = #{resavepeople, jdbcType=VARCHAR} AND pr.PIID is null			
+	    <where>
+	    	<choose>
+	    		<when test="resavepeople != null and resavepeople != ''">
+	    			RESAVEPEOPLE = #{resavepeople, jdbcType=VARCHAR} AND pr.PIID is null
+	    		</when>
+	    		<when test="piid != null and piid != ''">
+	    			pr.PIID = #{piid, jdbcType=VARCHAR}
+	    		</when>
+	    		<otherwise>
+	    			1 = 2
+	    		</otherwise>
+	    	</choose>
+	    </where>			
 	</select>
 	
 	<!-- 1.4、根据问题报告主键id查找问题报告    -->

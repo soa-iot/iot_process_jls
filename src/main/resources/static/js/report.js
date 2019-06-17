@@ -18,11 +18,18 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
 	//上报问题报告id和piid
-	var tProblemRepId = null, piid = null;
+	var tProblemRepId = null, piid = getCookie1("piid").replace(/"/g,'');
 	//暂存的问题报告id
 	var tempRepId = null;
 	//0-表示暂存，1-表示上报
 	var type = 0;
+	piid = 123;
+	//根据piid判断是否是回退到问题上报节点
+	if(piid != null && piid != ""){
+		$("#problem_back").css({"display":"block"});
+	}else{
+		$("#problem_report").css({"display":"block"});
+	}
 	
 	  //隐藏字段初始赋值
 	  form.val('report-form', {
@@ -70,16 +77,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			  })  
 	  })
 	
-	
-	//不安全行为下拉框事件监听
-	/*$(".notsafe-select").click(function(){
-	   var select = this.children[0];
-	   if(select.disabled){
-		 layer.msg("需要问题类别选择：不安全行为/状态");
-	   }
-	});*/
-	
-	//监听问题类别select选择
+	  //监听问题类别select选择
 	  form.on('select(question-type)', function(data){
 	    if(data.value == "不安全行为/状态"){
 	    	$("#div-notsafe").css({"display":"block"});
@@ -123,10 +121,10 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	 var imgList = new Array(); 
 	 $.ajax({  
         type: 'get',  
-        url: '/iot_process/report/show', // ajax请求路径   
-        data: {resavepeople:resavepeople}, 
+        url: ((piid != null && piid != "")?('/iot_process/report/reload'):('/iot_process/report/show')), // ajax请求路径   
+        data: ((piid != null && piid != "")?{"piid":piid}:{"resavepeople":resavepeople}), 
         success: function(data){ 
-          if(data.state == 0 && data.data != null && data.data != undefined){
+          if(data.state == 0 && data.data != null && data.data != ""){
         	  tempRepId = data.data.tproblemRepId;
         	  console.log("tempRepId="+tempRepId);
         	  
@@ -239,17 +237,20 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   		data: data.field,
 		   		dataType: "json",
 		   		success: function(data){
-		   			if(data.data != null){
+		   			if(data.data != null && data.data != ""){
 		   				tempRepId = tProblemRepId = data.data;
 		   				type = 0;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("问题暂存成功", {icon: 6});
+				   		layer.msg("问题暂存成功", {icon: 1});
 		   			}else{
-		   				layer.msg("问题暂存失败", {icon: 5});
+		   				layer.msg("问题暂存失败", {icon: 2});
 		   			}
 		   			
-		   		}
+		   		},
+		   		error: function(){
+			   		layer.msg("问题暂存失败", {icon: 2});
+			   	}
 		  })
 	    return false;
 	  });
@@ -364,12 +365,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			    	type = 1;
 		    		//上传问题图片
 			    	uploadList.upload();
-			    	layer.msg("问题上报成功",{icon: 6});
+			    	layer.msg("问题上报成功",{icon: 1});
 			    	$("#problemdescribe").val("");
 			    	$('#imgZmList').empty();
 			    	imgCount();
 		    	}else{
-		    		layer.msg("问题上报失败",{icon: 5});
+		    		layer.msg("问题上报失败",{icon: 2});
 		    	}
 		     }
 		     ,error:function(){}		       
@@ -378,6 +379,61 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	    return false;
 	  });
 	  
+	  
+	 //监听回退后问题上报提交事件
+	  form.on('submit(problem_report_again)', function(data){
+		 console.log("回退_问题上报开始...");
+		 //保存主键
+		  data.field.tProblemRepId = tempRepId;
+		  //保存当前登录人
+		  data.field.resavepeople = resavepeople;
+		  //保存piid
+		  data.field.piid = piid;
+		  //设置上报时间
+		  data.field.applydate = new Date();
+		  console.log(data.field);
+		  
+		  $(".imgList").each(function(index){
+			  imgList.splice(index,1,"");
+		  })	  
+		  console.log(imgList);
+		  if(imgList.length > 0){
+			  data.field.imgList = imgList;
+		  }
+		  
+		  //判断问题类别是否选择的是不安全行为/状态
+		  if(data.field.problemclass != "不安全行为/状态"){
+			  data.field.remarkfive = null;
+			  data.field.remarksix = null;
+		  }
+		  //异步请求后端保存数据
+		   $.ajax({
+		   		type: "POST",
+		   		url: "/iot_process/report/",
+		   		data: data.field,
+		   		dataType: "json",
+		   		success: function(data){
+		   			if(data.data != null && data.data != ""){
+		   				tempRepId = tProblemRepId = data.data;
+				   		type = 1;
+			    		//上传问题图片
+				    	uploadList.upload();
+				    	layer.msg("问题上报成功",{icon: 1});
+				    	$("#problemdescribe").val("");
+				    	$('#imgZmList').empty();
+				    	imgCount();
+		   			}else{
+		   				layer.msg("问题上报失败", {icon: 2});
+		   			}
+		   			
+		   	  },
+		   	  error: function(){
+		   		layer.msg("问题上报失败", {icon: 2});
+		   	  }
+		  })
+	    return false;
+		
+	  });
      
 })  
 	

@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="../css/estimate.css" media="all">
 <link rel="stylesheet" href="../css/report.css" media="all">
 <script type="text/javascript" src="../js/report-publishImg.js"></script>
-
+<link rel="stylesheet" href="../css/receive-task.css" media="all">
 </head>
 <body>
 
@@ -101,14 +101,14 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">上&nbsp;报&nbsp;人</label>
 							<div class="layui-input-inline layui-input-top">
-								<input id="applypeople" type="text"
+								<input name="applypeople" type="text"
 									class="layui-input layui-input-one" disabled="disabled">
 							</div>
 						</div>
 						<div class="layui-inline">
 							<label class="layui-form-label">属地单位</label>
 							<div class="layui-input-inline layui-input-top">
-								<input type="text" id="problemtype"
+								<input type="text" name="problemtype"
 									class="layui-input  layui-input-one" disabled="disabled">
 							</div>
 						</div>
@@ -118,14 +118,14 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">问题区域</label>
 							<div class="layui-input-inline layui-input-top">
-								<input type="text" id="welName" class="layui-input layui-input-one"
+								<input type="text" name="welName" class="layui-input layui-input-one"
 									disabled="disabled">
 							</div>
 						</div>
 						<div class="layui-inline">
 							<label class="layui-form-label">所属专业</label>
 							<div class="layui-input-inline layui-input-top">
-								<input type="text" id="profession" 
+								<input type="text" name="profession" 
 									class="layui-input  layui-input-one" disabled="disabled">
 							</div>
 						</div>
@@ -135,7 +135,7 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">设备定位</label>
 							<div class="layui-input-inline layui-input-top layui-row">
-								<input type="text" id="rfid" class="layui-input layui-input-one" disabled="disabled">
+								<input type="text" name="rfid" class="layui-input layui-input-one" disabled="disabled">
 								<!-- <button class="layui-btn layui-btn-xs layui-col-md4 layui-col-md-offset1" style="height: 25px;">定位设备</button> -->
 							</div>
 				
@@ -143,7 +143,7 @@
 						<div class="layui-inline">
 							<label class="layui-form-label">问题类别</label>
 							<div class="layui-input-inline layui-input-top">
-								<input type="text" id="problemclass"
+								<input type="text" name="problemclass"
 									class="layui-input  layui-input-one" disabled="disabled">
 							</div>
 						</div>
@@ -177,10 +177,7 @@
 					<div class="layui-form-item layui-form-text bott">
 						<label class="layui-form-label">问题图片</label>
 						<div class="layui-input-block">
-							<div class="layui-carousel imgshow" lay-filter="test1">
-								<div carousel-item="" id="imag">
-									
-								</div>
+							<div class="layui-carousel" id="imag">
 							</div>
 						</div>
 					</div>

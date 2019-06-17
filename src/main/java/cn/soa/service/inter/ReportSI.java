@@ -13,11 +13,11 @@ public interface ReportSI {
 	public String addOne(ProblemInfo problemInfo, String[] imgList);
 	
 	/**   
-	 * @Title: addOne   
-	 * @Description: 添加一条问题报告数据
-	 * @return: ProblemInfoVO   问题报告数据  
+	 * @Title: getByResavepeopleOrPiid   
+	 * @Description: 根据当前登录用户或piid查找问题报告数据
+	 * @return: ProblemInfoVO  查到的问题报告数据 
 	 */
-	public ProblemInfoVO getByResavepeople(String resavepeople);
+	public ProblemInfoVO getByResavepeopleOrPiid(String resavepeople, String piid);
 	
 	/**   
 	 * @Title: verifyApplyPeople   

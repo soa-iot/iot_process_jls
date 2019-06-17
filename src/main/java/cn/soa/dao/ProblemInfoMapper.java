@@ -40,11 +40,13 @@ public interface ProblemInfoMapper {
 	Integer updateProblemDescribeByPiid(@Param("piid")String piid,@Param("problemdescribe")String problemdescribe);
 
 	/**   
-	 * @Title: findByResavepeople   
-	 * @Description: 根据当前登录人查找问题报告  
-	 * @return: ProblemInfo 问题报告对象    
+	 * @Title: findByResavepeopleOrPiid   
+	 * @Description: 根据当前登录人或piid查找问题报告  
+	 * @return: ProblemInfoVO 问题报告和问题图片对象    
 	 */ 
-	public ProblemInfoVO findByResavepeople(String resavepeople);
+	public ProblemInfoVO findByResavepeopleOrPiid(
+			@Param("resavepeople") String resavepeople, 
+			@Param("piid") String piid);
 	
 	/**   
 	 * @Title: findByRepId
