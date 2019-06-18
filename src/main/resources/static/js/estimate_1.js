@@ -201,7 +201,7 @@ function modifyEstimated(obj) {
 						
 						layer.msg("提交成功！",{time: 3000,icon:1},function() {
 							
-							location.href = getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
+							window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
 						});
 //					}else{
 //						layer.msg("提交成功！",{time: 3000,icon:1});
@@ -247,6 +247,10 @@ function yesCompare(){
 	
 }
 
+/**
+ * 图片点击放大
+ * @returns
+ */
 //弹出层
 layui.use('layer', function(){ //独立版的layer无需执行这一句
 	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句

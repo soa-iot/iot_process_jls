@@ -12,6 +12,7 @@ package cn.soa.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,5 +46,21 @@ public class UserOrganizationTreeController {
 
 		return resObj;
 	}
+	
+	
+	@GetMapping("/userOrganizationArea")
+	public ResponseObject<List<UserOrganization>> getUserOrganizationByNameTreeData(String area,String username) {
 
+		System.err.println("-------------------------------------------属地单位："+area);
+		ResponseObject<List<UserOrganization>> resObj;
+		try {
+			List<UserOrganization> result = userOrganizationTreeService.getUserOrganizationByName(area,username);
+			resObj = new ResponseObject<List<UserOrganization>>(0, "success", result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			resObj = new ResponseObject<List<UserOrganization>>(1, "failed>>>" + e.getMessage(), null);
+		}
+
+		return resObj;
+	}
 }

@@ -29,13 +29,13 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        	if(jsonData.data == true){
 		        		//上传问题图片
 				   		uploadList.upload();
-		        		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"完成作业成功");
+				   		layer.msg("完成作业提交成功",{icon: 1});
 		        	}else{
-		        		layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"完成作业失败");
+		        		layer.msg("完成作业提交失败",{icon: 2});
 		        	}
 		        } 
 		        ,error:function(){
-		        	layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"完成作业失败");
+		        	layer.msg("完成作业提交失败",{icon: 2});
 		        }	
 		   });		  
 		  
@@ -100,7 +100,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
          ,error: function(index, upload){
        	 // layer.closeAll('loading'); //关闭loading
        	 // upload();   //重新上传
-         layer.msg("图片上传失败");
+        	 layer.msg("图片上传失败",{icon: 2});
          }
      });
 	
