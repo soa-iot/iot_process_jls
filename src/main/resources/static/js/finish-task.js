@@ -108,5 +108,14 @@ layui.use(['form', 'jquery','upload','layer'], function(){
         	 layer.msg("图片上传失败",{icon: 2});
          }
      });
+    
+    //验证是否上传现场施工图
+    form.verify({
+    	imgs: function(value, item){  //value：表单的值、item：表单的DOM对象
+    		if($('#imgZmList').children("li").length < 1){
+    			return '必须上传现场施工图';
+    		}
+    	}
+    });
 	
 });
