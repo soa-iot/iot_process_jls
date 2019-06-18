@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemReportpho;
 import cn.soa.entity.ResultJson;
@@ -60,7 +62,7 @@ public class EstimateC {
 	public ResultJson<ProblemInfo> getEstimate(String piid) {
 
 		ProblemInfo problemInfo = problemInfoSI.getByPiid(piid);
-
+		
 		if (problemInfo != null) {
 			return new ResultJson<ProblemInfo>(0, "数据获取成功", problemInfo);
 		} else {

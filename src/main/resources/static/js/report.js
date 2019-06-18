@@ -13,9 +13,6 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	//用户编号
 	var num = getCookie1("num").replace(/"/g,'');
 	//num =123;
-
-
-
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
@@ -244,9 +241,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   				tempRepId = tProblemRepId = data.data;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报成功");
+				   		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题暂存成功");
 		   			}else{
-		   				layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"问题上报失败");
+		   				layer.msg("<i class='layui-icon layui-icon-face-cry'></i> "+"问题暂存失败");
 		   			}
 		   			
 		   		}
@@ -327,10 +324,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //流程上报：
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
-
 		     type: "POST"
 		     ,url: '/iot_process/process/processPure2:4:52504'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
-
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -361,6 +356,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		    		
 		    		//上传问题图片
 			    	uploadList.upload();
+			    	layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报成功");
+		    	}else{
+		    		layer.msg("<i class='layui-icon layui-icon-face-smile'></i> "+"问题上报失败");
 		    	}
 		     }
 		     ,error:function(){}		       

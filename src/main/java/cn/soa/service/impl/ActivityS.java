@@ -1189,7 +1189,7 @@ public class ActivityS implements ActivitySI{
 						String firstTsid = hisTasks.get(0).getId().toString() ;
 						logger.debug( "---------问题上报节点id：------------" + firstTsid );
 						List<Comment> taskComments = taskService.getTaskComments( firstTsid );
-						logger.debug( "---------问题上报信息：------------" + taskComments.get(0).toString() );
+						logger.debug( "---------问题上报信息：------------" + taskComments );
 						if( taskComments != null && taskComments.size() > 0 ) {
 							Comment c = taskComments.get(0);
 							if( c != null && StringUtils.isNotBlank( c.getFullMessage() )) {
