@@ -9,11 +9,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	resavepeople = "钟月";
 	console.log("resavepeople-----"+resavepeople)
 	//用户编号
-	//var num = getCookie1("num").replace(/"/g,'');
-	var num =123;
+	var num = getCookie1("num").replace(/"/g,'');
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
@@ -23,7 +21,6 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var tProblemRepId = null, tempRepId = null;
 	//0-表示暂存，1-表示上报
 	var type = 0;
-	piid = 123;
 	//根据piid判断是否是回退到问题上报节点
 	if(piid != null && piid != ""){
 		$("#problem_back").css({"display":"block"});

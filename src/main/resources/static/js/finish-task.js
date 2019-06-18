@@ -14,14 +14,16 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 	console.log("用户编号为:"+num);
 	
 	//点击完成按钮操作
-	form.on('submit(finish_task)', function(data){
-		  
+	form.on('submit(finish_task)', function(data){		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+		  var result = false;
 		  $.ajax({  
+			    async : false,
 		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "put",
 		        data : {
-	        		"comment": data.field.comment
+	        		"comment": data.field.comment,
+	        		"complementor": resavepeople
 	            },
 	            contentType: "application/x-www-form-urlencoded",
 		        dataType : "json",  
@@ -30,6 +32,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        		//上传问题图片
 				   		uploadList.upload();
 				   		layer.msg("完成作业提交成功",{icon: 1});
+				   		result = true;
 		        	}else{
 		        		layer.msg("完成作业提交失败",{icon: 2});
 		        	}
@@ -37,9 +40,12 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        ,error:function(){
 		        	layer.msg("完成作业提交失败",{icon: 2});
 		        }	
-		   });		  
+		   });
+		  if(result){
+			  window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		  }
 		  
-		  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+		  //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
    });
 		  
 	//多图片上传功能
@@ -66,7 +72,6 @@ layui.use(['form', 'jquery','upload','layer'], function(){
           //预读本地文件，如果是多文件，则会遍历。(不支持ie8/9)
           obj.preview(function (index, file, result) {
               console.log(index);
-              // $('#imgZmList').append('<li style="position:relative"><img name="imgZmList" src="' + result + '"width="150" height="113"><div class="title_cover" name="imgZmName" onclick="divClick(this)"></div><div class="img_edit layui-icon" onclick="croppers_pic(this)">&#xe642;</div><div class="img_close" onclick="deleteElement(this)">X</div></li>');
               $('#imgZmList').append('<li style="position:relative"><img style="margin:0px; height:150px; width:180px;" name="imgZmList" src="' + result + '"><div class="img_close" onclick="deleteElement(this)">X</div></li>');
               //删除列表中对应的文件
               $(".img_close").click(function(){
