@@ -82,7 +82,21 @@ public class ReportC {
 	public ResultJson<ProblemInfoVO> showReport(String resavepeople){
 		System.out.println("进入ReportC...showReport...");
 		//调用service层执行查询操作
-		ProblemInfoVO result = reportS.getByResavepeople(resavepeople);
+		ProblemInfoVO result = reportS.getByResavepeopleOrPiid(resavepeople, null);
+		
+		return new ResultJson<ProblemInfoVO>(ResultJson.SUCCESS, null, result);
+	}
+	
+	/**   
+	 * @Title: reloadReport   
+	 * @Description: 显示回退后的问题报告数据
+	 * @return: ResultJson<ProblemInfo> 返回成功响应数据 
+	 */
+	@GetMapping("/reload")
+	public ResultJson<ProblemInfoVO> reloadReport(String piid){
+		System.out.println("进入ReportC...reloadReport...");
+		//调用service层执行查询操作
+		ProblemInfoVO result = reportS.getByResavepeopleOrPiid(null, piid);
 		
 		return new ResultJson<ProblemInfoVO>(ResultJson.SUCCESS, null, result);
 	}
@@ -95,7 +109,7 @@ public class ReportC {
 	@PostMapping("/")
 	public ResultJson<String> saveReport(ProblemInfo problemInfo, @RequestParam(value="imgList[]", required=false) String[] imgList){
 		System.out.println("进入ReportC...saveReport...");
-		
+		System.out.println(problemInfo);
 		//调用service层执行查询操作
 		String repId = reportS.addOne(problemInfo, imgList);
 		//boolean result=true;

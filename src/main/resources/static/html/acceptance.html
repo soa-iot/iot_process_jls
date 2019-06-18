@@ -5,9 +5,6 @@
 <title>作业验收</title>
 <link rel="stylesheet" href="../jsPackage/layui-v2.4.2/css/layui.css" media="all">
 <link rel="stylesheet" href="../css/estimate.css" media="all">
-<style type="text/css">
-	
-</style>
 </head>
 <body>
 
@@ -37,11 +34,14 @@
 						</div>
 					</div>
 					<form id="estimate">
-					<div class="layui-inline">
+					<div class="layui-form-item">
 						<label class="layui-form-label labelr">事件/隐患标记</label>
 						<div class="layui-input-inline layui-input-top">
 							<select class="layui-input  layui-input-one" name="ticketNo" id="ticketNo"
 								lay-verify="required" lay-search="" disabled="disabled">
+								<option value="0">普通事件</option>
+								<option value="1">事故事件</option>
+								<option value="2">隐患事件</option>
 							</select>
 						</div>
 					</div>
@@ -52,6 +52,8 @@
 							<div class="layui-input-inline layui-input-top">
 								<select id="sele" class="layui-input layui-input-one" name="remark"
 								lay-verify="required" lay-search="" disabled="disabled">
+								<option value="指定日期">指定日期</option>
+								<option value="大修时整改">大修时整改</option>
 							</select>
 							</div>
 						</div>
