@@ -35,7 +35,7 @@ layui.use(['carousel', 'form'], function(){
 $.ajax({  
 	url : "/iot_process/estimates/problemreportpho",  
 	type : "get",
-	data : {piid : piidp,remark:1},//"12323213123"
+	data : {piid : piidp,remark:1},
 	dataType : "json",  
 	success: function( json) {
 		//console.log(json.state);
@@ -49,7 +49,6 @@ $.ajax({
 				var img_div='<div  class="img_p">';
 				if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
 					//img_div = '';
-
 					for (var i = 0; i < mode; i++) {
 						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
 						img_id++;
@@ -84,7 +83,7 @@ $("#complete").click(function(){
 
 		$.ajax({
 			type: "PUT"
-			,url: '/iot_process/process/nodes/next/piid/'+piidp    //piid为流程实例id
+			,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 			,data: {
 
 				"comment": $("#comment").val()     //节点的处理信息

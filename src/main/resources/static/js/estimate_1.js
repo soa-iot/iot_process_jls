@@ -80,7 +80,10 @@ $.ajax({
 			$("#problem_describe").val(problem.problemdescribe);
 			if (problem.ticketNo != null && problem.remark != null) {
 				$("#ticketNo").val(problem.ticketNo);
-				$("#sele").val(problem.remark);
+				if (problem.remark=="大修时整改") {
+					$("#sele").val(problem.remark);
+					$("#sdateall").hide();
+				}
 			}
 			if (problem.rectificationperiod != null) {
 				$("#sdate").val(json.data.rectificationperiod.match(/\d+-\d+-\d+/));
@@ -114,14 +117,14 @@ $.ajax({
 					//img_div = '';
 
 					for (var i = 0; i < mode; i++) {
-						img_div = img_div+'<img  class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						img_div = img_div+'<img  class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
 						img_id++;
 					}
 
 				}else{
 
 					for (var i = 0; i < 3; i++) {
-						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
 						
 						img_id++;
 					}
@@ -260,7 +263,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	var active = {
 			offset: function(othis){
 				
-			var imgHtml= "<img src='"+$(this).attr("src")+"'width='800px'  height='600px'/>";
+			var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='800px'  height='600px'/>";
 				//var type = othis.data('type')
 				layer.open({
 				type: 1
@@ -281,4 +284,63 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 		active[method] ? active[method].call(this, othis) : '';
 	});
 
+});
+
+/**
+ * 作业安排确认提交
+ * 
+ * @param obj 当前对象
+ * @param usernames 人名用“，”隔开
+ * @returns
+ */
+function workPlan(obj,usernames){
+
+	$.ajax({
+		type: "PUT"
+		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+		,data: {
+			"isIngroup": "1",    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
+		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
+		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
+			"comment": $("#comment").val(),     //节点的处理信息
+			"receivor":usernames,
+			"userName":$.cookie("name")
+		}   //问题上报表单的内容
+		,contentType: "application/x-www-form-urlencoded"
+		,dataType: "json"
+		,success: function(jsonData){
+			//后端返回值： ResultJson<Boolean>
+			console.log("人员提交："+jsonData.data);
+			if (jsonData.data) {
+				modifyEstimated(this);
+			}else{
+				layer.msg('安排人员发送失败！！！',{icon:7});
+			}
+		},
+		//,error:function(){}		       
+	});
+}
+
+/**
+ * 指定日期禁用
+ */
+layui.use(['layer', 'jquery', 'form'], function () {
+	var layer = layui.layer,
+			$ = layui.jquery,
+			form = layui.form;
+
+	form.on('select(dateChange)', function(data){
+		if(data.value == "大修时整改"){
+			console.log("---指定日期--------"+data);
+			$("#sdate").val("");
+			$("#sdate").attr("disabled","disabled");
+			$("#sdateall").hide()
+			form.render('select');
+		}else{
+			$("#sdateall").show()
+			$("#sdate").removeAttr("disabled");
+			form.render('select');//select是固定写法 不是选择器
+		}
+	});
 });

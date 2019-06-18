@@ -12,7 +12,7 @@
 	<div class="pro-div">
 
 		<!-- 问题处理 -->
-		<div class="layui-collapse" lay-accordion="">
+		<div class="layui-collapse layui-form " lay-accordion="">
 			<div class="layui-colla-item">
 				<h2 class="layui-colla-title h2c" id="pro">问题处理</h2>
 				<div class="hbtn h2c site-demo-button">
@@ -28,8 +28,8 @@
 					<form id="estimate">
 					<div class="layui-form-item">
 						<label class="layui-form-label labelr">事件/隐患标记</label>
-						<div class="layui-input-inline layui-input-top  layui-form">
-							<select class="layui-input  layui-input-one" name="ticketNo" id="ticketNo" >
+						<div class="layui-input-inline layui-input-top">
+							<select class="layui-input  layui-input-one"  name="ticketNo" id="ticketNo" >
 								<option value="0">普通事件</option>
 								<option value="1">事故事件</option>
 								<option value="2">隐患事件</option>
@@ -40,8 +40,8 @@
 					<div class="layui-form-item">
 						<div class="layui-inline">
 							<label class="layui-form-label labelr">整改日期</label>
-							<div class="layui-input-inline layui-input-top layui-form">
-								<select id="sele" class="layui-input layui-input-one" name="remark" >
+							<div class="layui-input-inline layui-input-top ">
+								<select id="sele"  lay-filter="dateChange" class="layui-input layui-input-one " name="remark" >
 								<option value="指定日期">指定日期</option>
 								<option value="大修时整改">大修时整改</option>
 							</select>
