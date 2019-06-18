@@ -181,11 +181,11 @@ public interface ActivitySI {
 	HistoricActivityInstance getBeforeNodesByPiid(String piid);
 
 	/**   
-	 * @Title: backToBeforeNode   
+	 * @Title: backToBeforeNodeByTsid 
 	 * @Description: 根据流程任务tsid，回退流程当前节点的上一个节点    
 	 * @return: boolean        
 	 */  
-	boolean backToBeforeNode(String tsid);
+	boolean backToBeforeNodeByTsid(String tsid);
 
 	/**   
 	 * @Title: getAllHistoryInfos   
@@ -284,6 +284,20 @@ public interface ActivitySI {
 	 * @return: List<HistoricTaskInstance>        
 	 */  
 	List<HistoricTaskInstance> getHisTaskNodesByTsid(String tsid);
+
+	/**   
+	 * @Title: backToBeforeNodeByPiid   
+	 * @Description:  根据流程任务piid，回退流程当前节点的上一个节点   
+	 * @return: boolean        
+	 */  
+	boolean backToBeforeNodeByPiid(String piid, String comment );
+
+	/**   
+	 * @Title: endProcessByPiid   
+	 * @Description:终止流程（piid）   
+	 * @return: String        
+	 */  
+	String endProcessByPiidInComment(String piid, String comment);
 
 	
 }

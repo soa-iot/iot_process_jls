@@ -509,9 +509,12 @@ public class ActivityS implements ActivitySI{
 				repositoryService.createProcessDefinitionQuery()
 				.processDefinitionId( task.getProcessDefinitionId() )
 				.singleResult();
+		logger.debug( "--S---------流程所有节点---" + processDefEntity.toString() );
+		logger.debug( "--S---------流程所有节点---" + processDefEntity.getActivities().toString() );
 		for (ActivityImpl activityImpl : processDefEntity.getActivities() ) {  
 			List<PvmTransition> pvmTransitionList = activityImpl  
 				.getOutgoingTransitions();  
+			logger.debug( "--S---------循环---" + activityImpl.toString() );
 			if ( pvmTransitionList.isEmpty() ) {  
 				return activityImpl;  
 			}  
@@ -711,6 +714,8 @@ public class ActivityS implements ActivitySI{
 		 */
 		ActivityImpl startAct = findActivityImplByTaskId( tsid );
 		ActivityImpl targetAct = findActivityImplByTaskActId( tsid, actId );
+		logger.debug( "---S--------当前节点为-------------" + startAct );
+		logger.debug( "---S--------目标节点为-------------" + targetAct );
 		
 		/*
 		 * 重建流向
@@ -737,6 +742,35 @@ public class ActivityS implements ActivitySI{
 	}
     
     /**   
+     * @Title: endProcessByPiid   
+     * @Description:  终止流程（piid） 
+     * @return: String        
+     */  
+    @Override
+    public String endProcessByPiidInComment( String piid, String comment ) {
+    	if( StringUtils.isBlank( piid ) ) {
+			logger.debug( "---S--------任务piid为null或空-------------" );
+			return null;
+		}	
+    	
+    	String tsid = getTsidByPiid( piid );
+    	if( StringUtils.isBlank( tsid ) ) {
+			logger.debug( "---S--------任务tsid为null或空-------------" );
+			return null;
+		}	
+    	
+    	String endProcessByTsid = endProcessByTsidInComment( tsid, comment  );
+    	logger.debug( "---S--------任务piid为null或空-------------" );
+    	if( StringUtils.isBlank( endProcessByTsid ) ) {
+			logger.debug( "---S--------闭环流程失败-------------" );
+			return null;
+		}else {
+			logger.debug( "---S--------闭环流程成功-------------" );
+			return endProcessByTsid;
+		}
+    }
+    
+    /**   
      * @Title: endProcess   
      * @Description: 终止流程（tsid）
      * @return: void        
@@ -751,8 +785,15 @@ public class ActivityS implements ActivitySI{
 		/*
 		 * 获取流程的end节点
 		 */
-		ActivityImpl actiImpl = getEndNode( tsid );
-		if( actiImpl == null ) {
+    	ActivityImpl actiImpl;
+    	try {
+			actiImpl = getEndNode( tsid );
+			logger.debug( "---S--------end节点为-------------" + actiImpl );
+			if( actiImpl == null ) {
+				return null;
+			}
+    	} catch (Exception e) {
+			logger.debug( "--S---------获取流程的end节点失败----" );
 			return null;
 		}
 		
@@ -788,16 +829,34 @@ public class ActivityS implements ActivitySI{
 		/*
 		 * 获取流程的end节点
 		 */
-		ActivityImpl actiImpl = getEndNode( tsid );
-		if( actiImpl == null ) {
-			return null;
+    	ActivityImpl actiImpl;
+    	try {
+			actiImpl = getEndNode( tsid );
+			logger.debug( "---S--------end节点为-------------" + actiImpl );
+			if( actiImpl == null ) {
+//				return null;
+			}
+    	} catch (Exception e) {
+			logger.debug( "--S---------获取流程的end节点失败----" );
+//			return null;
 		}
+    	
+    	/*
+    	 * 增加备注信息
+    	 */
+    	boolean b = saveCommentByTsid( tsid, comment );
+    	if( b ) {
+    		logger.debug( "---执行回退上一个节点，保存备注信息成功---------" );
+    	}else {
+    		logger.debug( "---执行回退上一个节点，保存备注信息失败---------" );
+    	}
 		
 		/*
 		 * 流程跳转
 		 */
 		try {
-			transferProcessNoVars( tsid, actiImpl.getId() );
+//			transferProcessNoVars( tsid, actiImpl.getId() );
+			transferProcessNoVars( tsid, "end" );
 		} catch (Exception e) {
 			logger.debug( "--S---------流程转向失败----" );
 			return null;
@@ -806,8 +865,8 @@ public class ActivityS implements ActivitySI{
 		/*
 		 * 完成流程
 		 */
-		taskService.complete( tsid);
-		return "终止流程成功";		
+//		taskService.complete( tsid );
+		return "终止流程成功";			
 	}
     
     /**   
@@ -853,6 +912,7 @@ public class ActivityS implements ActivitySI{
     				.createHistoricActivityInstanceQuery()
     				.processInstanceId( piid )
     				.orderByHistoricActivityInstanceStartTime()
+    				.asc()
     				.list();
     		return lists;
 		} catch (Exception e) {
@@ -877,8 +937,9 @@ public class ActivityS implements ActivitySI{
     	 */
     	try {
     		List<HistoricActivityInstance> historyNodes = getHistoryNodesByTsid( tsid );
+    		logger.debug( "---S--------任务tsid的全部历史节点-------------" + historyNodes.toString() );
     		if( historyNodes.size() > 0 ) {
-    			return historyNodes.get( historyNodes.size() - 1 );    			
+    			return historyNodes.get( historyNodes.size() - 2 );    			
     		}else {
     			return null;
     		}
@@ -906,7 +967,7 @@ public class ActivityS implements ActivitySI{
     	try {
     		List<HistoricActivityInstance> historyNodes = getHistoryNodesByPiid( piid );
     		if( historyNodes.size() > 0 ) {
-    			return historyNodes.get( historyNodes.size() - 1 );    			
+    			return historyNodes.get( historyNodes.size() - 2 );    			
     		}else {
     			return null;
     		}
@@ -915,6 +976,61 @@ public class ActivityS implements ActivitySI{
 			return null;
 		}
     }
+    
+    /**   
+	 * @Title: backToBeforeNode   
+	 * @Description: 根据流程任务piid，回退流程当前节点的上一个节点  
+	 * @return: boolean        
+	 */
+    @Override
+    public boolean backToBeforeNodeByPiid( String piid, String comment ) {
+		if( StringUtils.isBlank( piid ) ) {
+			logger.debug( "---S--------任务piid为null或空-------------" );
+			return false;
+		}	
+		
+		
+		String tsid = getTsidByPiid( piid );
+		if( StringUtils.isBlank( tsid ) ) {
+			logger.debug( "---S--------任务tsid为null或空-------------" );
+			return false;
+		}
+		logger.debug( "---S--------任务tsid为-------------" + tsid );
+		
+		try {			
+			
+			/*
+			 * 查询上一个节点
+			 */
+			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
+			logger.debug( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
+			String beforeNodeActid = beforeNode.getActivityId();
+			if( StringUtils.isBlank( beforeNodeActid ) ) {
+				logger.debug( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
+				return false;
+			}
+			logger.debug( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
+			
+			/*
+    		 * 增加备注信息
+    		 */
+    		boolean b = saveCommentByPiid( piid, comment );
+    		if( b ) {
+    			logger.debug( "---执行回退上一个节点，保存备注信息成功---------" );
+    		}else {
+    			logger.debug( "---执行回退上一个节点，保存备注信息失败---------" );
+    		}
+			
+			/*
+			 * 跳转
+			 */
+			transferProcessInVars( tsid, beforeNodeActid, null );
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 	/**   
 	 * @Title: backToBeforeNode   
@@ -922,7 +1038,7 @@ public class ActivityS implements ActivitySI{
 	 * @return: boolean        
 	 */
     @Override
-	public boolean backToBeforeNode( String tsid ) {
+	public boolean backToBeforeNodeByTsid( String tsid ) {
 		if( StringUtils.isBlank( tsid ) ) {
 			logger.debug( "---S--------任务tsid为null-------------" );
 			return false;

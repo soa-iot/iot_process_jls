@@ -185,6 +185,36 @@
 	});
 
 
+12、回退上一步
+	$.ajax({
+	     type: "PUT"
+	     ,url: '/iot_process/process/nodes/before/piid/{piid}'    //piid为流程实例id
+	     ,data: {
+	     	"comment": ""  //处理信息
+	     }  
+	     ,contentType: "application/x-www-form-urlencoded"
+	     ,dataType: "json"
+	     ,success: function(jsonData){
+	     	//后端返回值： ResultJson<Boolean>
+	     },
+	     ,error:function(){}		       
+	});
+	
+	
+13、闭环流程
+	$.ajax({
+	     type: "PUT"
+	     ,url: '/iot_process/process/nodes/end/piid/{piid}'    //piid为流程实例id
+	     ,data: {
+	     	"comment": ""  //处理信息
+	     }  
+	     ,contentType: "application/x-www-form-urlencoded"
+	     ,dataType: "json"
+	     ,success: function(jsonData){
+	     	//后端返回值： ResultJson<String>
+	     },
+	     ,error:function(){}		       
+	});
 		
 
 

@@ -278,22 +278,17 @@ public class ProcessC {
 	
 	/**   
 	 * @Title: endProcess   
-	 * @Description:  终止流程 
+	 * @Description:  终止流程 (piid)
 	 * @return: ResultJson<String>        
 	 */  
-	@PutMapping("/nodes/end/{tsid}")
+	@PutMapping("/nodes/end/piid/{piid}")
 	public ResultJson<String> endProcess(
-			@PathVariable("tsid") @NotBlank String tsid,
-			@RequestParam(value="comment",required=false) String comment ){
+			@PathVariable("piid") @NotBlank String piid,
+			@RequestParam String comment ){
 		logger.debug( "--C-------- 终止流程     -------------" );
-		logger.debug( tsid );
+		logger.debug( piid );
 		logger.debug( comment );
-		String s = null;
-		if( StringUtils.isBlank(comment) ) {
-			s = activityS.endProcessByTsid(tsid);
-		}else {
-			s = activityS.endProcessByTsidInComment(tsid, comment);
-		}
+		String s = activityS.endProcessByPiidInComment(piid, comment);
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
 		}
@@ -356,15 +351,17 @@ public class ProcessC {
 	
 	/**   
 	 * @Title: backToBeforeNodes   
-	 * @Description:   根据任务tsid，流程返回到上一个节点
+	 * @Description:   根据任务piid，流程返回到上一个节点
 	 * @return: ResultJson<Boolean>        
 	 */  
-	@PutMapping("/nodes/before/{tsid}")
-	public ResultJson<Boolean> backToBeforeNodes(
-			@PathVariable("tsid") @NotBlank String tsid ){
-		logger.debug( "--C-------- 根据任务tsid，流程返回到上一个节点     -------------" );
-		logger.debug( tsid );
-		boolean b = activityS.backToBeforeNode( tsid );
+	@PutMapping("/nodes/before/piid/{piid}")
+	public ResultJson<Boolean> backToBeforeNodesByPiid(
+			@PathVariable("piid") @NotBlank String piid,
+			@RequestParam("comment") String comment ){
+		logger.debug( "--C-------- 根据任务piid，流程返回到上一个节点     -------------" );
+		logger.debug( piid );
+		logger.debug( comment );
+		boolean b = activityS.backToBeforeNodeByPiid( piid, comment );
 		if( b ) {
 			return new ResultJson<Boolean>( 0, "流程返回到上一个节点成功", true );
 		}
