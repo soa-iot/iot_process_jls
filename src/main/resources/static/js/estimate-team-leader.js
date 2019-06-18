@@ -7,7 +7,7 @@ $.ajax({
 	//url : "http://localhost:10238/iot_usermanager/user/roleName",  
 	url : "/iot_process/userOrganizationTree/userOrganizationArea",  
 	type : "get",
-	data : {area:"净化二班",username:"李京松"},
+	data : {area:$.cookie("organ"),username:"李京松"},
 	dataType : "json",  
 	success: function( json) {
 		console.log(json);

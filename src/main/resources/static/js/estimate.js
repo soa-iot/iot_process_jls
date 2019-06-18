@@ -181,7 +181,7 @@ $.ajax({
 /**
  * 指定日期禁用
  */
-$("#sele").change(function(){
+/*$("#sele").change(function(){
 	if ($("#sele").val()=="大修时整改") {
 		$("#sdate").val("");
 		$("#sdate").attr("disabled","disabled");
@@ -190,7 +190,7 @@ $("#sele").change(function(){
 		$("#sdateall").show()
 		$("#sdate").removeAttr("disabled");
 	}
-});
+});*/
 
 /**
  * 问题处理储存
@@ -211,42 +211,6 @@ $(".problem_describe").click(function(){
 	}
 
 });
-
-/**
- * 作业安排确认提交
- * 
- * @param obj 当前对象
- * @param usernames 人名用“，”隔开
- * @returns
- */
-function workPlan(obj,usernames){
-
-	$.ajax({
-		type: "PUT"
-		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
-		,data: {
-			"isIngroup": "1",    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
-		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
-		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
-		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-			"comment": $("#comment").val(),     //节点的处理信息
-			"receivor":usernames,
-			"userName":$.cookie("name")
-		}   //问题上报表单的内容
-		,contentType: "application/x-www-form-urlencoded"
-		,dataType: "json"
-		,success: function(jsonData){
-			//后端返回值： ResultJson<Boolean>
-			console.log("人员提交："+jsonData.data);
-			if (jsonData.data) {
-				modifyEstimated(this);
-			}else{
-				layer.msg('安排人员发送失败！！！',{icon:7});
-			}
-		},
-		//,error:function(){}		       
-	});
-}
 
 /**
  * 闭环处理
