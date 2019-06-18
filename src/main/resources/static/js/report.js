@@ -17,10 +17,10 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
-	//上报问题报告id和piid
-	var tProblemRepId = null, piid = getCookie1("piid").replace(/"/g,'');
-	//暂存的问题报告id
-	var tempRepId = null;
+	//piid
+	var piid = getCookie1("piid").replace(/"/g,'');
+	//暂存的问题报告id和上报问题报告id和
+	var tProblemRepId = null, tempRepId = null;
 	//0-表示暂存，1-表示上报
 	var type = 0;
 	piid = 123;
@@ -415,13 +415,36 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   		success: function(data){
 		   			if(data.data != null && data.data != ""){
 		   				tempRepId = tProblemRepId = data.data;
-				   		type = 1;
-			    		//上传问题图片
-				    	uploadList.upload();
-				    	layer.msg("问题上报成功",{icon: 1});
-				    	$("#problemdescribe").val("");
-				    	$('#imgZmList').empty();
-				    	imgCount();
+		   				var result = false;  //上报返回响应结果
+		   				//回退后，问题上报
+		   				$.ajax({
+		   					 async: false
+			   			     ,type: "PUT"
+			   			     ,url: '/iot_process/process/nodes/next/piid/'+piid    //piid为流程实例id
+			   			     ,data: {
+			   			     	"comment": $("#problemdescribe").val()     //节点的处理信息     	
+			   			     }  
+			   			     ,contentType: "application/x-www-form-urlencoded"
+			   			     ,dataType: "json"
+			   			     ,success: function(jsonData){
+			   			     	//后端返回值： ResultJson<Boolean>
+			   			    	 result = jsonData.data;
+			   			     },
+			   			     ,error:function(){
+			   			     }		       
+		   			    });
+		   				
+				   		if(result){
+				   			type = 1;
+				    		//上传问题图片
+					    	uploadList.upload();
+					    	layer.msg("问题上报成功",{icon: 1});
+					    	$("#problemdescribe").val("");
+					    	$('#imgZmList').empty();
+					    	imgCount();
+				   		}else{
+				   			layer.msg("问题上报失败", {icon: 2});
+				   		}
 		   			}else{
 		   				layer.msg("问题上报失败", {icon: 2});
 		   			}
