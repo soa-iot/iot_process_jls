@@ -47,7 +47,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			  
 			  ch = value.split("，");
 			  for(var i=0;i<ch.length;i++){
-				  if(ch[i].length == 0 || !new RegExp("^[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]+$").test(ch[i])){
+				  if(ch[i].length == 0 ){
 					  return '上报人不能有特殊字符，用户名之间请以中文逗号(，)隔开';
 				  }
 			  }
@@ -334,7 +334,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
-		     ,url: '/iot_process/process/processPure2:6:100004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+		     ,url: '/iot_process/process/processPure2:7:122504'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"

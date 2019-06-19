@@ -300,7 +300,7 @@ public class ProcessC {
 	 * @Description:  终止流程 (piid) - 非组任务
 	 * @return: ResultJson<String>        
 	 */  
-	@PutMapping("/nodes/end/group/piid/{piid}")
+	@PutMapping("/nodes/end/piid/{piid}")
 	public ResultJson<String> endProcess(
 			@PathVariable("piid") @NotBlank String piid,
 			@RequestParam String comment ){
