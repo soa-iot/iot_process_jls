@@ -13,11 +13,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.soa.entity.LayuiTree;
 import cn.soa.entity.ResponseObject;
+import cn.soa.entity.ResultJson;
 import cn.soa.entity.UserOrganization;
+import cn.soa.service.inter.UserManagerSI;
 import cn.soa.service.inter.UserOrganizationTreeService;
 
 @RestController
@@ -26,6 +30,9 @@ public class UserOrganizationTreeController {
 
 	@Autowired
 	private UserOrganizationTreeService userOrganizationTreeService;
+	
+	@Autowired
+	private UserManagerSI userManagerS;
 
 	/**
 	 * 获取人员组织树的数据
@@ -62,5 +69,14 @@ public class UserOrganizationTreeController {
 		}
 
 		return resObj;
+	}
+	
+	@PostMapping("/users")
+	public ResultJson<List<LayuiTree>> getUserByOrgid(String orgID) {
+
+		System.err.println("组织编号orgID："+orgID);	
+		List<LayuiTree> result = userManagerS.findUserByOrgid(orgID);
+		
+		return new ResultJson<List<LayuiTree>>(result);
 	}
 }

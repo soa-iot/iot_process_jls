@@ -299,5 +299,12 @@ public interface ActivitySI {
 	 */  
 	String endProcessByPiidInComment(String piid, String comment);
 
+	/**   
+	 * @Title: transferProcessInVarsByPiid   
+	 * @Description: 流程跳转(提供流程变量) - piid    
+	 * @return: boolean        
+	 */  
+	boolean transferProcessInVarsByPiid(String piid, Map<String, Object> vars);
+
 	
 }

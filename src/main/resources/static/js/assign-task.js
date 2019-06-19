@@ -2,12 +2,15 @@ layui.use(['tree', 'layer', 'form'], function() {
 	var tree = layui.tree, layer = layui.layer, $ = layui.$;
 	var layer = layui.layer, form = layui.form;
 	
-	$("#sdate").val("");
 	var treeResult, assignUsers = new Array();
+	var ticketNo = $("#ticketNo").val();
+	$("#ticketNo").val((ticketNo == 1)?"事故事件":((ticketNo == 2)?"隐患事件":"普通事件"));
 	
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	
+	//从cookie中获取所在组
+	var dept = getCookie1("organ").replace(/"/g,'');
+
 	/**
 	 * 作业指派异步请求
 	 */
@@ -26,15 +29,15 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
-		    		 layer.msg("作业指派成功",{icon:1, time: 2000}, function(){
+		    		 layer.msg("作业安排成功",{icon:1, time: 2000}, function(){
 		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
-		    		 layer.msg("作业指派失败",{icon:2, time: 2000});
+		    		 layer.msg("作业安排失败",{icon:2, time: 2000});
 		    	 }
 		     }
 		     ,error:function(){
-		    	 layer.msg("作业指派失败",{icon:2, time: 2000});
+		    	 layer.msg("作业安排失败",{icon:2, time: 2000});
 		     }		       
 		});
 		
@@ -44,18 +47,14 @@ layui.use(['tree', 'layer', 'form'], function() {
 	/**
 	 * 校验表单是否为空, 为空则不弹出层
 	 */
-	form.on('submit(assignment)', function(data){
-		if($("#sele").val() == '指定日期' && !$("#sdate").val()){
-			layer.msg("指定日期不能为空",{icon: 5});
-			return false;
-		}
+	form.on('submit(arrange)', function(data){
 		
 		//弹出层
 		layer.open({
 			type: 1
 			,offset: 'auto'
 			,area: ['300px','400px;']
-			,id: 'work_assignment'+1 //防止重复弹出
+			,id: 'work_arrange'+1 //防止重复弹出
 			,content: $("#task_tree")
 			,btn: ['确认',"取消"]
 			,btnAlign: 'c' //按钮居中
@@ -88,10 +87,10 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 异步请求人员角色树
 	 */
 	$.ajax({
-		url : '/iot_process/estimates/repairlist',
-		type : 'GET',
+		url : '/iot_process/userOrganizationTree/users',
+		type : 'POST',
 		dataType : 'json',
-		data : {},
+		data : {"orgID":dept},
 		success : function(json) {
 			treeResult = json.data;
 		},
@@ -99,37 +98,6 @@ layui.use(['tree', 'layer', 'form'], function() {
 		}
 	});
 	
-	
-	/**
-	 * 闭环流程
-	 */
-	form.on('submit(complete)', function(data){
-
-		$.ajax({
-		     type: "PUT"
-		     ,url: '/iot_process/process/nodes/end/piid/'+piidp   //piid为流程实例id
-		     ,data: {
-		     	"comment": data.field.comment  //处理信息
-		     }  
-		     ,contentType: "application/x-www-form-urlencoded"
-		     ,dataType: "json"
-		     ,success: function(jsonData){
-		     	//后端返回值： ResultJson<String>
-		    	 if(jsonData){
-		    		 layer.msg("闭环处理成功",{icon:1, time: 2000}, function(){
-		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
-		    		 })
-		    	 }else{
-		    		 layer.msg("闭环处理失败",{icon:2});
-		    	 }
-		     },
-		     error:function(){
-		    	 layer.msg("闭环处理失败",{icon:2});
-		     }		       
-		});
-		
-		return false;
-	});
 	
 	/**
 	 * 解析树型结构,获取选中人员信息

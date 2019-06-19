@@ -152,9 +152,9 @@ layui.use(['form', 'jquery','layer'], function(){
     var userName = getCookie1("name").replace(/"/g,'')
 	//点击下一步按钮操作
 	form.on('submit(next_step)', function(data){
-		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
+			    async : false,
 		    	url : "/iot_process/process/nodes/next/group/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "PUT",
 		        data : {
@@ -166,7 +166,9 @@ layui.use(['form', 'jquery','layer'], function(){
 		        dataType : "json",  
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
-		        		layer.msg("接收作业成功", {icon: 1});
+		        		layer.msg("接收作业成功", {icon: 1, time: 2000}, function(){
+		        			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		        		});
 		        	}else{
 		        		layer.msg("接收作业失败",{icon: 2});
 		        	}
