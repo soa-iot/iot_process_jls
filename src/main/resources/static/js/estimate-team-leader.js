@@ -21,7 +21,8 @@ $.ajax({
 	url : "/iot_process/userOrganizationTree/userOrganizationArea",  
 	type : "get",
 	//$.cookie("organ")$.cookie("name")
-	data : {area:$.cookie("organ"),username:$.cookie("name"},
+	//data : {area:$.cookie("organ"),username:$.cookie("name")},
+	data : {area:$.cookie("organ"),username:$.cookie("name")},
 	dataType : "json",  
 	success: function( json) {
 		console.log(json);
@@ -135,7 +136,9 @@ $.ajax({
 			layui.use('tree', function(){
 				var tree = layui.tree
 				,layer = layui.layer
-				,data = coordinate_tree_data;
+				,data = [{label:organ
+							,id:organ+",0"
+							,children:coordinate_tree_data}];
 			//弹出层
 			layui.use('layer', function(){ //独立版的layer无需执行这一句
 				var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句

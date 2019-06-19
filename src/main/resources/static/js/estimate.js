@@ -105,7 +105,7 @@ $.ajax({
 			var datapro = json.data;
 
 			//数据初始化
-			coordinate_tree_data = buildTree(datapro);
+			coordinate_tree_data = out_data();
 			//tree
 			layui.use('tree', function(){
 				var tree = layui.tree
