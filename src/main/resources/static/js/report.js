@@ -9,11 +9,11 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	resavepeople = "钟月";
+	//resavepeople = "钟月";
 	console.log("resavepeople-----"+resavepeople)
 	//用户编号
-	//var num = getCookie1("num").replace(/"/g,'');
-	var num =123;
+	var num = getCookie1("num").replace(/"/g,'');
+	//var num =123;
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
@@ -23,7 +23,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var tProblemRepId = null, tempRepId = null;
 	//0-表示暂存，1-表示上报
 	var type = 0;
-	piid = 123;
+	//piid = 123;
 	//根据piid判断是否是回退到问题上报节点
 	if(piid != null && piid != ""){
 		$("#problem_back").css({"display":"block"});
@@ -334,7 +334,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
-		     ,url: '/iot_process/process/processPure2:4:52504'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+		     ,url: '/iot_process/process/processPure2:6:100004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -429,7 +429,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			   			     ,success: function(jsonData){
 			   			     	//后端返回值： ResultJson<Boolean>
 			   			    	 result = jsonData.data;
-			   			     },
+			   			     }
 			   			     ,error:function(){
 			   			     }		       
 		   			    });

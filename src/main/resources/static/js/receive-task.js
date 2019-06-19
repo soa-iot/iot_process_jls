@@ -28,7 +28,7 @@ layui.use([ 'element', 'layer' ], function() {
  */
 //从cookie中获得piid
 var piid = GetQueryString("piid");
-piid = 123;
+
 layui.use('table', function(){
 	  var table = layui.table;
 	  
@@ -183,12 +183,12 @@ layui.use(['form', 'jquery','layer'], function(){
 	var active = {
 			offset: function(othis){
 				
-			var imgHtml= "<img src='"+$(this).attr("src")+"'width='800px'  height='600px'/>";
+			var imgHtml= "<img src='"+$(this).attr("src")+"'width='750px'  height='500px'/>";
 				//var type = othis.data('type')
 				layer.open({
 				type: 1
 				//,offset: type 
-				,area: ['800px','600px']
+				,area: ['800px','500px']
 				,content: imgHtml
 				,title:false
 				//,shadeClose:true
