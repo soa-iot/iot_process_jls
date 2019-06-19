@@ -3,7 +3,6 @@
  * 全局变量——piid
  */
 var piidp = GetQueryString('piid');
-
 /**
  * 全局变量——属地单位
  */

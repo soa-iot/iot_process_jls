@@ -44,7 +44,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			  
 			  ch = value.split("，");
 			  for(var i=0;i<ch.length;i++){
-				  if(ch[i].length == 0 || !new RegExp("^[_\u4e00-\u9fa5\\s·]+$").test(ch[i])){
+				  if(ch[i].length == 0 || !new RegExp("^[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]+$").test(ch[i])){
 					  return '上报人不能有特殊字符，用户名之间请以中文逗号(，)隔开';
 				  }
 			  }

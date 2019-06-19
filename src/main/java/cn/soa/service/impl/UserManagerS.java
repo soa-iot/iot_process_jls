@@ -15,8 +15,13 @@ import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.soa.dao.UserRoleMapper;
+import cn.soa.entity.LayuiTree;
 import cn.soa.entity.ResultJson;
+import cn.soa.entity.Role;
+import cn.soa.entity.RoleVO;
 import cn.soa.entity.UserOrganization;
+import cn.soa.entity.UserRole;
 import cn.soa.service.inter.UserManagerSI;
 
 @Service
@@ -32,6 +37,9 @@ public class UserManagerS implements UserManagerSI {
 	
 	@Autowired
 	private RestTemplate restTemplate; 
+	
+	@Autowired
+	private UserRoleMapper userRoleMapper;
 	
 	
 	public void findOrganByUsernameS( String usernum, String url, int level ) {
@@ -158,5 +166,62 @@ public class UserManagerS implements UserManagerSI {
 		List<UserOrganization> users =  (List<UserOrganization>) r.getData();
 		logger.debug( users.toString() );		
 		return users;
+	}
+	
+	/**
+	 * 查找仪表、电气、机械这三个班长
+	 * @param  无
+	 * @return 用户列表树形结构
+	 */
+	@Override
+	public List<LayuiTree> findRepair() {
+		
+		List<RoleVO> result = userRoleMapper.findRepair();
+		if(result == null) {
+			logger.debug("-------获取仪表、电气、机械这三个班长数据失败--------");
+			return null;
+		}
+		
+		//将查找结果填充到layui树形结构实体类中
+		List<LayuiTree> treeList = new ArrayList<>();
+		for(RoleVO role : result) {
+			LayuiTree tree = new LayuiTree();
+			tree.setLabel(role.getName());
+			tree.setId(role.getRolID());
+			List<LayuiTree> subTree = new ArrayList<>();
+			for(UserOrganization user : role.getUsers()) {
+				subTree.add(new LayuiTree(user.getName(), user.getUsernum()));
+			}
+			tree.setChildren(subTree);
+			treeList.add(tree);
+		}
+		return treeList;
+	}
+	
+	/**
+	 * 查找所在组下的用户列表
+	 * @param orgID  组织标号
+	 * @return 用户列表树形结构
+	 */
+	@Override
+	public List<LayuiTree> findUserByOrgid(String orgID) {
+		String orgName = userRoleMapper.findOrgNameByOrgid(orgID);
+		List<String> result = userRoleMapper.findUserByOrgid(orgID);
+		if(orgName == null || result == null) {
+			logger.debug("-------获取所在组下的用户列表数据失败--------");
+			return null;
+		}
+		//将查找结果填充到layui树形结构实体类中
+		List<LayuiTree> treeList = new ArrayList<>();
+		LayuiTree tree = new LayuiTree();
+		tree.setLabel(orgName);
+		List<LayuiTree> subTree = new ArrayList<>();
+		for(String str : result) {
+			subTree.add(new LayuiTree(str));
+		}
+		tree.setChildren(subTree);
+		treeList.add(tree);
+		
+		return treeList;
 	}
 }

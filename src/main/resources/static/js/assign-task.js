@@ -1,83 +1,141 @@
-/**
- * 作业指派
- */
-
-/**
- * 全局变量——piid
- */
-var piidp = GetQueryString('piid');
-
-/**
- * 全局变量——属地单位
- */
-var area = GetQueryString('area');
-
-/**
- * 作业安排
- * @param obj
- * @returns
- */
-var usernames="";
-//弹出层
-layui.use('layer', function(){ //独立版的layer无需执行这一句
-	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
-	//触发事件
-	var active = {
-			offset: function(othis){
-				var type = othis.data('type')
-				var ope = layer.open({
-				type: 1
-				,offset: type 
-				,area: ['300px','400px;']
-				,id: 'work_plan'+type //防止重复弹出
-				,key:'id'
-					//../html/organization_tree.html
-				,content: '<iframe frameborder="no" id="addFrame" src="../html/organization_tree_problemtype.html?area='+area+'" style="width:98%;height:98%;"></iframe>'
-				,btn: ['确认',"取消"]
-				,btnAlign: 'c' //按钮居中
-					,yes: function(){
-
-						var childWindow = $("#addFrame")[0].contentWindow;
-						var checkData = childWindow.getCheckedData();
-						console.log(checkData);
-						for (var i = 0; i < checkData.length; i++) {
-							
-							//console.log(checkData[i][1]);
-							var user=userOrDept(checkData[i][1]);
-							if (user!="") {
-								//对比是否为同一部门
-								if (i<checkData.length-2) {
-									if (!compareTodept(checkData[i][1],checkData[i+1][1])) {
-										layer.msg('请选择同一部门的人！！！',{icon:7});
-										return;
-									}
-									
-								}
-								
-								usernames +=user;
-								if (i!=checkData.length-1) {
-									usernames +=",";
-								}
-							}
-						}
-						console.log("选中的人："+usernames);
+layui.use(['tree', 'layer', 'form'], function() {
+	var tree = layui.tree, layer = layui.layer, $ = layui.$;
+	var layer = layui.layer, form = layui.form;
 	
-						if (usernames=="") {
-							layer.msg('至少选定一人！！！',{icon:7});
-						}else if (yesCompare()) {
-							//workPlan(this,usernames);
-							usernames="";	
+	var treeResult, assignUsers = new Array();
+	var ticketNo = $("#ticketNo").val();
+	$("#ticketNo").val((ticketNo == 1)?"事故事件":((ticketNo == 2)?"隐患事件":"普通事件"));
 	
-							layer.close(ope);
-						}
-					}
-				});
-			}
-	};
+	//从cookie中获取当前登录用户
+	var resavepeople = getCookie1("name").replace(/"/g,'');
+	//从cookie中获取所在组
+	var dept = getCookie1("organ").replace(/"/g,'');
 
-	$('#work_plan').on('click', function(){
-		var othis = $(this), method = othis.data('method');
-		active[method] ? active[method].call(this, othis) : '';
+	/**
+	 * 作业指派异步请求
+	 */
+	function workAssignment(comment, arrangor, username){
+		$.ajax({
+			 async: false
+		     ,type: "PUT"
+		     ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+		     ,data: {
+		     	"comment": comment     //通用 -- 节点的处理信息
+		     	,"arrangor": arrangor     //通用 -- 下一个节点问题处理人
+		     	,"userName": username    //当前任务的完成人
+		     }   //问题上报表单的内容
+		     ,contentType: "application/x-www-form-urlencoded"
+		     ,dataType: "json"
+		     ,success: function(jsonData){
+		     	//后端返回值： ResultJson<Boolean>
+		    	 if(jsonData.data){
+		    		 layer.msg("作业安排成功",{icon:1, time: 2000}, function(){
+		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    		 })
+		    	 }else{
+		    		 layer.msg("作业安排失败",{icon:2, time: 2000});
+		    	 }
+		     }
+		     ,error:function(){
+		    	 layer.msg("作业安排失败",{icon:2, time: 2000});
+		     }		       
+		});
+		
+	    return false;
+	}
+	
+	/**
+	 * 校验表单是否为空, 为空则不弹出层
+	 */
+	form.on('submit(arrange)', function(data){
+		
+		//弹出层
+		layer.open({
+			type: 1
+			,offset: 'auto'
+			,area: ['300px','400px;']
+			,id: 'work_arrange'+1 //防止重复弹出
+			,content: $("#task_tree")
+			,btn: ['确认',"取消"]
+			,btnAlign: 'c' //按钮居中
+			,yes: function(index, layero){
+				//确认按钮的回调函数
+				var comment = $("#comment").val();
+				var arrangor = assignUsers.join("，");
+				console.log(arrangor);
+				workAssignment(comment, arrangor, resavepeople);
+				//layer.closeAll();
+		    }
+		,success:function(){	
+			//单选框
+			tree.render({
+				elem: '#task_tree'
+				,data: treeResult
+				,showCheckbox: true
+				,oncheck:function(obj){
+					parseTree(obj);
+					console.log(assignUsers);
+				}
+			})
+		 }
+		});
+	    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+	    
 	});
-
+	
+	/**
+	 * 异步请求人员角色树
+	 */
+	$.ajax({
+		url : '/iot_process/userOrganizationTree/users',
+		type : 'POST',
+		dataType : 'json',
+		data : {"orgID":dept},
+		success : function(json) {
+			treeResult = json.data;
+		},
+		error : function() {
+		}
+	});
+	
+	
+	/**
+	 * 解析树型结构,获取选中人员信息
+	 */
+	function parseTree(obj){
+		 //console.log(obj.data); //得到当前点击的节点数据
+		 // console.log(obj.checked); //得到当前节点的展开状态：open、close、normal
+		 var data = obj.data;
+		 //选中就添加人员
+		 if(obj.checked){
+			 getUser(data);
+		 }else{
+			 //去掉选中就删除人员
+			 removeUser(data);
+		 }
+	}
+	
+	function getUser(data){
+		if(data.children == null || data.children == undefined){
+			assignUsers.push(data.label);
+		 }else{
+			for(var i=0;i<data.children.length;i++){
+				getUser(data.children[i]);
+			}
+		 }
+	}
+	
+	function removeUser(data){
+		if(data.children == null || data.children == undefined){
+			for(var i=0;i<assignUsers.length;i++){
+				if(assignUsers[i] == data.label){
+					assignUsers.splice(i,1);
+				}
+			}
+	    }else{
+	    	for(var i=0;i<data.children.length;i++){
+	    		removeUser(data.children[i]);
+			}
+	    }
+	}
 });
