@@ -10,11 +10,14 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -664,9 +667,76 @@ public class ActivityS implements ActivitySI{
 		return activityImpl;
 	}
     
+    
     /**   
      * @Title: transferProcess   
-     * @Description: 流程跳转(提供流程变量)  
+     * @Description: 流程跳转(提供流程变量) - piid  
+     * @return: void        
+     */ 
+    @Override
+    public boolean transferProcessInVarsByPiid( 
+			String piid, Map<String, Object> vars ) {
+    	logger.debug( "---S-------流程跳转(提供流程变量) - piid  ------------" );
+    	if( vars == null || vars.size() > 0 ) {
+    		logger.debug( "---S--------流程变量map-vars 为null或空------------" );
+			return false;
+    	}
+    	
+    	if( StringUtils.isBlank( piid ) ) {
+			logger.debug( "---S--------流程piid为null-------------" );
+			return false;
+		}	
+    	
+    	String tsid = getTsidByPiid( piid );
+    	if( StringUtils.isBlank( tsid ) ) {
+			logger.debug( "---S--------任务tsid为null或空-------------" );
+			return false;
+		}	
+    	   	
+    	/*
+    	 * 增加备注信息
+    	 */
+    	String comment;
+		Object commentObj = vars.get( "comment" );  		
+		if(  commentObj != null ) {
+			comment = commentObj.toString();
+			logger.debug( "---流程跳转，备注信息---------" + comment );
+			boolean b = saveCommentByTsid( tsid, comment );
+	    	if( b ) {
+	    		logger.debug( "---执行回退上一个节点，保存备注信息成功---------" );
+	    	}else {
+	    		logger.debug( "---执行回退上一个节点，保存备注信息失败---------" );
+	    	}
+	    	vars.remove( "comment" );
+		}else {
+			logger.debug( "---流程跳转，备注信息不存在---------" );
+		}
+    	
+    	/*
+    	 * 流程跳转
+    	 */
+    	String actId;
+    	Object actIdObj = vars.get( "actId" );
+    	if( actIdObj !=null ) {
+    		actId = actIdObj.toString();
+    		logger.debug( "---流程跳转，目标节点actId--------" + actId );
+    		String actId1 = new String();
+    		actId1 = actId;
+    		vars.remove( "actId" );   		
+    		logger.debug( "---流程跳转，目标节点actId1--------" + actId1 );
+    		logger.debug( "---流程跳转，vars-------" + vars );
+    		transferProcessInVarsAndGroup( tsid, actId, vars );
+    		return true;
+    	}else {
+    		logger.debug( "---流程跳转，流程变量vars不包含actId：-------" + actIdObj );
+    		return false;
+    	}
+    	
+    }
+    
+    /**   
+     * @Title: transferProcess   
+     * @Description: 流程跳转(提供流程变量) - 非组任务 
      * @return: void        
      */ 
     @Override
@@ -698,6 +768,54 @@ public class ActivityS implements ActivitySI{
 		 */
 		// 删除目标节点新流入  
 		 targetAct.getIncomingTransitions().remove( newTransition );  	  
+	    // 还原以前流向  
+	    restoreTransition( startAct, oriPvmTransitionList);  
+	}
+    
+    /**   
+     * @Title: transferProcessInVarsAndGroup   
+     * @Description:  流程跳转(提供流程变量) -  组任务 
+     * @return: void        
+     */  
+    public void transferProcessInVarsAndGroup( 
+			String tsid, String actId, Map<String, Object> vars ) {
+    	Object userNameObj = vars.get( "userName" );
+    	String userName = "";
+    	if( userNameObj != null  ) {
+    		userName = userNameObj.toString();
+			logger.debug( "---S--------流程执行人userName-------------" + userName );
+		}else {
+			logger.debug( "---S--------流程变量map不包含userName-------------" );
+		}
+    	
+		/*
+		 * 当前节点、目标节点
+		 */
+		ActivityImpl startAct = findActivityImplByTaskId( tsid );
+		ActivityImpl targetAct = findActivityImplByTaskActId( tsid, actId );
+		
+		/*
+		 * 重建流向
+		 */
+		//清空当前流向,返回流向集
+		List<PvmTransition> oriPvmTransitionList = clearTransition( startAct );
+		//创建新流向
+		TransitionImpl newTransition = startAct.createOutgoingTransition(); 
+		//设置新流向
+		newTransition.setDestination( targetAct ); 
+		
+		/*
+		 * 完成转向
+		 */
+		//拾取任务
+		taskService.claim( tsid, userName ); 
+		taskService.complete( tsid, vars );  
+		
+		/*
+		 * 还原流向
+		 */
+		// 删除目标节点新流入  
+		targetAct.getIncomingTransitions().remove( newTransition );  	  
 	    // 还原以前流向  
 	    restoreTransition( startAct, oriPvmTransitionList);  
 	}

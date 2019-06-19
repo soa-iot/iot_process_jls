@@ -278,10 +278,29 @@ public class ProcessC {
 	
 	/**   
 	 * @Title: endProcess   
-	 * @Description:  终止流程 (piid)
+	 * @Description:  终止流程 (piid) - 组任务
 	 * @return: ResultJson<String>        
 	 */  
-	@PutMapping("/nodes/end/piid/{piid}")
+	@PutMapping("/nodes/end/group/piid/{piid}")
+	public ResultJson<String> endProcessIngroup(
+			@PathVariable("piid") @NotBlank String piid,
+			@RequestParam String comment ){
+		logger.debug( "--C-------- 终止流程     -------------" );
+		logger.debug( piid );
+		logger.debug( comment );
+		String s = activityS.endProcessByPiidInComment(piid, comment);
+		if( StringUtils.isBlank( s ) ) {
+			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
+		}
+		return new ResultJson<String>( 0, "闭环流程成功", "闭环流程成功" );
+	}
+	
+	/**   
+	 * @Title: endProcess   
+	 * @Description:  终止流程 (piid) - 非组任务
+	 * @return: ResultJson<String>        
+	 */  
+	@PutMapping("/nodes/end/group/piid/{piid}")
 	public ResultJson<String> endProcess(
 			@PathVariable("piid") @NotBlank String piid,
 			@RequestParam String comment ){
@@ -375,7 +394,7 @@ public class ProcessC {
 	 * @Description:  根据用户姓名，查询用户的所有待办任务（个人任务+组任务）   
 	 * @return: ResultJson<Task>        
 	 */ 
-	@GetMapping("/tasks")
+	@GetMapping("/nodes/before/piid/{piid}")
 	public ResultJson<List<TodoTask>> getAllTasksByUsernameC(
 			@RequestParam("userName") @NotBlank String userName ){
 		logger.debug( "--C-------- 根据用户姓名，查询用户的所有待办任务（个人任务+组任务）     -------------" );
@@ -403,6 +422,30 @@ public class ProcessC {
 		}
 		return new ResultJsonForTable<List<TodoTask>>( 0, "代办任务查询失败", 0, tasks );
 
+	}
+	
+	/**   
+	 * @Title: jumpNodesByPiid   
+	 * @Description: 流程节点跳转 - 组任务  
+	 * @return: ResultJsonForTable<Boolean>        
+	 */  
+	@PutMapping("/nodes/before/group/piid/{piid}")
+	public ResultJson<Boolean> jumpNodesByPiidInGroup(
+			@PathVariable("piid") String piid,
+			@RequestParam Map<String,Object> map ){
+		logger.debug( "--C-------- 流程节点跳转 - 组任务      -------------" );
+		logger.debug( piid );
+		if( map != null && map.size() > 0 ) {
+			logger.debug( map.toString() );
+		}else {
+			logger.debug( "-------变量map为null--------" );
+		}
+		
+		boolean b = activityS.transferProcessInVarsByPiid(piid, map);
+		if( b ) {
+			return new ResultJson<Boolean>( 0, "节点跳转成功", true );
+		}
+		return new ResultJson<Boolean>( 0, "节点跳转失败", false );
 	}
 
 }
