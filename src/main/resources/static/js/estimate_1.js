@@ -286,41 +286,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 
 });
 
-/**
- * 作业安排确认提交
- * 
- * @param obj 当前对象
- * @param usernames 人名用“，”隔开
- * @returns
- */
-function workPlan(obj,usernames){
 
-	$.ajax({
-		type: "PUT"
-		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
-		,data: {
-			"isIngroup": "1",    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
-		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
-		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
-		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-			"comment": $("#comment").val(),     //节点的处理信息
-			"receivor":usernames,
-			"userName":$.cookie("name")
-		}   //问题上报表单的内容
-		,contentType: "application/x-www-form-urlencoded"
-		,dataType: "json"
-		,success: function(jsonData){
-			//后端返回值： ResultJson<Boolean>
-			console.log("人员提交："+jsonData.data);
-			if (jsonData.data) {
-				modifyEstimated(this);
-			}else{
-				layer.msg('安排人员发送失败！！！',{icon:7});
-			}
-		},
-		//,error:function(){}		       
-	});
-}
 
 /**
  * 指定日期禁用
@@ -344,3 +310,59 @@ layui.use(['layer', 'jquery', 'form'], function () {
 		}
 	});
 });
+
+/**
+ * 回退
+ */
+$("#rollback").click(function(){
+
+		if (yesCompare()) {
+			$.ajax({
+			     type: "PUT"
+			     ,url: '/iot_process/process/nodes/before/piid/'+piidp    //piid为流程实例id
+			     ,data: {
+			     	"comment": $("#comment").val()  //处理信息
+			     }  
+			     ,contentType: "application/x-www-form-urlencoded"
+			     ,dataType: "json"
+			     ,success: function(jsonData){
+			     	if (jsonData.data==true) {
+			     		modifyEstimated(this);
+					}else{
+						layer.msg(jsonData.message,{icon:2});
+					}
+			     },
+			});
+			
+		}
+});
+
+/**
+ * 判断是人还是部门
+ * @returns是人返回人名，是部门返回空串
+ */
+function userOrDept(checData){
+	var checDatas = checData.split(",");
+	if (checDatas[1]==1) {
+		return checDatas[0];
+	}else{
+		return ""
+	}
+}
+
+/**
+ * 两人判断是否为同一部门
+ * @param checData1 
+ * @param checData2
+ * @returns
+ */
+function compareTodept(checData1,checData2){
+	
+	var checData1s = checData1.split(",");
+	var checData2s = checData2.split(",");
+	if (checData1s[2]==checData2s[2]) {
+		return true;
+	}else{
+		return false;
+	}
+}

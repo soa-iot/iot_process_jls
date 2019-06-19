@@ -63,4 +63,25 @@ public class UserOrganizationTreeController {
 
 		return resObj;
 	}
+	
+	/**
+	 * 获取净化技术干部/维修技术干部控制层
+	 * @return
+	 */
+	@GetMapping("/userOrganizationOrgan")
+	public ResponseObject<List<UserOrganization>> getUserOrganizationByOrgan(String organ,String username){
+		
+		System.err.println("-------------------------------------------所在组织："+organ);
+		System.err.println("-------------------------------------------用户名："+username);
+		ResponseObject<List<UserOrganization>> resObj;
+		try {
+			List<UserOrganization> result = userOrganizationTreeService.getUserOrganizationByOrgan(organ, username);
+			resObj = new ResponseObject<List<UserOrganization>>(0, "success", result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			resObj = new ResponseObject<List<UserOrganization>>(1, "failed>>>" + e.getMessage(), null);
+		}
+
+		return resObj;
+	}
 }

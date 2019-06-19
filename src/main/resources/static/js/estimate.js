@@ -50,7 +50,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 							var user=userOrDept(checkData[i][1]);
 							if (user!="") {
 								//对比是否为同一部门
-								if (i<checkData.length-2) {
+								if (i < checkData.length - 2) {
 									if (!compareTodept(checkData[i][1],checkData[i+1][1])) {
 										layer.msg('请选择同一部门的人！！！',{icon:7});
 										return;
@@ -179,40 +179,6 @@ $.ajax({
 });
 
 /**
- * 指定日期禁用
- */
-/*$("#sele").change(function(){
-	if ($("#sele").val()=="大修时整改") {
-		$("#sdate").val("");
-		$("#sdate").attr("disabled","disabled");
-		$("#sdateall").hide()
-	}else{
-		$("#sdateall").show()
-		$("#sdate").removeAttr("disabled");
-	}
-});*/
-
-/**
- * 问题处理储存
- */
-
-//var rolena="生产办公室";
-$(".problem_describe").click(function(){
-
-	console.log("前端验证"+yesCompare());
-	if ($(this).html()=="回退" || $(this).html()=="闭环处理") {
-		//验证处理说明不能为空
-		if (yesCompare()) {
-			modifyEstimated(this);
-			//layer.msg('处理说明不能为空！！！');
-		}
-	}else{
-		//modifyEstimated(this);
-	}
-
-});
-
-/**
  * 闭环处理
  * @returns
  */
@@ -223,7 +189,7 @@ $("#complete").click(function(){
 
 		$.ajax({
 			type: "PUT"
-			,url: '/iot_process/process/nodes/next/piid/'+piidp    //piid为流程实例id
+			,url: '/iot_process/process/nodes/end/piid/'+piidp    //piid为流程实例id
 			,data: {
 
 				"comment": $("#comment").val()     //节点的处理信息
@@ -234,7 +200,7 @@ $("#complete").click(function(){
 			,success: function(jsonData){
 				//后端返回值： ResultJson<Boolean>
 				
-				if (jsonData.data) {
+				if (jsonData.state==0) {
 					modifyEstimated(this);
 				}else{
 					layer.msg("数据提交失败！！",{icon:2});
@@ -247,31 +213,49 @@ $("#complete").click(function(){
 })
 
 /**
- * 判断是人还是部门
- * @returns是人返回人名，是部门返回空串
- */
-function userOrDept(checData){
-	var checDatas = checData.split(",");
-	if (checDatas[1]==1) {
-		return checDatas[0];
-	}else{
-		return ""
-	}
-}
-
-/**
- * 两人判断是否为同一部门
- * @param checData1 
- * @param checData2
+ * 作业安排确认提交
+ * 
+ * @param obj 当前对象
+ * @param usernames 人名用“，”隔开
  * @returns
  */
-function compareTodept(checData1,checData2){
+function workPlan(obj,usernames){
+	var isIngroup;
 	
-	var checData1s = checData1.split(",");
-	var checData2s = checData2.split(",");
-	if (checData1s[2]==checData2s[2]) {
-		return true;
-	}else{
-		return false;
+	console.log("id:"+$(obj).attr("id"));
+	console.log("id判断:"+$(obj).attr("id")=="work_plant");
+	
+	if ($(obj).attr("id")=="work_plant") {
+		isIngroup = 1;
 	}
+	
+	if ($(obj).attr("id")=="coordinatet") {
+		isIngroup = 2;
+	}
+	console.log(isIngroup);
+	$.ajax({
+		type: "PUT"
+		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+		,data: {
+			"isIngroup": isIngroup,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
+		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
+		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
+			"comment": $("#comment").val(),     //节点的处理信息
+			"estimators":usernames,
+			"userName":$.cookie("name")
+		}   //问题上报表单的内容
+		,contentType: "application/x-www-form-urlencoded"
+		,dataType: "json"
+		,success: function(jsonData){
+			//后端返回值： ResultJson<Boolean>
+			console.log("人员提交："+jsonData.data);
+			if (jsonData.data) {
+				modifyEstimated(this);
+			}else{
+				layer.msg('安排人员发送失败！！！',{icon:7});
+			}
+		},
+		//,error:function(){}		       
+	});
 }
