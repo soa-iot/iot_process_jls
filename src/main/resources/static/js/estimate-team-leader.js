@@ -23,6 +23,7 @@ $.ajax({
 	//$.cookie("organ")$.cookie("name")
 	//data : {area:$.cookie("organ"),username:$.cookie("name")},
 	data : {area:$.cookie("organ").replace(/"/g,""),username:$.cookie("name").replace(/"/g,"")},
+
 	dataType : "json",  
 	success: function( json) {
 		console.log(json);

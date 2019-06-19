@@ -29,4 +29,9 @@ public interface UserOrganizationTreeService {
 	 */
 	List<UserOrganization> getUserOrganizationByName(String name,String username);
 
+	/**
+	 * 获取净化技术干部/维修技术干部service层
+	 * @return
+	 */
+	List<UserOrganization> getUserOrganizationByOrgan(String organ,String username);
 }

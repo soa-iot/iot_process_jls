@@ -49,4 +49,28 @@
 		from IOT_USER_ORGANIZATION
 		where PARENT_ID	 = #{usernum}
 	</select>
+	
+	 <!-- 获取净化技术干部/维修技术干部dao层 -->
+	 <!-- List<UserOrganization> findUserOrganizationByOrgan(String organ,String username); -->
+	 <select id="findUserOrganizationByOrgan" resultMap="BaseResultMap">
+		SELECT 
+			<include refid="Base_Column_List"></include> 
+		FROM 
+			iot_user_organization 
+		WHERE 
+			usernum IN (
+				SELECT 
+					userid 
+				FROM 
+					iot_user_user_role 
+				WHERE rolid = (
+					SELECT 
+						rolid 
+					FROM 
+						iot_user_role 
+					WHERE 
+						name = #{organ})) 
+		AND 
+			name !=#{username}
+	</select>
 </mapper>

@@ -109,7 +109,7 @@ $.ajax({
 			}else{
 			var mode = imgs.length%3;
 			var img_id = 0;
-
+			console.log("图片路径："+imgs[img_id].phoAddress);
 			for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
 				var img_div='<div class="img_p">';
 				if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
@@ -203,7 +203,7 @@ function modifyEstimated(obj) {
 						
 						layer.msg("提交成功！",{time: 3000,icon:1},function() {
 							
-							window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
+							window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
 						});
 //					}else{
 //						layer.msg("提交成功！",{time: 3000,icon:1});
@@ -262,12 +262,12 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	var active = {
 			offset: function(othis){
 				
-			var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='800px'  height='600px'/>";
+			var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='600px'  height='500px'/>";
 				//var type = othis.data('type')
 				layer.open({
 				type: 1
 				//,offset: type 
-				,area: ['800px','600px']
+				,area: ['600px','500px']
 				,content: imgHtml
 				,title:false
 				//,shadeClose:true
@@ -285,41 +285,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 
 });
 
-/**
- * 作业安排确认提交
- * 
- * @param obj 当前对象
- * @param usernames 人名用“，”隔开
- * @returns
- */
-function workPlan(obj,usernames){
 
-	$.ajax({
-		type: "PUT"
-		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
-		,data: {
-			"isIngroup": "1",    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
-		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
-		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
-		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-			"comment": $("#comment").val(),     //节点的处理信息
-			"receivor":usernames,
-			"userName":$.cookie("name")
-		}   //问题上报表单的内容
-		,contentType: "application/x-www-form-urlencoded"
-		,dataType: "json"
-		,success: function(jsonData){
-			//后端返回值： ResultJson<Boolean>
-			console.log("人员提交："+jsonData.data);
-			if (jsonData.data) {
-				modifyEstimated(this);
-			}else{
-				layer.msg('安排人员发送失败！！！',{icon:7});
-			}
-		},
-		//,error:function(){}		       
-	});
-}
 
 /**
  * 指定日期禁用
@@ -343,3 +309,95 @@ layui.use(['layer', 'jquery', 'form'], function () {
 		}
 	});
 });
+
+/**
+ * 回退
+ */
+$("#rollback").click(function(){
+
+		if (yesCompare()) {
+			$.ajax({
+			     type: "PUT"
+			     ,url: '/iot_process/process/nodes/before/piid/'+piidp    //piid为流程实例id
+			     ,data: {
+			     	"comment": $("#comment").val()  //处理信息
+			     }  
+			     ,contentType: "application/x-www-form-urlencoded"
+			     ,dataType: "json"
+			     ,success: function(jsonData){
+			     	if (jsonData.data==true) {
+			     		modifyEstimated(this);
+					}else{
+						layer.msg(jsonData.message,{icon:2});
+					}
+			     },
+			});
+			
+		}
+});
+
+/**
+ * 判断是人还是部门
+ * @returns是人返回人名，是部门返回空串
+ */
+function userOrDept(checData){
+	var checDatas = checData.split(",");
+	if (checDatas[1]==1) {
+		return checDatas[0];
+	}else{
+		return ""
+	}
+}
+
+/**
+ * 两人判断是否为同一部门
+ * @param checData1 
+ * @param checData2
+ * @returns
+ */
+function compareTodept(checData1,checData2){
+	
+	var checData1s = checData1.split(",");
+	var checData2s = checData2.split(",");
+	if (checData1s[2]==checData2s[2]) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/**
+ * 获取外部协调数据
+ * @returns
+ */
+function out_data(){
+	var out_data_tree=[{label:"龙王庙天然气净化厂",children:[]}];
+	var data = [];
+	for ( var key in outp) {
+			console.log(key +":"+(key != "龙王庙天然气净化厂"));
+			if (key != "龙王庙天然气净化厂" && key != $.cookie("organ")) {
+				$.ajax({  
+					//url : "http://localhost:10238/iot_usermanager/user/roleName",  
+					url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
+					type : "get",
+					//$.cookie("organ")$.cookie("name")
+					data : {organ:outp[key],username:"无"},
+					dataType : "json",  
+					async:false,
+					success: function(json) {
+						
+						if (json.code == 0) {
+							var datapro = json.data;
+							//数据初始化
+							data = buildTree(datapro);
+							
+						}
+					}
+				})
+				console.log(out_data_tree[0].children);
+				out_data_tree[0].children[out_data_tree[0].children.length] = {label:key,children: data};
+			}
+	}
+	console.log(out_data_tree)
+	return out_data_tree;
+}
