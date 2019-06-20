@@ -7,7 +7,7 @@ function GetQueryString(name)
 {
      var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
      var r = window.location.search.substr(1).match(reg);
-     if(r!=null)return  decodeURI(r[2]); return null;
+     if(r!=null)return  $.trim(decodeURI(r[2])); return null;
 }
 
 /**
@@ -16,5 +16,5 @@ function GetQueryString(name)
  */
 function getUrlIp(){
 	
-	return window.location.href.split("/")[2];
+	return $.trim(window.location.href.split("/")[2]);
 }
