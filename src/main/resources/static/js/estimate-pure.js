@@ -83,7 +83,7 @@ $("#coordinate_tree").hide();
 var coordinate_tree ;
 
 //数据初tree数据声明
-var coordinate_tree_data=[];
+/*var coordinate_tree_data=[];
 $.ajax({  
 	url : "http://localhost:8080/iot_process/estimates/problemtype",  
 	type : "get",
@@ -167,7 +167,7 @@ $.ajax({
 
 	}  
 });
-
+*/
 /**
  * 作业安排确认提交
  * 
@@ -198,8 +198,8 @@ function workPlan(obj,usernames){
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
-			"repairor":usernames,
-			"userName":$.cookie("name")
+			"receivor":usernames,
+			"userName":$.cookie("name").replace(/"/g,"")
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"

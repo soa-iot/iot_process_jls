@@ -218,7 +218,7 @@
 	});
 	
 	
-14、闭环流程
+14、闭环流程 - 非组任务
 	$.ajax({
 	     type: "PUT"
 	     ,url: '/iot_process/process/nodes/end/piid/{piid}'    //piid为流程实例id
@@ -233,15 +233,45 @@
 	     ,error:function(){}		       
 	});
 	
+
+15、闭环流程 - 组任务
+	$.ajax({
+	     type: "PUT"
+	     ,url: '/iot_process/process/nodes/end/group/piid/{piid}'    //piid为流程实例id
+	     ,data: {
+	     	"comment": ""  //处理信息
+	     	,"userName": "" //当前节点处理
+	     	,
+	     }  
+	     ,contentType: "application/x-www-form-urlencoded"
+	     ,dataType: "json"
+	     ,success: function(jsonData){
+	     	//后端返回值： ResultJson<String>
+	     },
+	     ,error:function(){}		       
+	});
 	
-15、跳转 - 组任务
+	
+16、跳转 - 组任务
+	$.ajax({
+	     type: "PUT"
+	     ,url: '/iot_process/process/nodes/jump/group/piid/{piid}'    //piid为流程实例id
+	     ,data: data{
+	     	"area": ""  //属地单位
+			,"actId": ""  //跳转节点id
+			,"": ""  //下一步流程变量
+			,"userName": ""  //当前节点任务执行人
+			,"comment": ""   //备注信息
+	     } 
+	     ,contentType: "application/x-www-form-urlencoded"
+	     ,dataType: "json"
+	     ,success: function(jsonData){
+	     	//后端返回值： ResultJson<Boolean>
+	     },
+	     ,error:function(){}		       
+	});
 
-
-	"area": ""  //属地单位
-	,"actId": ""  //跳转节点id
-	,"": ""  //下一步流程变量
-	,"userName": ""  //当前节点任务执行人
-	,"comment": ""   //备注信息
+	
 		
 
 
