@@ -70,7 +70,6 @@ public class UserOrganizationTreeController {
 
 		return resObj;
 	}
-	
 
 	@PostMapping("/users")
 	public ResultJson<List<LayuiTree>> getUserByOrgid(String orgID) {
@@ -80,8 +79,10 @@ public class UserOrganizationTreeController {
 		
 		return new ResultJson<List<LayuiTree>>(result);
 	}
+
+
 	/**
-	 * 获取净化技术干部/维修技术干部控制层
+	 * 获取净化技术干部/维修技术部控制层
 	 * @return
 	 */
 	@GetMapping("/userOrganizationOrgan")

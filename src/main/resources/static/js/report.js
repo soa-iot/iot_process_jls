@@ -46,8 +46,11 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			  }
 			  
 			  ch = value.split("，");
+			  console.log(ch);
 			  for(var i=0;i<ch.length;i++){
-				  if(ch[i].length == 0 ){
+
+				  if(ch[i].length == 0 || new RegExp("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\\s]+").test(ch[i])){
+
 					  return '上报人不能有特殊字符，用户名之间请以中文逗号(，)隔开';
 				  }
 			  }
