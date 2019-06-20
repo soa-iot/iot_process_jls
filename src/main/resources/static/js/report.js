@@ -17,7 +17,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
 	//piid
-	var piid = getCookie1("piid").replace(/"/g,'');
+	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;
 	//0-表示暂存，1-表示上报

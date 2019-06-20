@@ -24,10 +24,6 @@ $.ajax({
 	//data : {area:$.cookie("organ"),username:$.cookie("name")},
 	data : {area:$.cookie("organ").replace(/"/g,""),username:$.cookie("name").replace(/"/g,"")},
 
-<<<<<<< HEAD
-	//data : {area:"净化二班",username:"name"},
-=======
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 	dataType : "json",  
 	success: function( json) {
 		console.log(json);
@@ -224,7 +220,7 @@ function workPlan(obj,usernames){
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
 			"receivor":usernames,
-<<<<<<< HEAD
+
 			"userName":$.cookie("name")
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
@@ -253,9 +249,8 @@ function estimate_next(obj,usernames){
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
 			"puror":usernames,
-=======
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
-			"userName":$.cookie("name")
+
+			"userName":$.cookie("name").replace(/"/g,"")
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
