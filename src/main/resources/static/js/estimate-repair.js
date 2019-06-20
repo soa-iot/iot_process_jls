@@ -175,32 +175,72 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 外部协助跳转
 	 */
 	form.on('submit(out_coordinate)', function(data){
-
+		//弹出层
+		layer.open({
+			type: 1
+			,offset: 'auto'
+			,area: ['300px','400px;']
+			,id: 'out_coordinate'+1 //防止重复弹出
+			,content: $("#task_tree")
+			,btn: ['确认',"取消"]
+			,btnAlign: 'c' //按钮居中
+			,yes: function(index, layero){
+				//确认按钮的回调函数
+				if(assignUsers.length < 1){
+					layer.msg("至少选择一名人员", {icon:7});
+				}else{
+					out_coordinate();
+				}
+				//layer.closeAll();
+		    }
+		,success:function(){	
+			//单选框
+			tree.render({
+				elem: '#task_tree'
+				,data: outhelper_data(outhelper)
+				,showCheckbox: true
+				,oncheck:function(obj){
+					parseTree(obj);
+					console.log(assignUsers);
+				}
+				,
+			})
+			// 人名前面 显示人形图标
+			$("i.layui-icon-file").addClass("layui-icon-user");
+		 }
+		});
+	    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+	});
+	
+	
+	function out_coordinate(){
 		$.ajax({
 		     type: "PUT"
-		     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id
-		     ,data: {
-		     	
-		     }  
+		     ,url: '/iot_process/process/nodes/jump/group/piid/'+piidp   //piid为流程实例id
+		     ,data:{
+			     	"area": $("#problemtype").val()   //属地单位
+					,"actId": "estimate"  //跳转节点id
+					,"estimators": assignUsers.join("，")  //下一步流程变量
+					,"userName": resavepeople  //当前节点任务执行人
+					,"comment": $("#comment").val()  //备注信息
+			 }  
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
-		    		 layer.msg("回退成功",{icon:1, time: 2000}, function(){
+		    		 layer.msg("外部协调请求成功",{icon:1, time: 2000}, function(){
 		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
-		    		 layer.msg("回退失败",{icon:2});
+		    		 layer.msg("外部协调请求成功",{icon:2});
 		    	 }
 		     },
 		     error:function(){
-		    	 layer.msg("回退失败",{icon:2});
+		    	 layer.msg("外部协调请求成功",{icon:2});
 		     }		       
 		});
-		
-		return false;
-	});
+	}
 	
 	
 	/**
