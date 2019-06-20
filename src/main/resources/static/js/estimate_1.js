@@ -318,9 +318,10 @@ $("#rollback").click(function(){
 		if (yesCompare()) {
 			$.ajax({
 			     type: "PUT"
-			     ,url: '/iot_process/process/nodes/before/piid/'+piidp    //piid为流程实例id
+			     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp    //piid为流程实例id
 			     ,data: {
 			     	"comment": $("#comment").val()  //处理信息
+			     	,"userName":$.cookie("name")
 			     }  
 			     ,contentType: "application/x-www-form-urlencoded"
 			     ,dataType: "json"
@@ -350,6 +351,20 @@ function userOrDept(checData){
 }
 
 /**
+ * 获取当前所选部门
+ * @returns是人返回部门名称
+ */
+function deptOrDeptUser(checData){
+	var dapt = "";
+	var checDatas = checData.split(",");
+	if (checDatas[1]==0) {
+		dept = checDatas[0];
+	}
+	
+	return dept;
+}
+
+/**
  * 两人判断是否为同一部门
  * @param checData1 
  * @param checData2
@@ -370,34 +385,84 @@ function compareTodept(checData1,checData2){
  * 获取外部协调数据
  * @returns
  */
-function out_data(){
-	var out_data_tree=[{label:"龙王庙天然气净化厂",children:[]}];
+function outhelper_data(outhelperData){
+	var out_data_tree=[{label:"龙王庙天然气净化厂",id:"龙王庙天然气净化厂,0",children:[]}];
 	var data = [];
-	for ( var key in outp) {
-			console.log(key +":"+(key != "龙王庙天然气净化厂"));
+	
+	for ( var key in outhelperData) {
+		
 			if (key != "龙王庙天然气净化厂" && key != $.cookie("organ")) {
 				$.ajax({  
 					//url : "http://localhost:10238/iot_usermanager/user/roleName",  
 					url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
 					type : "get",
 					//$.cookie("organ")$.cookie("name")
-					data : {organ:outp[key],username:"无"},
+					data : {organ:outhelper[key],username:"无"},
 					dataType : "json",  
 					async:false,
 					success: function(json) {
-						
+	
 						if (json.code == 0) {
 							var datapro = json.data;
 							//数据初始化
 							data = buildTree(datapro);
-							
+	
 						}
 					}
 				})
-				console.log(out_data_tree[0].children);
-				out_data_tree[0].children[out_data_tree[0].children.length] = {label:key,children: data};
+				
+				if (data.length == 0) {
+					data = {label: key 
+							,id:key+",0"
+							,disabled:true
+							,children: data}
+				}else{
+					data = {label: key 
+							,id:key+",0"
+							,children: data}
+				}
+				
+				out_data_tree[0].children[out_data_tree[0].children.length] = data;
 			}
+		
 	}
+	
 	console.log(out_data_tree)
 	return out_data_tree;
 }
+
+
+/**
+ * 闭环处理
+ * @returns
+ */
+
+$("#complete").click(function(){
+
+	if (yesCompare()){
+
+		$.ajax({
+			type: "PUT"
+			,url: '/iot_process/process/nodes/end/group/piid/'+piidp    //piid为流程实例id
+			,data: {
+
+				"comment": $("#comment").val()     //节点的处理信息
+				,"userName":$.cookie("name")
+
+			}   //问题上报表单的内容
+			,contentType: "application/x-www-form-urlencoded"
+			,dataType: "json"
+			,success: function(jsonData){
+				//后端返回值： ResultJson<Boolean>
+				
+				if (jsonData.state==0) {
+					modifyEstimated(this);
+				}else{
+					layer.msg("数据提交失败！！",{icon:2});
+				}
+			},
+				//,error:function(){}		       
+		});
+	}
+
+})
