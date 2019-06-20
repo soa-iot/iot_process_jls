@@ -136,6 +136,39 @@ layui.use(['tree', 'layer', 'form'], function() {
 	});
 	
 	/**
+	 * 回退到上一个节点
+	 */
+	form.on('submit(back_previous)', function(data){
+
+		$.ajax({
+		     type: "PUT"
+		     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id
+		     ,data: {
+		     	"comment": data.field.comment  //处理信息
+		     	,"userName": resavepeople
+		     }  
+		     ,contentType: "application/x-www-form-urlencoded"
+		     ,dataType: "json"
+		     ,success: function(jsonData){
+		     	//后端返回值： ResultJson<String>
+		    	 if(jsonData){
+		    		 layer.msg("回退成功",{icon:1, time: 2000}, function(){
+		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    		 })
+		    	 }else{
+		    		 layer.msg("回退失败",{icon:2});
+		    	 }
+		     },
+		     error:function(){
+		    	 layer.msg("回退失败",{icon:2});
+		     }		       
+		});
+		
+		return false;
+	});
+	
+	
+	/**
 	 * 解析树型结构,获取选中人员信息
 	 */
 	function parseTree(obj){

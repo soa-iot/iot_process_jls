@@ -14,14 +14,14 @@ layui.use(['tree', 'layer', 'form'], function() {
 	/**
 	 * 作业指派异步请求
 	 */
-	function workAssignment(comment, arrangor, username){
+	function workAssignment(comment, receivor, username){
 		$.ajax({
 			 async: false
 		     ,type: "PUT"
 		     ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 		     ,data: {
 		     	"comment": comment     //通用 -- 节点的处理信息
-		     	,"arrangor": arrangor     //通用 -- 下一个节点问题处理人
+		     	,"receivor": receivor     //通用 -- 下一个节点问题处理人
 		     	,"userName": username    //当前任务的完成人
 		     }   //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
@@ -61,9 +61,14 @@ layui.use(['tree', 'layer', 'form'], function() {
 			,yes: function(index, layero){
 				//确认按钮的回调函数
 				var comment = $("#comment").val();
-				var arrangor = assignUsers.join("，");
-				console.log(arrangor);
-				workAssignment(comment, arrangor, resavepeople);
+				var receivor = assignUsers.join("，");
+				console.log(receivor);
+				if(assignUsers.length < 1){
+					layer.msg("至少选择一名人员", {icon:7});
+				}else{
+					workAssignment(comment, receivor, resavepeople);
+				}
+				
 				//layer.closeAll();
 		    }
 		,success:function(){	
