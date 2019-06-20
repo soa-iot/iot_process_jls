@@ -24,10 +24,6 @@ $.ajax({
 	//data : {area:$.cookie("organ"),username:$.cookie("name")},
 	data : {area:$.cookie("organ").replace(/"/g,""),username:$.cookie("name").replace(/"/g,"")},
 
-<<<<<<< HEAD
-	//data : {area:"净化二班",username:"name"},
-=======
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 	dataType : "json",  
 	success: function( json) {
 		console.log(json);

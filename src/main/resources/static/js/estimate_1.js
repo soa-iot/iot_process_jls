@@ -318,9 +318,10 @@ $("#rollback").click(function(){
 		if (yesCompare()) {
 			$.ajax({
 			     type: "PUT"
-			     ,url: '/iot_process/process/nodes/before/piid/'+piidp    //piid为流程实例id
+			     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp    //piid为流程实例id
 			     ,data: {
 			     	"comment": $("#comment").val()  //处理信息
+			     	,"userName":$.cookie("name")
 			     }  
 			     ,contentType: "application/x-www-form-urlencoded"
 			     ,dataType: "json"
@@ -347,6 +348,20 @@ function userOrDept(checData){
 	}else{
 		return ""
 	}
+}
+
+/**
+ * 获取当前所选部门
+ * @returns是人返回部门名称
+ */
+function deptOrDeptUser(checData){
+	var dapt = "";
+	var checDatas = checData.split(",");
+	if (checDatas[1]==0) {
+		dept = checDatas[0];
+	}
+	
+	return dept;
 }
 
 /**
@@ -415,3 +430,39 @@ function outhelper_data(outhelperData){
 	console.log(out_data_tree)
 	return out_data_tree;
 }
+
+
+/**
+ * 闭环处理
+ * @returns
+ */
+
+$("#complete").click(function(){
+
+	if (yesCompare()){
+
+		$.ajax({
+			type: "PUT"
+			,url: '/iot_process/process/nodes/end/group/piid/'+piidp    //piid为流程实例id
+			,data: {
+
+				"comment": $("#comment").val()     //节点的处理信息
+				,"userName":$.cookie("name")
+
+			}   //问题上报表单的内容
+			,contentType: "application/x-www-form-urlencoded"
+			,dataType: "json"
+			,success: function(jsonData){
+				//后端返回值： ResultJson<Boolean>
+				
+				if (jsonData.state==0) {
+					modifyEstimated(this);
+				}else{
+					layer.msg("数据提交失败！！",{icon:2});
+				}
+			},
+				//,error:function(){}		       
+		});
+	}
+
+})

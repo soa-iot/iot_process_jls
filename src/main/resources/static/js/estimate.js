@@ -4,7 +4,7 @@
  * 全局变量——piid
  */
 var piidp = GetQueryString('piid');
-
+console.log("actualId"+actualId["其他"]);
 /**
  * 全局变量——属地单位
  */
@@ -96,6 +96,7 @@ var coordinate_tree ;
 layui.use('tree', function(){
 	
 	delete outhelper["维修工段"];
+	console.log(outhelper);
 	
 	var tree = layui.tree
 	,outhelperData= outhelper
@@ -124,24 +125,36 @@ layui.use('tree', function(){
 							
 							var check = coordinate_tree.getChecked(); //获得被勾选的节点
 							console.log(check);
-							
+							var dept;
 							for (var i = 0; i < check.length; i++) {
 								usernames += userOrDept(check[i][1]);
 								if (usernames != "" && userOrDept(check[i][1]) != "" && i != check.length - 1) {
 									usernames += ",";
 								}
+								var depts = deptOrDeptUser(check[i][1]);
+								if (depts != "") {
+									dept = depts;
+								}
+								
 							}
+							
+							console.log("选择的部门："+dept);
+							
 							if (usernames.charAt(usernames.length - 1) == ",") {
 								usernames = usernames.substring(0,usernames.length - 1);
 							}
 							console.log("外部协调选中的人："+usernames);
 							
-							//workPlan(this,usernames);
+							if (usernames != "") {
+								outhelperm(this,dept,usernames);
+								usernames="";
+								
+								layer.closeAll();
+							}else{
+								layer.msg('至少选择一个人！！！',{icon:7});
+							}
 							
 							
-							usernames="";
-							
-							layer.closeAll();
 						}
 					,success:function(){
 						//console.log(data);
@@ -183,40 +196,6 @@ layui.use('tree', function(){
 });*/
 
 /**
- * 闭环处理
- * @returns
- */
-
-$("#complete").click(function(){
-
-	if (yesCompare()){
-
-		$.ajax({
-			type: "PUT"
-			,url: '/iot_process/process/nodes/end/piid/'+piidp    //piid为流程实例id
-			,data: {
-
-				"comment": $("#comment").val()     //节点的处理信息
-
-			}   //问题上报表单的内容
-			,contentType: "application/x-www-form-urlencoded"
-			,dataType: "json"
-			,success: function(jsonData){
-				//后端返回值： ResultJson<Boolean>
-				
-				if (jsonData.state==0) {
-					modifyEstimated(this);
-				}else{
-					layer.msg("数据提交失败！！",{icon:2});
-				}
-			},
-				//,error:function(){}		       
-		});
-	}
-
-})
-
-/**
  * 作业安排确认提交
  * 
  * @param obj 当前对象
@@ -249,6 +228,54 @@ function workPlan(obj,usernames){
 			"estimators":usernames,
 			"userName":$.cookie("name")
 		}   //问题上报表单的内容
+		,contentType: "application/x-www-form-urlencoded"
+		,dataType: "json"
+		,success: function(jsonData){
+			//后端返回值： ResultJson<Boolean>
+			console.log("人员提交："+jsonData.data);
+			if (jsonData.data) {
+				modifyEstimated(this);
+			}else{
+				layer.msg('安排人员发送失败！！！',{icon:7});
+			}
+		},
+		//,error:function(){}		       
+	});
+}
+
+/**
+ * 外部协调提交请求
+ * @returns
+ */
+function outhelperm(obj,dept,usernames){
+	
+	var actualIds = dept == "净化工段" || dept == "净化工段" ?actualId[dept]:actualId["其他"];
+	console.log("actualId:"+actualIds);
+	
+	var actualVars = dept == "净化工段" || dept == "净化工段" ?actualVar[dept]:actualVar["其他"];
+	console.log("actualId:"+actualVars);
+	
+	var data_out = {
+			
+			"area": area //属地单位
+			,"actId": actualIds  //跳转节点id
+		     								 
+			,"comment": $("#comment").val()     //节点的处理信息
+			//,"estimators":usernames //下一步流程变量
+			,"userName":$.cookie("name")
+		}
+	data_out[actualVars] = usernames;
+	
+	for ( var key in data_out) {
+		console.log("data_out:"+key+":"+data_out[key]);
+		
+	}
+	
+	$.ajax({
+		type: "PUT"
+		,url: '/iot_process/process/nodes/jump/group/piid/'+piidp    //piid为流程实例id
+		,data:data_out    //问题上报表单的内容
+			
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
 		,success: function(jsonData){
