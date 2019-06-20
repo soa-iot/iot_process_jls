@@ -9,15 +9,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-
-
 	var num = getCookie1("num").replace(/"/g,'');
-
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
-	//piid
-	var piid = getCookie1("piid").replace(/"/g,'');
+	//从地址中获取piid
+	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;
 	//0-表示暂存，1-表示上报
@@ -426,6 +423,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			   			     ,url: '/iot_process/process/nodes/next/piid/'+piid    //piid为流程实例id
 			   			     ,data: {
 			   			     	"comment": $("#problemdescribe").val()     //节点的处理信息     	
+			   			     	,"error": $("#problemtype").val()
 			   			     }  
 			   			     ,contentType: "application/x-www-form-urlencoded"
 			   			     ,dataType: "json"
