@@ -22,7 +22,8 @@ $.ajax({
 	type : "get",
 	//$.cookie("organ")$.cookie("name")
 	//data : {area:$.cookie("organ"),username:$.cookie("name")},
-	data : {area:$.cookie("organ"),username:$.cookie("name")},
+	data : {area:$.cookie("organ").replace(/"/g,""),username:$.cookie("name").replace(/"/g,"")},
+
 	dataType : "json",  
 	success: function( json) {
 		console.log(json);
@@ -231,7 +232,7 @@ function workPlan(obj,usernames){
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
-			"estimators":usernames,
+			"receivor":usernames,
 			"userName":$.cookie("name")
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"

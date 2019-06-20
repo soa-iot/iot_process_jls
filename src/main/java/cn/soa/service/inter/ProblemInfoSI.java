@@ -16,6 +16,15 @@ import cn.soa.entity.UserOrganization;
 @Service
 public interface ProblemInfoSI {
 	/**
+	 * lixuefeng
+	 * 问题多个维度查询，具备分页功能
+	 */
+	List<ProblemInfo> 	queryProblempro(ProblemInfo problemInfo,Integer page,Integer pageSize);
+	/**
+	 * 问题统计
+	 */
+	int	count(ProblemInfo problemInfo);
+	/**
 	 * 统计问题整改情况
 	 */
 	public List<Map<String ,Object>> statisticalTaskProblempro(String beginTime,String endTime);

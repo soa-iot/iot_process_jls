@@ -38,7 +38,7 @@
 		select
 		<include refid="Base_Column_List"></include>
 		from IOT_USER_ORGANIZATION
-		where name =#{name}
+		where PARENT_ID =#{name}
 	</select>
 	
 	<!-- 根据属地id查询当前属地的下一级人员 -->

@@ -9,9 +9,10 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	console.log("resavepeople-----"+resavepeople)
-	//用户编号
+
+
 	var num = getCookie1("num").replace(/"/g,'');
+
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	console.log("用户所在组织:"+dept);
@@ -21,6 +22,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var tProblemRepId = null, tempRepId = null;
 	//0-表示暂存，1-表示上报
 	var type = 0;
+
+
 	//根据piid判断是否是回退到问题上报节点
 	if(piid != null && piid != ""){
 		$("#problem_back").css({"display":"block"});
@@ -45,7 +48,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			  ch = value.split("，");
 			  console.log(ch);
 			  for(var i=0;i<ch.length;i++){
+
 				  if(ch[i].length == 0 || new RegExp("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？\\s]+").test(ch[i])){
+
 					  return '上报人不能有特殊字符，用户名之间请以中文逗号(，)隔开';
 				  }
 			  }
@@ -332,7 +337,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
-		     ,url: '/iot_process/process/processPure2:4:52504'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+		     ,url: '/iot_process/process/processPure2:9:135004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
