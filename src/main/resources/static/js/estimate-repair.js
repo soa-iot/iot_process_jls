@@ -49,7 +49,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 			layer.msg("指定日期不能为空",{icon: 5});
 			return false;
 		}
-		
+		assignUsers.length = 0;
 		//弹出层
 		layer.open({
 			type: 1
@@ -111,7 +111,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 闭环流程
 	 */
 	form.on('submit(complete)', function(data){
-
+		
 		$.ajax({
 		     type: "PUT"
 		     ,url: '/iot_process/process/nodes/end/piid/'+piidp   //piid为流程实例id
@@ -175,6 +175,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 外部协助跳转
 	 */
 	form.on('submit(out_coordinate)', function(data){
+		assignUsers.length = 0;
 		//弹出层
 		layer.open({
 			type: 1
