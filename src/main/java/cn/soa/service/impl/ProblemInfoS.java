@@ -25,6 +25,21 @@ public class ProblemInfoS implements ProblemInfoSI {
 	@Autowired
 	private ProblemInfoMapper problemInfoMapper;
 	/**
+	 * lixuefeng:新增接口用于问题查询，多个维度，可分页
+	 * @param piid 流程标识字段
+	 * @return 问题评估信息实体
+	 */
+	@Override
+	public List<ProblemInfo> queryProblempro(ProblemInfo problemInfo, Integer page, Integer pageSize) {
+		// TODO Auto-generated method stub
+		return problemInfoMapper.queryProblempro(problemInfo, page, pageSize);
+	}
+	@Override
+	public int count(ProblemInfo problemInfo) {
+		// TODO Auto-generated method stub
+		return problemInfoMapper.count(problemInfo);
+	}
+	/**
 	 * 根据流程标识字段查询问题评估信息
 	 * @param piid 流程标识字段
 	 * @return 问题评估信息实体
@@ -211,4 +226,5 @@ public class ProblemInfoS implements ProblemInfoSI {
 			return -1;
 		}
 	}
+
 }

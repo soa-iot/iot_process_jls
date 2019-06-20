@@ -23,6 +23,7 @@ import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoVO;
 import cn.soa.entity.ProblemReportpho;
 import cn.soa.entity.ResultJson;
+import cn.soa.entity.ResultJsonForTable;
 import cn.soa.entity.UnsafeType;
 import cn.soa.service.impl.ProblemInfoS;
 import cn.soa.service.impl.ReportPhoS;
@@ -50,10 +51,21 @@ public class ReportC {
 	private ReportPhoS reportPhoS;
 	@Autowired
 	private  ProblemInfoS  problemInfoS;
-	/**   
-	 * @Title: showUnsafeList   
-	 * @Description: 查询出所有不安全行为数据 
+	/**
+	 * @Title: statisticalTaskProblempro   
+	 * @Description: 问题统计功能 
 	 * @return: ResultJson<List<UnsafeType>> 返回不安全行为数据列表   
+	 */
+	@GetMapping("/problemQuery")
+	public ResultJsonForTable queryProblemInfo(@RequestParam(name = "info",required=false) ProblemInfo info,@RequestParam(name = "page",required=false) Integer page,@RequestParam(name = "pageSize",required=false) Integer pageSize){
+			if(page==null||pageSize==null) {
+				page=pageSize=-1;
+			};
+		return new ResultJsonForTable( 0, "", problemInfoS.count(info), problemInfoS.queryProblempro(info, page, pageSize));
+	}
+	/**   
+	 * @Title: statisticalTaskProblempro   
+	 * @Description: 问题统计功能 
 	 */
 	@GetMapping("/problemCount")
 	public ResultJson<List<Map<String ,Object>>> statisticalTaskProblempro(String beginTime,String endTime){

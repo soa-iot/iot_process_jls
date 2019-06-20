@@ -21,7 +21,9 @@ $.ajax({
 	url : "/iot_process/userOrganizationTree/userOrganizationArea",  
 	type : "get",
 	//$.cookie("organ")$.cookie("name")
-	data : {area:$.cookie("organ"),username:$.cookie("name"},
+	//data : {area:$.cookie("organ"),username:$.cookie("name")},
+	data : {area:$.cookie("organ").replace(/"/g,""),username:$.cookie("name").replace(/"/g,"")},
+
 	dataType : "json",  
 	success: function( json) {
 		console.log(json);
@@ -135,7 +137,9 @@ $.ajax({
 			layui.use('tree', function(){
 				var tree = layui.tree
 				,layer = layui.layer
-				,data = coordinate_tree_data;
+				,data = [{label:organ
+							,id:organ+",0"
+							,children:coordinate_tree_data}];
 			//弹出层
 			layui.use('layer', function(){ //独立版的layer无需执行这一句
 				var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
@@ -167,7 +171,7 @@ $.ajax({
 								if (usernames=="") {
 									layer.msg('至少选定一人！！！',{icon:7});
 								}else if (yesCompare()) {
-									workPlan(this,usernames);
+									estimate_next(this,usernames);
 			
 									layer.close(ope);
 								}
@@ -206,29 +210,47 @@ $.ajax({
  * @returns
  */
 function workPlan(obj,usernames){
-	var isIngroup = 0;
-	
-	console.log("id:"+$(obj).attr("id"));
-	console.log("id判断:"+$(obj).attr("id")=="work_plant");
-	
-	if ($(obj).attr("id")=="work_plant") {
-		isIngroup = 1;
-	}
-	
-	if ($(obj).attr("id")=="estimate_nextt") {
-		isIngroup = 3;
-	}
-	console.log("isIngroupg:"+isIngroup);
 	$.ajax({
 		type: "PUT"
 		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 		,data: {
-			"isIngroup": isIngroup,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+			"isIngroup": 1,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
 		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
-			"estimators":usernames,
+			"receivor":usernames,
+<<<<<<< HEAD
+			"userName":$.cookie("name")
+		}   //问题上报表单的内容
+		,contentType: "application/x-www-form-urlencoded"
+		,dataType: "json"
+		,success: function(jsonData){
+			//后端返回值： ResultJson<Boolean>
+			console.log("人员提交："+jsonData.data);
+			if (jsonData.data) {
+				modifyEstimated(this);
+			}else{
+				layer.msg('安排人员发送失败！！！',{icon:7});
+			}
+		},
+		//,error:function(){}		       
+	});
+}
+
+function estimate_next(obj,usernames){
+	$.ajax({
+		type: "PUT"
+		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+		,data: {
+			"isIngroup": 3,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
+		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
+		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
+			"comment": $("#comment").val(),     //节点的处理信息
+			"puror":usernames,
+=======
+>>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 			"userName":$.cookie("name")
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"

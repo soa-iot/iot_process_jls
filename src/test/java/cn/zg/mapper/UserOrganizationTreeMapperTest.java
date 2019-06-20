@@ -36,5 +36,9 @@ public class UserOrganizationTreeMapperTest {
 		System.err.println(userOrganizations);
 	}
 	
-	
+	@Test
+	public void findUserOrganizationByOrganTest() {
+		 List<UserOrganization> userOrganizations = userOrganizationTreeMapper.findUserOrganizationByOrgan("检维修变电站", "li");
+		System.err.println(userOrganizations);
+	}
 }

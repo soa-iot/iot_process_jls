@@ -3,12 +3,9 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="cn.soa.dao.ProblemInfoMapper">
-
 	<!-- ===========================1、查询===============================  -->
-	
 	<!-- 1.1 根据流程标识字段查询问题评估信息 -->
 	<!-- ProblemInfo findByPiid(String piid); -->
-	
 	<sql id="problemInfoSelectSql">
 		t_problem_rep_id tProblemRepId,
 			piid,
@@ -77,6 +74,16 @@
 			inter_or_outer interOrOuter,
 			outer_deal_describe outerDealDescribe
 	</sql>
+		
+<select id="queryProblempro" resultType="cn.soa.entity.ProblemInfo" >
+    select 
+    <include refid="problemInfoSelectSql" />
+    from cz_task_problemreport
+  </select>
+    <select id="count"  parameterType="cn.soa.entity.ProblemInfo" resultType="int">
+  		select count(*) from  cz_task_problemreport
+  </select>
+		<!-- lixuefeng新增用于问题条件查询，返回list -->
 	<!-- lixuefeng新增用于问题统计 -->
 	<select id="statisticalTaskProblempro" resultType="map">
 			select  CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
