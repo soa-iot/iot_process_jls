@@ -77,6 +77,14 @@ public class UserOrganizationTreeServiceImpl implements UserOrganizationTreeServ
 	}
 
 	/**
+	 * 获取净化技术干部/维修技术干部service层
+	 * @return
+	 */
+	public List<UserOrganization> getUserOrganizationByOrgan(String organ,String username){
+		return  findUserOrganizationByOrgan(organ, username);
+	}
+	
+	/**
 	 * 根据属地id查询当前属地的下一级人员service层
 	 * @return
 	 */
@@ -94,5 +102,13 @@ public class UserOrganizationTreeServiceImpl implements UserOrganizationTreeServ
 
 		return list;
 
+	}
+	
+	/**
+	 * 获取净化技术干部/维修技术干部service层
+	 * @return
+	 */
+	private List<UserOrganization> findUserOrganizationByOrgan(String organ,String username){
+		return uotMapper.findUserOrganizationByOrgan(organ, username);
 	}
 }
