@@ -429,7 +429,7 @@ public class ProcessC {
 	 * @Description: 流程节点跳转 - 组任务  
 	 * @return: ResultJsonForTable<Boolean>        
 	 */  
-	@PutMapping("/nodes/before/group/piid/{piid}")
+	@PutMapping("/nodes/jump/group/piid/{piid}")
 	public ResultJson<Boolean> jumpNodesByPiidInGroup(
 			@PathVariable("piid") String piid,
 			@RequestParam Map<String,Object> map ){
@@ -441,7 +441,7 @@ public class ProcessC {
 			logger.debug( "-------变量map为null--------" );
 		}
 		
-		boolean b = activityS.transferProcessInVarsByPiid(piid, map);
+		boolean b = activityS.transferProcessByPiid(piid, map);
 		if( b ) {
 			return new ResultJson<Boolean>( 0, "节点跳转成功", true );
 		}
