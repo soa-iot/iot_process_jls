@@ -87,7 +87,10 @@ $("#complete").click(function(){
 			,data: {
 
 				"comment": $("#comment").val()     //节点的处理信息
+<<<<<<< HEAD
 				
+=======
+>>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 				,"userName":$.cookie("name").replace(/"/g,"")
 			}   //问题上报表单的内容
 			,contentType: "application/x-www-form-urlencoded"

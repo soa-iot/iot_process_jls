@@ -22,7 +22,8 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        type : "put",
 		        data : {
 	        		"comment": data.field.comment,
-	        		"complementor": resavepeople
+	        		"complementor": resavepeople,
+	        		"userName": resavepeople
 	            },
 	            contentType: "application/x-www-form-urlencoded",
 		        dataType : "json",  

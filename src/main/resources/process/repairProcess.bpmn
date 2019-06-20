@@ -5,7 +5,6 @@
     <startEvent id="start" name="启动流程"></startEvent>
     <userTask id="report" name="问题上报" activiti:assignee="${reporter}">
       <extensionElements>
-        <activiti:executionListener event="start" class="cn.soa.service.impl.activity.FindEstimatorByArea"></activiti:executionListener>
         <activiti:executionListener event="end" class="cn.soa.service.impl.activity.AddPiidToBussTable"></activiti:executionListener>
       </extensionElements>
     </userTask>
@@ -30,7 +29,7 @@
     <userTask id="check" name="作业验收" activiti:candidateUsers="${checkor}"></userTask>
     <endEvent id="end" name="闭环流程"></endEvent>
     <sequenceFlow id="flow12" name="分支1流向2" sourceRef="node1" targetRef="pure">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${area == '净化工段' and  'isIngroup'==3 }]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${area == '净化工段' and  isIngroup=='3' }]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="pure" targetRef="repair"></sequenceFlow>
     <sequenceFlow id="flow11" name="分支1流向1" sourceRef="node1" targetRef="repair">
@@ -96,7 +95,7 @@
         <omgdi:waypoint x="550.0" y="187.0"></omgdi:waypoint>
         <omgdi:waypoint x="610.0" y="187.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="48.0" width="60.0" x="550.0" y="187.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="100.0" x="550.0" y="187.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
