@@ -304,7 +304,7 @@ public interface ActivitySI {
 	 * @Description: 流程跳转(提供流程变量) - piid    
 	 * @return: boolean        
 	 */  
-	boolean transferProcessInVarsByPiid(String piid, Map<String, Object> vars);
+	boolean transferProcessByPiid(String piid, Map<String, Object> vars);
 
 	
 }
