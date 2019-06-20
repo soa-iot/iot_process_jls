@@ -82,6 +82,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 					console.log(assignUsers);
 				}
 			})
+			
+			//人名前面 显示人形图标
+			$("i.layui-icon-file").addClass("layui-icon-user");
 		 }
 		});
 	    return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
