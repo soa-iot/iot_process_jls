@@ -35,6 +35,9 @@
 			                    <button type="button" class="layui-btn layui-btn-sm" id="addFinishImg">选择上传图片</button> 
 							</div>
 						</div>
+						<div class="layui-inline">
+							<input class="layui-input" disabled style="display:none" lay-verify="imgs"/>
+						</div>
 					</div>
 					
 					<div class="layui-form-item" style="display: none;" id="finish-phos">
@@ -45,15 +48,17 @@
 							</div>
 						</div>
 					</div>
-				
-					<div class="layui-inline">
-						<label class="layui-form-label labelr">事件/隐患标记</label>
-						<div class="layui-input-inline layui-input-top">
-							<input name="incident_sign" type="text"
-									class="layui-input layui-input-one" disabled="disabled">
+
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label labelr">事件/隐患标记</label>
+							<div class="layui-input-inline layui-input-top">
+								<input name="incident_sign" type="text"
+										class="layui-input layui-input-one" disabled="disabled">
+							</div>
+
 						</div>
 					</div>
-					
 					<div class="layui-form-item">
 						<div class="layui-inline">
 							<label class="layui-form-label labelr">整改日期</label>
@@ -74,8 +79,8 @@
 					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">处理说明</label>
 						<div class="layui-input-block right-marg">
-							<textarea name="comment" id="input_localName" placeholder="请输入内容"
-								class="layui-textarea" lay-verify="required"></textarea>
+							<textarea name="comment"  id="input_localName" placeholder="请输入内容"
+								class="layui-textarea"  lay-verify="required"></textarea>
 						</div>
 					</div>
 

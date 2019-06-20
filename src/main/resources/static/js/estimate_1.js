@@ -3,7 +3,6 @@
  * 全局变量——piid
  */
 var piidp = GetQueryString('piid');
-
 /**
  * 全局变量——属地单位
  */
@@ -371,34 +370,48 @@ function compareTodept(checData1,checData2){
  * 获取外部协调数据
  * @returns
  */
-function out_data(){
-	var out_data_tree=[{label:"龙王庙天然气净化厂",children:[]}];
+function outhelper_data(outhelperData){
+	var out_data_tree=[{label:"龙王庙天然气净化厂",id:"龙王庙天然气净化厂,0",children:[]}];
 	var data = [];
-	for ( var key in outp) {
-			console.log(key +":"+(key != "龙王庙天然气净化厂"));
+	
+	for ( var key in outhelperData) {
+		
 			if (key != "龙王庙天然气净化厂" && key != $.cookie("organ")) {
 				$.ajax({  
 					//url : "http://localhost:10238/iot_usermanager/user/roleName",  
 					url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
 					type : "get",
 					//$.cookie("organ")$.cookie("name")
-					data : {organ:outp[key],username:"无"},
+					data : {organ:outhelper[key],username:"无"},
 					dataType : "json",  
 					async:false,
 					success: function(json) {
-						
+	
 						if (json.code == 0) {
 							var datapro = json.data;
 							//数据初始化
 							data = buildTree(datapro);
-							
+	
 						}
 					}
 				})
-				console.log(out_data_tree[0].children);
-				out_data_tree[0].children[out_data_tree[0].children.length] = {label:key,children: data};
+				
+				if (data.length == 0) {
+					data = {label: key 
+							,id:key+",0"
+							,disabled:true
+							,children: data}
+				}else{
+					data = {label: key 
+							,id:key+",0"
+							,children: data}
+				}
+				
+				out_data_tree[0].children[out_data_tree[0].children.length] = data;
 			}
+		
 	}
+	
 	console.log(out_data_tree)
 	return out_data_tree;
 }

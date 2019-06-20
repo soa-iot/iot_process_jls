@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import cn.soa.entity.LayuiTree;
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemReportpho;
 import cn.soa.entity.ResultJson;
 import cn.soa.entity.UserOrganization;
 import cn.soa.service.inter.ProblemInfoSI;
 import cn.soa.service.inter.ProblemReportphoSI;
+import cn.soa.service.inter.UserManagerSI;
 
 /**
  * @ClassName: ReportC
@@ -34,6 +36,9 @@ public class EstimateC {
 
 	@Autowired
 	private ProblemReportphoSI problemReportphoSI;
+	
+	@Autowired
+	private UserManagerSI userManagerS;
 
 	/**
 	 * 问题信息图片数据
@@ -112,6 +117,18 @@ public class EstimateC {
 		List<UserOrganization> userOrganizations = problemInfoSI.getDeptByProblemtype(problemtype);
 		return userOrganizations != null ? new ResultJson<List<UserOrganization>>(0, "数据获取成功",userOrganizations): new ResultJson<List<UserOrganization>>(1, "数据获取失败",userOrganizations);
 		
+	}
+	
+	/**
+	 * 查找仪表、电气、机械这三个班长
+	 * @param 无
+	 * @return 用户列表树形结构
+	 */
+	@GetMapping("/repairlist")
+	public ResultJson<List<LayuiTree>> getRepairList(){
+		List<LayuiTree> result = userManagerS.findRepair();
+		
+		return new ResultJson<List<LayuiTree>>(result);
 	}
 	
 }

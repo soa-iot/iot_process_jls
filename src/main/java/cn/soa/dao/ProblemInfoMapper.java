@@ -24,7 +24,14 @@ public interface ProblemInfoMapper {
 	 * @return 问题评估信息实体
 	 */
 	List<Map<String ,Object>> statisticalTaskProblempro(@Param("beginTime")String beginTime,@Param("endTime")String endTime);
-
+	/**
+	 * lixuefeng 新增问题查询功能
+	 * 根据流程标识字段查询问题评估信息
+	 * @param  时间参数
+	 * @return 问题评估信息实体
+	 */
+	List<ProblemInfo> 	queryProblempro(@Param("record")ProblemInfo problemInfo,@Param("page")Integer page,@Param("pageSize")Integer pageSize);
+	int 	count(@Param("record")ProblemInfo problemInfo);
 	/**
 	 * 根据流程标识字段查询问题评估信息
 	 * @param piid 流程标识字段
@@ -69,14 +76,12 @@ public interface ProblemInfoMapper {
 	 * @return: Integer  受影响行数
 	 */ 
 	public Integer insertOne(ProblemInfo info);
-	
 	/**   
 	 * @Title: updateOne   
 	 * @Description: 更新一条问题报告数据 
 	 * @return: Integer  受影响行数      
 	 */ 
 	public Integer updateOne(ProblemInfo info);
-	
 	/**   
 	 * @Title: updateEstiByPiid   
 	 * @Description: 更新一条问题评估
@@ -90,13 +95,11 @@ public interface ProblemInfoMapper {
 	 * @return: String  用户的PARENT_ID    
 	 */ 
 	public String findApplyPeople(String name);
-
 	/**
 	 * 根据属地名称去找另外的属地
 	 * @param problemtype
 	 * @return
 	 */
-
 	public List<UserOrganization> findDeptByProblemtype(String problemtype);
 	
 	/**   

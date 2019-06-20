@@ -92,9 +92,81 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 $("#coordinate_tree").hide();
 var coordinate_tree ;
 
-//数据初tree数据声明
-var coordinate_tree_data=[];
-$.ajax({  
+//tree
+layui.use('tree', function(){
+	
+	delete outhelper["维修工段"];
+	
+	var tree = layui.tree
+	,outhelperData= outhelper
+	,layer = layui.layer
+	,data = outhelper_data(outhelperData)
+	,usernames = "";
+	
+	
+	//弹出层
+	layui.use('layer', function(){ //独立版的layer无需执行这一句
+		var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+		//触发事件
+		var active = {
+				offset: function(othis){
+					var type = othis.data('type')
+					layer.open({
+						type: 1
+						,offset: type 
+						,area: ['300px','400px;']
+					,id: 'coordinate'+type //防止重复弹出
+					,key:'id'
+						,content: $("#coordinate_tree")
+						,btn: ['确认',"取消"]
+					,btnAlign: 'c' //按钮居中
+						,yes: function(){
+							
+							var check = coordinate_tree.getChecked(); //获得被勾选的节点
+							console.log(check);
+							
+							for (var i = 0; i < check.length; i++) {
+								usernames += userOrDept(check[i][1]);
+								if (usernames != "" && userOrDept(check[i][1]) != "" && i != check.length - 1) {
+									usernames += ",";
+								}
+							}
+							if (usernames.charAt(usernames.length - 1) == ",") {
+								usernames = usernames.substring(0,usernames.length - 1);
+							}
+							console.log("外部协调选中的人："+usernames);
+							
+							//workPlan(this,usernames);
+							
+							
+							usernames="";
+							
+							layer.closeAll();
+						}
+					,success:function(){
+						//console.log(data);
+						//开启复选框
+						coordinate_tree = tree.render({
+							
+							elem: '#coordinate_tree'
+								,data: data
+								,showCheckbox: true
+						})
+					}
+					});
+				}
+		};
+		
+		$('#coordinate').on('click', function(){
+			var othis = $(this), method = othis.data('method');
+			active[method] ? active[method].call(this, othis) : '';
+		});
+		
+	});
+	
+	
+});
+/*$.ajax({  
 	url : "http://localhost:8080/iot_process/estimates/problemtype",  
 	type : "get",
 	data : {problemtype:area},
@@ -104,79 +176,11 @@ $.ajax({
 		if (json.state == 0) {
 			var datapro = json.data;
 
-			//数据初始化
-			coordinate_tree_data = out_data();
-			//tree
-			layui.use('tree', function(){
-				var tree = layui.tree
-				,layer = layui.layer
-				,data = coordinate_tree_data;
-
-
-				//弹出层
-				layui.use('layer', function(){ //独立版的layer无需执行这一句
-					var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
-					//触发事件
-					var active = {
-							offset: function(othis){
-								var type = othis.data('type')
-								layer.open({
-								type: 1
-								,offset: type 
-								,area: ['300px','400px;']
-								,id: 'coordinate'+type //防止重复弹出
-								,key:'id'
-								,content: $("#coordinate_tree")
-								,btn: ['确认',"取消"]
-								,btnAlign: 'c' //按钮居中
-								,yes: function(){
-
-									var check = coordinate_tree.getChecked(); //获得被勾选的节点
-									console.log(check);
-
-									for (var i = 0; i < check.length; i++) {
-										usernames += check[i][1];
-										if (i!=check.length-1) {
-											usernames +=",";
-										}
-										}
-									console.log("选中的部门："+usernames);
-
-										//workPlan(this,usernames);
-
-
-									usernames="";
-
-									layer.closeAll();
-								}
-								,success:function(){
-									//console.log(data);
-									//开启复选框
-									coordinate_tree = tree.render({
-
-										elem: '#coordinate_tree'
-											,data: data
-											,showCheckbox: true
-									})
-								}
-								});
-							}
-					};
-
-					$('#coordinate').on('click', function(){
-						var othis = $(this), method = othis.data('method');
-						active[method] ? active[method].call(this, othis) : '';
-					});
-
-				});
-
-
-			});
 
 		}
 
 	}  
-});
+});*/
 
 /**
  * 闭环处理

@@ -24,14 +24,14 @@
 								<label class="layui-form-label head-text">开始日期:</label>
 								<div class="layui-input-inline">
 									<input type="text" class="layui-input " id="startTime"
-										placeholder="yyyy-mm-dd" style="width: 100px">
+										placeholder="yyyy-mm-dd" style="width: 100px" autocomplete="off">
 								</div>
 							</div>
 							<div class="layui-inline">
 								<label class="layui-form-label head-text">截至日期:</label>
 								<div class="layui-input-inline">
 									<input type="text" class="layui-input " id="endTime"
-										placeholder="yyyy-mm-dd" style="width: 100px">
+										placeholder="yyyy-mm-dd" style="width: 100px" autocomplete="off">
 								</div>
 							</div>
 							<div class="layui-inline" id="generateTestData">
@@ -80,82 +80,6 @@
 			renderTime('#startTime');
 			renderTime('#endTime');
 			form.render(); 
-			//表格数据
-			var tableData={
-					  "code": 0
-					  ,"msg": ""
-					  ,"count": 1
-					  ,"data": [{
-					    "jc-total":0
-					    ,"jc-finished": 0
-					    ,"jc-unfinished": 0
-						,"wx-total":0
-						,"wx-finished": 0
-						,"wx-unfinished": 0
-						,"hse-total":0
-						,"hse-finished": 0
-						,"hse-unfinished": 0
-						,"sb-total":0
-						,"sb-finished": 0
-						,"sb-unfinished": 0
-						,"zh-total":0
-						,"zh-finished": 0
-						,"zh-unfinished": 0
-						,"cw-total":0
-						,"cw-finished": 0
-						,"cw-unfinished": 0
-						,"sc-total":0
-						,"sc-finished": 0
-						,"sc-unfinished": 0
-					  }]};
-			//统计问题情况
-			function changeTableDate(para,area){
-				if(para.PROBLEMSTATE=='UNFINISHED'){
-					tableData.data[0]["'"+area+"-unfinished'"]+=parseInt(para.count);
-				}else{
-					tableData.data[0]["'"+area+"-finished'"]+=parseInt(para.count);
-				}
-					tableData.data[0]["'"+area+"-total'"]+=parseInt(para.count);
-			}
-			$("#generateTestData").click(function(){
-				var total=0, finished=0;
-				$.getJSON('/iot_process/report/problemCount',{'beginTime':$('#startTime').val(),'endTime':$('#endTime').val()},function(aj){
-					if(aj.state==0){
-						var useData=aj.data;
-						//根据获取的数据进行分析
-						$.each(useData,function(i,n){
-							total+=parseInt(n.count);
-							if(n.PROBLEMSTATE=='FINISHED'){
-								finished+=parseInt(n.count);
-							};
-							switch (n.area){
-							case '净化工段':
-								changeTableDate(n.PROBLEMSTATE,'jc');
-								break;
-							case '维修工段':
-								changeTableDate(n.PROBLEMSTATE,'wx');
-								break;
-							case 'HSE办公室':
-								changeTableDate(n.PROBLEMSTATE,'hse');
-								break;
-							case '财务经营办公室':
-								changeTableDate(n.PROBLEMSTATE,'cw');
-								break;
-							case '设备办':
-								changeTableDate(n.PROBLEMSTATE,'sb');
-								break;
-							case '生产办':
-								changeTableDate(n.PROBLEMSTATE,'sc');
-								break;
-							case '综合办':
-								changeTableDate(n.PROBLEMSTATE,'zh');
-								break;
-							}
-						});
-						console.log(aj.data);
-					}
-				})
-			});
 			var option = {
 				    tooltip : {
 				        formatter: "{a} <br/>{c} {b}"
@@ -175,7 +99,7 @@
 				    	bottom:2},
 				    series : [
 				        {
-				            name: '速度',
+				            name: '完成率',
 				            type: 'gauge',
 				            z: 3,
 				            min: 0,
@@ -244,30 +168,12 @@
 				                color: '#eee',
 				                rich: {}
 				            },
-				            data:[{value: 40, name: '完成率'}]
+				            data:[{value: 100, name: '完成率'}]
 				        }
 				       
 				    ]
 				};
 			var myChart = echarts.init($('.complate-rate')[0]);
-			myChart.setOption(option);
-			var category = [];
-			var dottedBase = +new Date();
-			var lineData = [];
-			var barData = [];
-
-			for (var i = 0; i < 20; i++) {
-			    var date = new Date(dottedBase += 3600 * 24 * 1000);
-			    category.push([
-			        date.getFullYear(),
-			        date.getMonth() + 1,
-			        date.getDate()
-			    ].join('-'));
-			    var b = Math.random() * 200;
-			    var d = Math.random() * 200;
-			    barData.push(b)
-			    lineData.push(d + b);
-			}
 			var Baroption = {
 				   grid:{
 				    	top:30,
@@ -282,13 +188,13 @@
 				        }
 				    },
 				    legend: {
-				        data: ['line', 'bar'],
+				        data: ['总量', '已整改', '未整改'],
 				        textStyle: {
 				            color: '#ccc'
 				        }
 				    },
 				    xAxis: {
-				        data: category,
+				       // data: category,
 				        axisLine: {
 				            lineStyle: {
 				                color: '#ccc'
@@ -303,8 +209,8 @@
 				            }
 				        }
 				    },
-				    series: [ {
-				        name: 'bar',
+				    series: [  {
+				        name: '总量',
 				        type: 'bar',
 				        barWidth: 10,
 				        itemStyle: {
@@ -318,62 +224,214 @@
 				                    ]
 				                )
 				            }
-				        },
-				        data: barData
+				        }
+				       
 				    }, {
-				        name: 'dotted',
-				        type: 'pictorialBar',
-				        symbol: 'rect',
+				        name: '已整改',
+				        type: 'bar',
+				        barWidth: 10,
 				        itemStyle: {
 				            normal: {
-				                color: '#0f375f'
+				                barBorderRadius: 5,
+				                color: new echarts.graphic.LinearGradient(
+				                    0, 0, 0, 1,
+				                    [
+				                        {offset: 0, color: '#14c8d4'},
+				                        {offset: 1, color: '#43eec6'}
+				                    ]
+				                )
 				            }
-				        },
-				        symbolRepeat: true,
-				        symbolSize: [12, 4],
-				        symbolMargin: 1,
-				        z: -10,
-				        data: lineData
+				        }
+				      
+				    }, {
+				        name: '未整改',
+				        type: 'bar',
+				        barWidth: 10,
+				        itemStyle: {
+				            normal: {
+				                barBorderRadius: 5,
+				                color: new echarts.graphic.LinearGradient(
+				                    0, 0, 0, 1,
+				                    [
+				                        {offset: 0, color: '#14c8d4'},
+				                        {offset: 1, color: '#43eec6'}
+				                    ]
+				                )
+				            }
+				        }
+				       
 				    }]
 				};
 			var myChart1 = echarts.init($('.complate-show')[0]);
-			myChart1.setOption(Baroption);
-			table.render({
-			    elem: '#problemReport'
-			    ,title: '问题统计表'
-			    ,cols: [[
-			      ,{ title:'净化工段',colspan:3,align:'center'}
-			      ,{ title:'维修工段',colspan:3,align:'center'}
-			      ,{ title:'HSE办',colspan:3,align:'center'}
-			      ,{ title:'生产办',colspan:3,align:'center'}
-			      ,{ title:'设备办',colspan:3,align:'center'}
-			      ,{ title:'综合办',colspan:3,align:'center'}
-			      ,{ title:'财务办',colspan:3,align:'center'}
-			    ],[
-				      {field:'jc-total', title:'总量'}
-				      ,{field:'jc-finished', title:'已整改',minWidth:75}
-				      ,{field:'jc-unfinished', title:'未整改',minWidth:75}
-				      ,{field:'wx-total', title:'总量'}
-				      ,{field:'wx-finished', title:'已整改',minWidth:75}
-				      ,{field:'wx-unfinished', title:'未整改',minWidth:75}
-				      ,{field:'hse-total', title:'总量'}
-				      ,{field:'hse-finished', title:'已整改',minWidth:75}
-				      ,{field:'hse-unfinished', title:'未整改',minWidth:75}
-				      ,{field:'sc-total', title:'总量'}
-				      ,{field:'sc-finished', title:'已整改',minWidth:75}
-				      ,{field:'sc-unfinished', title:'未整改',minWidth:75}
-				      ,{field:'sb-total', title:'总量'}
-				      ,{field:'sb-finished', title:'已整改',minWidth:75}
-				      ,{field:'sb-unfinished', title:'未整改',minWidth:75}
-				      ,{field:'zh-total', title:'总量'}
-				      ,{field:'zh-finished', title:'已整改',minWidth:75}
-				      ,{field:'zh-unfinished', title:'未整改',minWidth:75}
-				      ,{field:'cw-total', title:'总量'}
-				      ,{field:'cw-finished', title:'已整改',minWidth:75}
-				      ,{field:'cw-unfinished', title:'未整改',minWidth:75}
-			    ]]
-			    ,page: true
-			  });
+			
+			var tableConfig={
+				    elem: '#problemReport'
+					    ,title: '问题统计表'
+					    ,cols: [[
+					      ,{ title:'净化工段',colspan:3,align:'center'}
+					      ,{ title:'维修工段',colspan:3,align:'center'}
+					      ,{ title:'HSE办',colspan:3,align:'center'}
+					      ,{ title:'生产办',colspan:3,align:'center'}
+					      ,{ title:'设备办',colspan:3,align:'center'}
+					      ,{ title:'综合办',colspan:3,align:'center'}
+					      ,{ title:'财务办',colspan:3,align:'center'}
+					    ],[
+						      {field:'jc-total', title:'总量'}
+						      ,{field:'jc-finished', title:'已整改',minWidth:75}
+						      ,{field:'jc-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'jh_check'}
+						      ,{field:'wx-total', title:'总量'}
+						      ,{field:'wx-finished', title:'已整改',minWidth:75}
+						      ,{field:'wx-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'wx_check'}
+						      ,{field:'hse-total', title:'总量'}
+						      ,{field:'hse-finished', title:'已整改',minWidth:75}
+						      ,{field:'hse-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'hse_check'}
+						      ,{field:'sc-total', title:'总量'}
+						      ,{field:'sc-finished', title:'已整改',minWidth:75}
+						      ,{field:'sc-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'sc_check'}
+						      ,{field:'sb-total', title:'总量'}
+						      ,{field:'sb-finished', title:'已整改',minWidth:75}
+						      ,{field:'sb-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'sb_check'}
+						      ,{field:'zh-total', title:'总量'}
+						      ,{field:'zh-finished', title:'已整改',minWidth:75}
+						      ,{field:'zh-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'zc_check'}
+						      ,{field:'cw-total', title:'总量'}
+						      ,{field:'cw-finished', title:'已整改',minWidth:75}
+						      ,{field:'cw-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'cw_check'}
+					    ]]
+						
+					  };
+			//统计问题情况
+			var tableData;
+			function changeTableDate(para,area){
+				if(para.PROBLEMSTATE=='UNFINISHED'){
+					tableData[0][area+"-unfinished"]+=parseInt(para.COUNT);
+				}else{
+					tableData[0][area+"-finished"]+=parseInt(para.COUNT);
+				}
+				tableData[0][area+"-total"]+=parseInt(para.COUNT);
+			}
+			//设置柱状图数据
+			var xtotal;
+			var xfinished;
+			var xunfinished;
+			function setBarData(n,i){
+				if(n.PROBLEMSTATE=="FINISHED"){
+					xfinished[i]=n.COUNT;
+				}else{
+					xunfinished[i]=n.COUNT
+				};
+				xtotal[i]+=n.COUNT;
+			};
+			$("#generateTestData").click(function(){
+				var total=0, finished=0;
+				$.getJSON('/iot_process/report/problemCount',{'beginTime':$('#startTime').val(),'endTime':$('#endTime').val()},function(aj){
+					if(aj.state==0){
+						//初始化基本数据
+						tableData=[{
+						    "jc-total":0
+						    ,"jc-finished": 0
+						    ,"jc-unfinished": 0
+							,"wx-total":0
+							,"wx-finished": 0
+							,"wx-unfinished": 0
+							,"hse-total":0
+							,"hse-finished": 0
+							,"hse-unfinished": 0
+							,"sb-total":0
+							,"sb-finished": 0
+							,"sb-unfinished": 0
+							,"zh-total":0
+							,"zh-finished": 0
+							,"zh-unfinished": 0
+							,"cw-total":0
+							,"cw-finished": 0
+							,"cw-unfinished": 0
+							,"sc-total":0
+							,"sc-finished": 0
+							,"sc-unfinished": 0
+						  }];
+						 xAxisdata=["净化工段","维修工段","HSE办公室","财务经营办公室","综合办","设备办","生产办"];
+						 xtotal=[0,0,0,0,0,0,0];
+						 xfinished=[0,0,0,0,0,0,0];
+						 xunfinished=[0,0,0,0,0,0,0];
+						 useData=aj.data;
+						//根据获取的数据进行分析
+						$.each(useData,function(i,n){
+							total+=parseInt(n.COUNT);
+							if(n.PROBLEMSTATE=='FINISHED'){
+								finished+=parseInt(n.COUNT);
+							};
+						
+							switch (n.AREA){
+							case '净化工段':
+								setBarData(n,0);
+								changeTableDate(n,'jc');
+								break;
+							case '维修工段':
+								setBarData(n,1);
+								changeTableDate(n,'wx');
+								break;
+							case 'HSE办公室':
+								setBarData(n,2);
+								changeTableDate(n,'hse');
+								break;
+							case '财务经营办公室':
+								setBarData(n,2);
+								changeTableDate(n,'cw');
+								break;
+							case '设备办':
+								setBarData(n,5);
+								changeTableDate(n,'sb');
+								break;
+							case '生产办':
+								setBarData(n,6);
+								changeTableDate(n,'sc');
+								break;
+							case '综合办':
+								setBarData(n,4);
+								changeTableDate(n,'zh');
+								break;
+							}
+						});
+						if(aj.data.length==0){
+							total=1;
+						}
+						var value=(finished/total*100).toFixed(2);
+						option.series[0].data[0].value=value;
+						Baroption.xAxis.data=xAxisdata;
+						Baroption.series[0].data=xtotal;
+						Baroption.series[1].data=xfinished;
+						Baroption.series[2].data=xunfinished;
+						myChart.setOption(option);
+						myChart1.setOption(Baroption);
+						tableConfig.data=tableData;
+						table.render(tableConfig);
+
+					}
+				})
+			});
+			//表格监听事件
+			table.on('tool(problemReport)', function(obj){
+				var data=obj.data;
+				console.log(data);
+				switch(obj.event){
+				case 'cw_check':
+					break;
+				case 'hse_check':
+					break;
+				case 'sb_check':
+					break;
+				case 'jh_check':
+					break;
+				case 'zh_check':
+					break;
+				case 'wx_check':
+					break;
+				case 'jh_check':
+					break;
+				}
+	
+			})
 		});		 
 	</script>
 </body>

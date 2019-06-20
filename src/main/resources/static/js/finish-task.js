@@ -16,7 +16,6 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 	//点击完成按钮操作
 	form.on('submit(finish_task)', function(data){		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
-		  var result = false;
 		  $.ajax({  
 			    async : false,
 		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
@@ -31,8 +30,9 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        	if(jsonData.data == true){
 		        		//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("完成作业提交成功",{icon: 1});
-				   		result = true;
+				   		layer.msg("完成作业提交成功",{icon: 1, time:2000}, function(){
+				   			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+				   		});
 		        	}else{
 		        		layer.msg("完成作业提交失败",{icon: 2});
 		        	}
@@ -41,9 +41,6 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        	layer.msg("完成作业提交失败",{icon: 2});
 		        }	
 		   });
-		  if(result){
-			  window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
-		  }
 		  
 		  //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
    });
@@ -108,5 +105,14 @@ layui.use(['form', 'jquery','upload','layer'], function(){
         	 layer.msg("图片上传失败",{icon: 2});
          }
      });
+    
+    //验证是否上传现场施工图
+    form.verify({
+    	imgs: function(value, item){  //value：表单的值、item：表单的DOM对象
+    		if($('#imgZmList').children("li").length < 1){
+    			return '必须上传现场施工图';
+    		}
+    	}
+    });
 	
 });

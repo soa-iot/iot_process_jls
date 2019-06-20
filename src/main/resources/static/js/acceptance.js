@@ -87,7 +87,8 @@ $("#complete").click(function(){
 			,data: {
 
 				"comment": $("#comment").val()     //节点的处理信息
-
+				
+				,"userName":$.cookie("name").replace(/"/g,"")
 			}   //问题上报表单的内容
 			,contentType: "application/x-www-form-urlencoded"
 			,dataType: "json"
