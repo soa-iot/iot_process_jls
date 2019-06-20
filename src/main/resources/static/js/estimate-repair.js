@@ -64,7 +64,11 @@ layui.use(['tree', 'layer', 'form'], function() {
 				var comment = $("#comment").val();
 				var arrangor = assignUsers.join("，");
 				console.log(arrangor);
-				workAssignment(comment, arrangor, resavepeople);
+				if(assignUsers.length < 1){
+					layer.msg("至少选择一名人员", {icon:7});
+				}else{
+					workAssignment(comment, arrangor, resavepeople);
+				}
 				//layer.closeAll();
 		    }
 		,success:function(){	
