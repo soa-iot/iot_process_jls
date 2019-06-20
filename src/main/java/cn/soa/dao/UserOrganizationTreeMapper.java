@@ -3,6 +3,7 @@ package cn.soa.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import cn.soa.entity.UserOrganization;
 
@@ -27,5 +28,10 @@ public interface UserOrganizationTreeMapper {
 	 */
 	List<UserOrganization> findUserOrganizationByParentId(String usernum);
 
+	/**
+	 * 获取净化技术干部/维修技术干部dao层
+	 * @return
+	 */
+	List<UserOrganization> findUserOrganizationByOrgan(@Param("organ")String organ,@Param("username")String username);
    
 }

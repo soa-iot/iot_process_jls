@@ -28,7 +28,7 @@ layui.use([ 'element', 'layer' ], function() {
  */
 //从cookie中获得piid
 var piid = GetQueryString("piid");
-piid = 123;
+
 layui.use('table', function(){
 	  var table = layui.table;
 	  
@@ -152,9 +152,10 @@ layui.use(['form', 'jquery','layer'], function(){
     var userName = getCookie1("name").replace(/"/g,'')
 	//点击下一步按钮操作
 	form.on('submit(next_step)', function(data){
-		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+		  var result = false;
 		  $.ajax({  
+			    async : false,
 		    	url : "/iot_process/process/nodes/next/group/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "PUT",
 		        data : {
@@ -167,6 +168,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
 		        		layer.msg("接收作业成功", {icon: 1});
+		        		result = true;
 		        	}else{
 		        		layer.msg("接收作业失败",{icon: 2});
 		        	}
@@ -175,6 +177,9 @@ layui.use(['form', 'jquery','layer'], function(){
 		        	layer.msg("接收作业失败",{icon: 2});
 		        }	
 		   });		  
+		  if(result){
+			  window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		  }
 		  
 		  //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
    });

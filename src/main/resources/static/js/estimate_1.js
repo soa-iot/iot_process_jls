@@ -80,7 +80,10 @@ $.ajax({
 			$("#problem_describe").val(problem.problemdescribe);
 			if (problem.ticketNo != null && problem.remark != null) {
 				$("#ticketNo").val(problem.ticketNo);
-				$("#sele").val(problem.remark);
+				if (problem.remark=="大修时整改") {
+					$("#sele").val(problem.remark);
+					$("#sdateall").hide();
+				}
 			}
 			if (problem.rectificationperiod != null) {
 				$("#sdate").val(json.data.rectificationperiod.match(/\d+-\d+-\d+/));
@@ -114,14 +117,14 @@ $.ajax({
 					//img_div = '';
 
 					for (var i = 0; i < mode; i++) {
-						img_div = img_div+'<img  class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						img_div = img_div+'<img  class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
 						img_id++;
 					}
 
 				}else{
 
 					for (var i = 0; i < 3; i++) {
-						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
 						
 						img_id++;
 					}
@@ -260,7 +263,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	var active = {
 			offset: function(othis){
 				
-			var imgHtml= "<img src='"+$(this).attr("src")+"'width='800px'  height='600px'/>";
+			var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='800px'  height='600px'/>";
 				//var type = othis.data('type')
 				layer.open({
 				type: 1
@@ -282,3 +285,84 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	});
 
 });
+
+
+
+/**
+ * 指定日期禁用
+ */
+layui.use(['layer', 'jquery', 'form'], function () {
+	var layer = layui.layer,
+			$ = layui.jquery,
+			form = layui.form;
+
+	form.on('select(dateChange)', function(data){
+		if(data.value == "大修时整改"){
+			console.log("---指定日期--------"+data);
+			$("#sdate").val("");
+			$("#sdate").attr("disabled","disabled");
+			$("#sdateall").hide()
+			form.render('select');
+		}else{
+			$("#sdateall").show()
+			$("#sdate").removeAttr("disabled");
+			form.render('select');//select是固定写法 不是选择器
+		}
+	});
+});
+
+/**
+ * 回退
+ */
+$("#rollback").click(function(){
+
+		if (yesCompare()) {
+			$.ajax({
+			     type: "PUT"
+			     ,url: '/iot_process/process/nodes/before/piid/'+piidp    //piid为流程实例id
+			     ,data: {
+			     	"comment": $("#comment").val()  //处理信息
+			     }  
+			     ,contentType: "application/x-www-form-urlencoded"
+			     ,dataType: "json"
+			     ,success: function(jsonData){
+			     	if (jsonData.data==true) {
+			     		modifyEstimated(this);
+					}else{
+						layer.msg(jsonData.message,{icon:2});
+					}
+			     },
+			});
+			
+		}
+});
+
+/**
+ * 判断是人还是部门
+ * @returns是人返回人名，是部门返回空串
+ */
+function userOrDept(checData){
+	var checDatas = checData.split(",");
+	if (checDatas[1]==1) {
+		return checDatas[0];
+	}else{
+		return ""
+	}
+}
+
+/**
+ * 两人判断是否为同一部门
+ * @param checData1 
+ * @param checData2
+ * @returns
+ */
+function compareTodept(checData1,checData2){
+	
+	var checData1s = checData1.split(",");
+	var checData2s = checData2.split(",");
+	if (checData1s[2]==checData2s[2]) {
+		return true;
+	}else{
+		return false;
+	}
+}

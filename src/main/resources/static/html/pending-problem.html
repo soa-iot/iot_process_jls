@@ -45,26 +45,26 @@
 		        	//需要的基本信息写入cookie
 		        	$.cookie('name',data.name);
 		        	$.cookie('organ',data.organ);
-		  		  table.render({
-					    elem: '#pending'
-					    ,height: 420
-					    ,url: '/iot_process/process/tasks/layui' //数据接口
-					    ,where:{
-					    	"userName":data.name
-					    }
-				  		,skin:'line'
-					    ,cols: [[ //表头
-					      {field: 'piid', title: 'ID', hide:true}
-					      ,{field: 'area', title: '属地', hide:true}
-					      ,{field: 'currentnode', title: '流程节点'}
-					      ,{field: 'describle', title: '问题描述'}
-					      ,{field: 'reportperson', title: '上报人'}
-					      ,{field: 'tip', title: '是否超期'}
-					      ,{fixed: 'right', width: 165, align:'center', toolbar: '#barDemo'}
-					    ]]
-					  });
 		        }
 		    }, false); 
+  		  table.render({
+			    elem: '#pending'
+			    ,height: 420
+			    ,url: '/iot_process/process/tasks/layui' //数据接口
+			    ,where:{
+			    	"userName":$.cookie("name").replace(/"/g,"")
+			    }
+		  		,skin:'line'
+			    ,cols: [[ //表头
+			      {field: 'piid', title: 'ID', hide:true}
+			      ,{field: 'area', title: '属地', hide:true}
+			      ,{field: 'currentnode', title: '流程节点'}
+			      ,{field: 'describle', title: '问题描述'}
+			      ,{field: 'reportperson', title: '上报人'}
+			      ,{field: 'tip', title: '是否超期'}
+			      ,{fixed: 'right', width: 165, align:'center', toolbar: '#barDemo'}
+			    ]]
+			  });
 		  //监听行工具事件
 		  table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
 		    var data = obj.data //获得当前行数据

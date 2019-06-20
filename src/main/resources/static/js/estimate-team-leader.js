@@ -1,16 +1,33 @@
-$("#coordinate_tree").hide();
-var coordinate_tree ;
+/**
+ * 问题评估（班组长评估）
+ */
 
+/**
+ * 属地单位
+ */
+var area = GetQueryString("area");
+
+$("#coordinate_tree").hide();
+
+$("#repair_cadre_tree").hide();
+$("#estimate_cadre_tree").hide();
+
+/**
+ * 作业安排
+ */
 //数据初tree数据声明
-var coordinate_tree_data=[];
 $.ajax({  
 	//url : "http://localhost:10238/iot_usermanager/user/roleName",  
 	url : "/iot_process/userOrganizationTree/userOrganizationArea",  
 	type : "get",
-	data : {area:"净化二班",username:"李京松"},
+	//$.cookie("organ")$.cookie("name")
+	data : {area:$.cookie("organ"),username:$.cookie("name"},
 	dataType : "json",  
 	success: function( json) {
 		console.log(json);
+		var coordinate_tree_data=[];
+		var coordinate_tree ;
+		var usernames = "";
 		if (json.code == 0) {
 			var datapro = json.data;
 			//数据初始化
@@ -30,7 +47,7 @@ $.ajax({
 					var active = {
 							offset: function(othis){
 								var type = othis.data('type')
-								layer.open({
+								var ope = layer.open({
 								type: 1
 								,offset: type 
 								,area: ['300px','400px;']
@@ -45,19 +62,21 @@ $.ajax({
 									console.log(check);
 
 									for (var i = 0; i < check.length; i++) {
-										usernames += check[i][1];
-										if (i!=check.length-1) {
+										usernames += userOrDept(check[i][1]);
+										if (usernames != "" && i != check.length - 1) {
 											usernames +=",";
 										}
 										}
-									console.log("选中的部门："+usernames);
+									console.log("选中的人："+usernames);
 
-										//workPlan(this,usernames);
+									if (usernames=="") {
+										layer.msg('至少选定一人！！！',{icon:7});
+									}else if (yesCompare()) {
+										workPlan(this,usernames);
+				
+										layer.close(ope);
+									}
 
-
-									usernames="";
-
-									layer.closeAll();
 								}
 								,success:function(){
 									//console.log(data);
@@ -87,3 +106,142 @@ $.ajax({
 
 	}  
 });
+
+/**
+ * 下一步
+ * 维修/净化技术干部弹窗
+ */
+var next_div_id = area=="净化工段"?"estimate_cadre_tree":"repair_cadre_tree";
+var organ = area=="净化工段"?"净化技术干部":"维修技术干部";
+$.ajax({  
+	//url : "http://localhost:10238/iot_usermanager/user/roleName",  
+	url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
+	type : "get",
+	//$.cookie("organ")$.cookie("name")
+	data : {organ:organ,username:$.cookie("name")},
+	dataType : "json",  
+	success: function( json) {
+		var coordinate_tree_data=[];
+		var coordinate_tree;
+		var usernames= "";
+		console.log(json);
+		if (json.code == 0) {
+			var datapro = json.data;
+			//数据初始化
+			coordinate_tree_data = buildTree(datapro);
+			
+			
+			//tree
+			layui.use('tree', function(){
+				var tree = layui.tree
+				,layer = layui.layer
+				,data = coordinate_tree_data;
+			//弹出层
+			layui.use('layer', function(){ //独立版的layer无需执行这一句
+				var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+				//触发事件
+				var active = {
+						offset: function(othis){
+							var type = othis.data('type')
+							var ope = layer.open({
+							type: 1
+							,offset: type 
+							,area: ['300px','400px;']
+							,id: 'estimate_next'+type //防止重复弹出
+							,key:'id'
+							,content: $("#"+next_div_id)
+							,btn: ['确认',"取消"]
+							,btnAlign: 'c' //按钮居中
+							,yes: function(){
+
+								var check = coordinate_tree.getChecked(); //获得被勾选的节点
+								console.log(check);
+
+								for (var i = 0; i < check.length; i++) {
+									usernames += userOrDept(check[i][1]);
+									if (usernames != "" && i != check.length - 1) {
+										usernames +=",";
+									}
+									}
+								console.log("选中的人："+usernames);
+								if (usernames=="") {
+									layer.msg('至少选定一人！！！',{icon:7});
+								}else if (yesCompare()) {
+									workPlan(this,usernames);
+			
+									layer.close(ope);
+								}
+							}
+							,success:function(){
+								//console.log(data);
+								//开启复选框
+								coordinate_tree = tree.render({
+
+									elem: '#'+next_div_id
+										,data: data
+										,showCheckbox: true
+								})
+							}
+							});
+						}
+				};
+
+				$('#estimate_next').on('click', function(){
+					var othis = $(this), method = othis.data('method');
+					active[method] ? active[method].call(this, othis) : '';
+				});
+
+			});
+			});
+			
+		}
+	}
+})
+
+/**
+ * 作业安排确认提交
+ * 
+ * @param obj 当前对象
+ * @param usernames 人名用“，”隔开
+ * @returns
+ */
+function workPlan(obj,usernames){
+	var isIngroup = 0;
+	
+	console.log("id:"+$(obj).attr("id"));
+	console.log("id判断:"+$(obj).attr("id")=="work_plant");
+	
+	if ($(obj).attr("id")=="work_plant") {
+		isIngroup = 1;
+	}
+	
+	if ($(obj).attr("id")=="estimate_nextt") {
+		isIngroup = 3;
+	}
+	console.log("isIngroupg:"+isIngroup);
+	$.ajax({
+		type: "PUT"
+		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+		,data: {
+			"isIngroup": isIngroup,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
+		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
+		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
+			"comment": $("#comment").val(),     //节点的处理信息
+			"estimators":usernames,
+			"userName":$.cookie("name")
+		}   //问题上报表单的内容
+		,contentType: "application/x-www-form-urlencoded"
+		,dataType: "json"
+		,success: function(jsonData){
+			//后端返回值： ResultJson<Boolean>
+			console.log("人员提交："+jsonData.data);
+			if (jsonData.data) {
+				modifyEstimated(this);
+			}else{
+				layer.msg('安排人员发送失败！！！',{icon:7});
+			}
+		},
+		//,error:function(){}		       
+	});
+}
