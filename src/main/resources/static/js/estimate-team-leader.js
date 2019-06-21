@@ -222,6 +222,7 @@ function workPlan(obj,usernames){
 			"receivor":usernames,
 
 			"userName":$.cookie("name").replace(/"/g,"")
+
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"

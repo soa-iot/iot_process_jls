@@ -27,11 +27,12 @@ public interface ProblemInfoMapper {
 	/**
 	 * lixuefeng 新增问题查询功能
 	 * 根据流程标识字段查询问题评估信息
+	 * @param pageSize 
 	 * @param  时间参数
 	 * @return 问题评估信息实体
 	 */
-	List<ProblemInfo> 	queryProblempro(@Param("record")ProblemInfo problemInfo,@Param("page")Integer page,@Param("pageSize")Integer pageSize);
-	int 	count(@Param("record")ProblemInfo problemInfo);
+	List<ProblemInfo> 	queryProblempro(@Param("record")ProblemInfo problemInfo,@Param("page")Integer page,Integer pageSize, @Param("startTime")String startTime,@Param("endTime")String endTime);
+	int 	count(@Param("record")ProblemInfo problemInfo,@Param("startTime")String startTime,@Param("endTime")String endTime);
 	/**
 	 * 根据流程标识字段查询问题评估信息
 	 * @param piid 流程标识字段
