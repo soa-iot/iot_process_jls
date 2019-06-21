@@ -287,10 +287,17 @@ public interface ActivitySI {
 
 	/**   
 	 * @Title: backToBeforeNodeByPiid   
-	 * @Description:  根据流程任务piid，回退流程当前节点的上一个节点   
+	 * @Description:  根据流程任务piid，回退流程当前节点的上一个节点   - 非组任务
 	 * @return: boolean        
 	 */  
 	boolean backToBeforeNodeByPiid(String piid, String comment );
+	
+	/**   
+	 * @Title: backToBeforeNodeByPiid   
+	 * @Description:  根据流程任务piid，回退流程当前节点的上一个节点   - 组任务
+	 * @return: boolean        
+	 */  
+	boolean backToBeforeNodeByPiidInGroup(String piid, Map<String,Object> map );
 
 	/**   
 	 * @Title: endProcessByPiid   
