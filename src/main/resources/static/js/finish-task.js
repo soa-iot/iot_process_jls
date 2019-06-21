@@ -57,7 +57,6 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 			  			remark: "1"
          			}
          , accept: 'images'
-         , number: 3
          , multiple: true
          , auto:false
          , bindAction: '#'

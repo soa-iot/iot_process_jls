@@ -274,7 +274,6 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
         	  			remark: "0"
           		 }
           , accept: 'images'
-          , number: 3
           , multiple: true
           , auto:false
           , bindAction: '#'
@@ -423,7 +422,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			   			     ,url: '/iot_process/process/nodes/next/piid/'+piid    //piid为流程实例id
 			   			     ,data: {
 			   			     	"comment": $("#problemdescribe").val()     //节点的处理信息     	
-			   			     	,"error": $("#problemtype").val()
+			   			     	,"area": $("#problemtype").val()
 			   			     }  
 			   			     ,contentType: "application/x-www-form-urlencoded"
 			   			     ,dataType: "json"
