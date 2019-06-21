@@ -677,7 +677,9 @@ public class ActivityS implements ActivitySI{
     public boolean transferProcessByPiid( 
 			String piid, Map<String, Object> vars ) {
     	logger.debug( "---S-------流程跳转(提供流程变量) - piid  ------------" );
-    	if( vars == null  ) {
+
+    	if( vars == null ) {
+
     		logger.debug( "---S--------流程变量map-vars 为null或空------------" );
 			return false;
     	}
