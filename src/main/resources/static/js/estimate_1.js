@@ -355,12 +355,17 @@ function userOrDept(checData){
  * @returns是人返回部门名称
  */
 function deptOrDeptUser(checData){
-	var dapt = "";
-	var checDatas = checData.split(",");	
+//	var dapto = "";
+	var checDatas = checData.split(",");
+	
+	console.log("判断："+ (checDatas[1]==0));
 	if (checDatas[1]==0) {
-		dept = checDatas[0];
+		return checDatas[0];
+	}else{
+		return "";
 	}
-	return dept;
+//	console.log("判断："+depto);
+//	return depto;
 }
 
 /**
@@ -508,19 +513,22 @@ layui.use('tree', function(){
 							var dept = "";
 							for (var i = 0; i < check.length; i++) {
 								
+								var dept_one;
+								var depts = deptOrDeptUser(check[i][1]);
+								if (depts != "") {
+									if (dept != "") {
+										layer.msg('请选择同一部门的人！！！',{icon:7});
+										return;
+									}
+									dept_one = depts;
+								}else{
+									dept = dept_one;
+								}
+								console.log(dept_one) 
 								
 								usernames += userOrDept(check[i][1]);
 								if (usernames != "" && userOrDept(check[i][1]) != "" && i != check.length - 1) {
 									usernames += ",";
-								}
-								
-								var depts = deptOrDeptUser(check[i][1]);
-								if (depts != "" && depts != "龙王庙天然气净化厂") {
-									if (dept != "" && dept != depts) {
-										layer.msg('请选择同一部门的人！！！',{icon:7});
-										return;
-									}
-									dept = depts;
 								}
 								
 							}
@@ -534,7 +542,12 @@ layui.use('tree', function(){
 							console.log("外部协调选中的人："+usernames);
 							
 							if (usernames != "") {
-								outhelperm(this,dept,usernames);
+								
+								if (area == "净化工段" && dept == "维修工段") {
+									outhelper_pure(this,usernames);
+								}else{
+									outhelperm(this,dept,usernames);
+								}
 								usernames="";
 								
 								layer.closeAll();
@@ -605,13 +618,48 @@ function outhelperm(obj,dept,usernames){
 		,dataType: "json"
 		,success: function(jsonData){
 			//后端返回值： ResultJson<Boolean>
-			console.log("人员提交："+jsonData.data);
 			if (jsonData.data) {
 				modifyEstimated(this);
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}
-		},
+		}
 		//,error:function(){}		       
 	});
 }
+
+/**
+ * 净化工段外部协调
+ * @param obj
+ * @param dept
+ * @param usernames
+ * @returns
+ */
+function outhelper_pure(obj,usernames){
+$.ajax({
+    type: "PUT"
+    ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+    ,data: {
+    	,"comment": $("#comment").val()     //通用 -- 节点的处理信息
+    	,"repairor": usernames     //通用 -- 下一个节点问题处理人
+    						         问题评估节点执行人变量名：estimators
+    						         净化分配节点执行人变量名：puror
+    						         维修分配节点执行人变量名：repairor
+    						         作业安排节点执行人变量名：arrangor
+    						         接收作业节点执行人变量名：receivor
+    						         完成作业节点执行人变量名：complementor
+    						         作业验收节点执行人变量名：checkor
+    	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
+    }   //问题上报表单的内容
+    ,contentType: "application/x-www-form-urlencoded"
+    ,dataType: "json"
+    ,success: function(jsonData){
+    	//后端返回值： ResultJson<Boolean>
+    	if (jsonData.data) {
+			modifyEstimated(this);
+		}else{
+			layer.msg('安排人员发送失败！！！',{icon:7});
+		}
+    }
+    //,error:function(){}		       
+});
