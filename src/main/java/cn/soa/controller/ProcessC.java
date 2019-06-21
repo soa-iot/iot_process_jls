@@ -257,7 +257,7 @@ public class ProcessC {
 	 * @Description: 执行流程的下一步（任务tsid）   
 	 * @return: ResultJson<String>        
 	 */ 
-	@PutMapping("/nodes/next/tsid/{tsid}")
+	@PutMapping("/nextnodes/tsid/{tsid}")
 	public ResultJson<Boolean> nextNodeByTSID( 
 			@PathVariable("tsid") String tsid,
 			@RequestParam(value="var",required=false) String var,
@@ -370,7 +370,7 @@ public class ProcessC {
 	
 	/**   
 	 * @Title: backToBeforeNodes   
-	 * @Description:   根据任务piid，流程返回到上一个节点 - 非组任务
+	 * @Description:   根据任务piid，流程返回到上一个节点
 	 * @return: ResultJson<Boolean>        
 	 */  
 	@PutMapping("/nodes/before/piid/{piid}")
@@ -387,26 +387,6 @@ public class ProcessC {
 		return new ResultJson<Boolean>( 0, "流程返回到上一个节点失败", null );
 
 	}
-	
-	
-	/**   
-	 * @Title: backToBeforeNodes   
-	 * @Description:   根据任务piid，流程返回到上一个节点 - 组任务
-	 * @return: ResultJson<Boolean>        
-	 */  
-	@PutMapping("/nodes/before/group/piid/{piid}")
-	public ResultJson<Boolean> backToBeforeNodesByPiidInGroup(
-			@PathVariable("piid") @NotBlank String piid,
-			@RequestParam("comment") String comment ){
-		logger.debug( "--C-------- 根据任务piid，流程返回到上一个节点     -------------" );
-		logger.debug( piid );
-		logger.debug( comment );
-		boolean b = activityS.backToBeforeNodeByPiid( piid, comment );
-		if( b ) {
-			return new ResultJson<Boolean>( 0, "流程返回到上一个节点成功", true );
-		}
-		return new ResultJson<Boolean>( 0, "流程返回到上一个节点失败", null );
-	}
 
 
 	/**   
@@ -414,7 +394,7 @@ public class ProcessC {
 	 * @Description:  根据用户姓名，查询用户的所有待办任务（个人任务+组任务）   
 	 * @return: ResultJson<Task>        
 	 */ 
-	@GetMapping("/tasks")
+	@GetMapping("/nodes/before/piid/{piid}")
 	public ResultJson<List<TodoTask>> getAllTasksByUsernameC(
 			@RequestParam("userName") @NotBlank String userName ){
 		logger.debug( "--C-------- 根据用户姓名，查询用户的所有待办任务（个人任务+组任务）     -------------" );
