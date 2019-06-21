@@ -120,7 +120,7 @@ $.ajax({
 	url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
 	type : "get",
 	//$.cookie("organ")$.cookie("name")
-	data : {organ:organ,username:$.cookie("name")},
+	data : {organ:organ,username:$.cookie("name").replace(/"/g,"")},
 	dataType : "json",  
 	success: function( json) {
 		var coordinate_tree_data=[];
@@ -220,8 +220,9 @@ function workPlan(obj,usernames){
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
 			"receivor":usernames,
-<<<<<<< HEAD
-			"userName":$.cookie("name")
+
+			"userName":$.cookie("name").replace(/"/g,"")
+
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
@@ -249,9 +250,8 @@ function estimate_next(obj,usernames){
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
 			"puror":usernames,
-=======
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
-			"userName":$.cookie("name")
+
+			"userName":$.cookie("name").replace(/"/g,"")
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
