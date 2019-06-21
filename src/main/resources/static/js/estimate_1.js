@@ -642,13 +642,6 @@ $.ajax({
     ,data: {
     	,"comment": $("#comment").val()     //通用 -- 节点的处理信息
     	,"repairor": usernames     //通用 -- 下一个节点问题处理人
-    						         问题评估节点执行人变量名：estimators
-    						         净化分配节点执行人变量名：puror
-    						         维修分配节点执行人变量名：repairor
-    						         作业安排节点执行人变量名：arrangor
-    						         接收作业节点执行人变量名：receivor
-    						         完成作业节点执行人变量名：complementor
-    						         作业验收节点执行人变量名：checkor
     	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
     }   //问题上报表单的内容
     ,contentType: "application/x-www-form-urlencoded"
