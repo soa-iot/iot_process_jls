@@ -2,6 +2,7 @@ package cn.soa.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -57,11 +58,14 @@ public class ReportC {
 	 * @return: ResultJson<List<UnsafeType>> 返回不安全行为数据列表   
 	 */
 	@GetMapping("/problemQuery")
-	public ResultJsonForTable queryProblemInfo(@RequestParam(name = "info",required=false) ProblemInfo info,@RequestParam(name = "page",required=false) Integer page,@RequestParam(name = "pageSize",required=false) Integer pageSize){
+	public ResultJsonForTable queryProblemInfo(@RequestParam(name = "info",required=false) ProblemInfo info,@RequestParam(name = "page",required=false) Integer page,@RequestParam(name = "pageSize",required=false) Integer pageSize,
+			@RequestParam(name = "startTime",required=false) String startTime,@RequestParam(name = "endTime",required=false) String endTime
+			){
+
 			if(page==null||pageSize==null) {
 				page=pageSize=-1;
 			};
-		return new ResultJsonForTable( 0, "", problemInfoS.count(info), problemInfoS.queryProblempro(info, page, pageSize));
+		return new ResultJsonForTable( 0, "", problemInfoS.count(info,startTime,endTime), problemInfoS.queryProblempro(info, page, pageSize,startTime,endTime));
 	}
 	/**   
 	 * @Title: statisticalTaskProblempro   

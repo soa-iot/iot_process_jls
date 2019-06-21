@@ -30,14 +30,14 @@ public class ProblemInfoS implements ProblemInfoSI {
 	 * @return 问题评估信息实体
 	 */
 	@Override
-	public List<ProblemInfo> queryProblempro(ProblemInfo problemInfo, Integer page, Integer pageSize) {
+	public List<ProblemInfo> queryProblempro(ProblemInfo problemInfo, Integer page, Integer pageSize,String startTime,String endTime) {
 		// TODO Auto-generated method stub
-		return problemInfoMapper.queryProblempro(problemInfo, page, pageSize);
+		return problemInfoMapper.queryProblempro(problemInfo, page, pageSize,startTime,endTime);
 	}
 	@Override
-	public int count(ProblemInfo problemInfo) {
+	public int count(ProblemInfo problemInfo,String startTime,String endTime) {
 		// TODO Auto-generated method stub
-		return problemInfoMapper.count(problemInfo);
+		return problemInfoMapper.count(problemInfo,startTime,endTime);
 	}
 	/**
 	 * 根据流程标识字段查询问题评估信息

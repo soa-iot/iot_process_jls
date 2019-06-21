@@ -19,11 +19,11 @@ public interface ProblemInfoSI {
 	 * lixuefeng
 	 * 问题多个维度查询，具备分页功能
 	 */
-	List<ProblemInfo> 	queryProblempro(ProblemInfo problemInfo,Integer page,Integer pageSize);
+	List<ProblemInfo> 	queryProblempro(ProblemInfo problemInfo,Integer page,Integer pageSize,String startTime,String endTime);
 	/**
 	 * 问题统计
 	 */
-	int	count(ProblemInfo problemInfo);
+	int	count(ProblemInfo problemInfo,String startTime,String endTime);
 	/**
 	 * 统计问题整改情况
 	 */

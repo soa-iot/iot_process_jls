@@ -356,11 +356,10 @@ function userOrDept(checData){
  */
 function deptOrDeptUser(checData){
 	var dapt = "";
-	var checDatas = checData.split(",");
+	var checDatas = checData.split(",");	
 	if (checDatas[1]==0) {
 		dept = checDatas[0];
 	}
-	
 	return dept;
 }
 
@@ -506,33 +505,21 @@ layui.use('tree', function(){
 							
 							var check = coordinate_tree.getChecked(); //获得被勾选的节点
 							console.log(check);
-							var dept;
+							var dept = "";
 							for (var i = 0; i < check.length; i++) {
 								
-								var user=userOrDept(check[i][1]);
-								if (user!="") {
-									//对比是否为同一部门
-									if (i < check.length - 2) {
-										if (!compareTodept(check[i][1],check[i+1][1])) {
-											layer.msg('请选择同一部门的人！！！',{icon:7});
-											return;
-										}
-										
-									}
-									
-									usernames +=user;
-									if (userOrDept(check[i][1]) != "" && i!=check.length-1) {
-										usernames +=",";
-									}
-								}
 								
-								/*usernames += userOrDept(check[i][1]);
+								usernames += userOrDept(check[i][1]);
 								if (usernames != "" && userOrDept(check[i][1]) != "" && i != check.length - 1) {
 									usernames += ",";
-								}*/
+								}
 								
 								var depts = deptOrDeptUser(check[i][1]);
-								if (depts != "") {
+								if (depts != "" && depts != "龙王庙天然气净化厂") {
+									if (dept != "" && dept != depts) {
+										layer.msg('请选择同一部门的人！！！',{icon:7});
+										return;
+									}
 									dept = depts;
 								}
 								
@@ -595,7 +582,7 @@ function outhelperm(obj,dept,usernames){
 	
 	var data_out = {
 			
-			"area": area //属地单位
+			"area": dept //属地单位
 			,"actId": actualIds  //跳转节点id
 		     								 
 			,"comment": $("#comment").val()     //节点的处理信息

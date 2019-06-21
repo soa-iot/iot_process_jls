@@ -79,17 +79,33 @@
     select 
     <include refid="problemInfoSelectSql" />
     from cz_task_problemreport
+           <where>			
+    	<if test ="record!=null">
+  				<if test='record.problemtype!=null'>
+    		 and  EVENT_PERSON like concat('%', #{record.eventPerson}, '%')
+    			</if>
+    			<if test='record.eventIntro!=null'>
+    		and EVENT_INTRO like concat('%', #{record.eventIntro}, '%')
+    			</if>
+    			<if test='record.eventType!=null'>
+    		and EVENT_TYPE = #{record.eventType}
+    			</if>
+    	 </if>
+    	  </where>	
   </select>
-    <select id="count"  parameterType="cn.soa.entity.ProblemInfo" resultType="int">
+    <select id="count"  resultType="int">
   		select count(*) from  cz_task_problemreport
+  		where 
   </select>
 		<!-- lixuefeng新增用于问题条件查询，返回list -->
 	<!-- lixuefeng新增用于问题统计 -->
 	<select id="statisticalTaskProblempro" resultType="map">
 			select  CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
 								 when  PROBLEMTYPE='净化工段' then  '净化工段' 
-								 when  PROBLEMTYPE='电站' then  '维修工段'
-								 when  PROBLEMTYPE='电机' then  '维修工段' 
+									when  PROBLEMTYPE='电站' then  '维修工段'
+									when  PROBLEMTYPE='电气' then  '维修工段' 
+									when  PROBLEMTYPE='仪表' then  '维修工段' 
+								 when  PROBLEMTYPE='机械' then  '维修工段'  
 								 when  PROBLEMTYPE='维修工段' then  '维修工段' 
 								 when  PROBLEMTYPE='HSE办公室' then  'HSE办公室' 
 								when  PROBLEMTYPE='财务经营办' then  '财务经营办' 
@@ -100,9 +116,11 @@
   			from  CZ_TASK_PROBLEM_REPORT where TO_CHAR(APPLYDATE,'YYYY-MM-DD')  BETWEEN  #{beginTime} AND  #{endTime} AND PIID IS NOT NULL
   			GROUP BY  CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
 								 when  PROBLEMTYPE='净化工段' then  '净化工段' 
-								 when  PROBLEMTYPE='电站' then  '维修工段'
-								 when  PROBLEMTYPE='电机' then  '维修工段' 
-								 when  PROBLEMTYPE='维修工段' then '维修工段' 
+								when  PROBLEMTYPE='电站' then  '维修工段'
+								when  PROBLEMTYPE='电气' then  '维修工段' 
+								when  PROBLEMTYPE='仪表' then  '维修工段' 
+								 when  PROBLEMTYPE='机械' then  '维修工段'  
+								 when  PROBLEMTYPE='维修工段' then  '维修工段' 
 								 when  PROBLEMTYPE='HSE办公室' then 'HSE办公室' 
 								when  PROBLEMTYPE='财务经营办' then '财务经营办' 
 								when  PROBLEMTYPE='设备办' then  '设备办' 
