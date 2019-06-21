@@ -143,7 +143,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 回退到上一个节点
 	 */
 	form.on('submit(back_previous)', function(data){
-
+		console.log(data.field)
 		$.ajax({
 		     type: "PUT"
 		     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id

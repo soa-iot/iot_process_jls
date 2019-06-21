@@ -640,7 +640,7 @@ $.ajax({
     type: "PUT"
     ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
     ,data: {
-    	,"comment": $("#comment").val()     //通用 -- 节点的处理信息
+    	"comment": $("#comment").val()     //通用 -- 节点的处理信息
     	,"repairor": usernames     //通用 -- 下一个节点问题处理人
     	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
     }   //问题上报表单的内容
@@ -655,4 +655,4 @@ $.ajax({
 		}
     }
     //,error:function(){}		       
-});
+});}
