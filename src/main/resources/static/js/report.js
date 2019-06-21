@@ -12,12 +12,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var num = getCookie1("num").replace(/"/g,'');
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
-	console.log("用户所在组织:"+dept);
-<<<<<<< HEAD
-	//piid
-=======
-	//从地址中获取piid
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
+
+
 	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;
