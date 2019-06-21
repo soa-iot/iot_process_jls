@@ -676,6 +676,7 @@ public class ActivityS implements ActivitySI{
     @Override
     public boolean transferProcessByPiid( 
 			String piid, Map<String, Object> vars ) {
+
     	logger.debug( "---S-------流程跳转(提供流程变量) - piid  ------------" );
 
     	if( vars == null ) {
