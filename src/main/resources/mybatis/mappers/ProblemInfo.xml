@@ -71,31 +71,71 @@
 			problemclass,
 			profession,
 			depet,
-			inter_or_outer interOrOuter,
-			outer_deal_describe outerDealDescribe
+			inter_or_outer interOrOuter
 	</sql>
 		
 <select id="queryProblempro" resultType="cn.soa.entity.ProblemInfo" >
-    select 
-    <include refid="problemInfoSelectSql" />
-    from cz_task_problemreport
+    		select problemtype,problemstate from  (select piid,
+			problemstate,
+			CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
+								 	when  PROBLEMTYPE='净化工段' then  '净化工段' 
+									when  PROBLEMTYPE='电站' then  '维修工段'
+									when  PROBLEMTYPE='电气' then  '维修工段' 
+									when  PROBLEMTYPE='仪表' then  '维修工段' 
+								 	when  PROBLEMTYPE='机械' then  '维修工段'  
+								 	when  PROBLEMTYPE='维修工段' then  '维修工段' 
+									 when  PROBLEMTYPE='HSE办公室' then  'HSE办公室' 
+									when  PROBLEMTYPE='财务经营办' then  '财务经营办' 
+									when  PROBLEMTYPE='设备办' then  '设备办' 
+									when  PROBLEMTYPE='生产办' then  '生产办' 
+									when  PROBLEMTYPE='综合办' then  '综合办' 
+								else null end problemtype 
+  			from  CZ_TASK_PROBLEM_REPORT where piid is not null
+) problemreport
            <where>			
     	<if test ="record!=null">
   				<if test='record.problemtype!=null'>
-    		 and  EVENT_PERSON like concat('%', #{record.eventPerson}, '%')
+    		 and  problemtype =#{record.problemtype}
     			</if>
-    			<if test='record.eventIntro!=null'>
-    		and EVENT_INTRO like concat('%', #{record.eventIntro}, '%')
-    			</if>
-    			<if test='record.eventType!=null'>
-    		and EVENT_TYPE = #{record.eventType}
-    			</if>
+    	 </if>
+    	   <if test='startTime!=null'>
+    		and to_char(applydate,'YYYY-MM-DD') &gt;=#{startTime}
+    	 </if>
+    	  <if test='endTime!=null'>
+    		and to_char(applydate,'YYYY-MM-DD') &lt;=#{startTime}
     	 </if>
     	  </where>	
   </select>
     <select id="count"  resultType="int">
-  		select count(*) from  cz_task_problemreport
-  		where 
+  	  	select count(*) from  (
+  		select CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
+								 when  PROBLEMTYPE='净化工段' then  '净化工段' 
+									when  PROBLEMTYPE='电站' then  '维修工段'
+									when  PROBLEMTYPE='电气' then  '维修工段' 
+									when  PROBLEMTYPE='仪表' then  '维修工段' 
+								 when  PROBLEMTYPE='机械' then  '维修工段'  
+								 when  PROBLEMTYPE='维修工段' then  '维修工段' 
+								 when  PROBLEMTYPE='HSE办公室' then  'HSE办公室' 
+								when  PROBLEMTYPE='财务经营办' then  '财务经营办' 
+								when  PROBLEMTYPE='设备办' then  '设备办' 
+								when  PROBLEMTYPE='生产办' then  '生产办' 
+								when  PROBLEMTYPE='综合办' then  '综合办' 
+								else null end problemtype 
+  			from  CZ_TASK_PROBLEM_REPORT 
+  		) a
+  		           <where>			
+    	<if test ="record!=null">
+  				<if test='record.problemtype!=null'>
+    		 and  problemtype =#{record.problemtype}
+    			</if>
+    	 </if>
+    	   <if test='startTime!=null'>
+    		and to_char(applydate,'YYYY-MM-DD') &gt;=#{startTime}
+    	 </if>
+    	  <if test='endTime!=null'>
+    		and to_char(applydate,'YYYY-MM-DD') &lt;=#{startTime}
+    	 </if>
+    	  </where>	
   </select>
 		<!-- lixuefeng新增用于问题条件查询，返回list -->
 	<!-- lixuefeng新增用于问题统计 -->
