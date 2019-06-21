@@ -274,7 +274,6 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
         	  			remark: "0"
           		 }
           , accept: 'images'
-          , number: 3
           , multiple: true
           , auto:false
           , bindAction: '#'

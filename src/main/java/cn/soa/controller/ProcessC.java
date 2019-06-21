@@ -388,6 +388,24 @@ public class ProcessC {
 
 	}
 
+	/**   
+	 * @Title: backToBeforeNodes   
+	 * @Description:   根据任务piid，流程返回到上一个节点 - 组任务
+	 * @return: ResultJson<Boolean>        
+	 */  
+	@PutMapping("/nodes/before/group/piid/{piid}")
+	public ResultJson<Boolean> backToBeforeNodesByPiidInGroup(
+			@PathVariable("piid") @NotBlank String piid,
+			@RequestParam("comment") String comment ){
+		logger.debug( "--C-------- 根据任务piid，流程返回到上一个节点     -------------" );
+		logger.debug( piid );
+		logger.debug( comment );
+		boolean b = activityS.backToBeforeNodeByPiid( piid, comment );
+		if( b ) {
+			return new ResultJson<Boolean>( 0, "流程返回到上一个节点成功", true );
+		}
+		return new ResultJson<Boolean>( 0, "流程返回到上一个节点失败", null );
+	}
 
 	/**   
 	 * @Title: getAllTasksByUsernameC   
