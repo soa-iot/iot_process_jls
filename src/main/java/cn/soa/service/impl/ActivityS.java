@@ -674,13 +674,11 @@ public class ActivityS implements ActivitySI{
      * @return: void        
      */ 
     @Override
-    public boolean transferProcessByPiid( 
-			String piid, Map<String, Object> vars ) {
+    public boolean transferProcessByPiid( String piid, Map<String, Object> vars ) {
 
     	logger.debug( "---S-------流程跳转(提供流程变量) - piid  ------------" );
 
     	if( vars == null ) {
-
     		logger.debug( "---S--------流程变量map-vars 为null或空------------" );
 			return false;
     	}
@@ -1099,8 +1097,72 @@ public class ActivityS implements ActivitySI{
     }
     
     /**   
+	 * @Title: backToBeforeNodeByPiid   
+	 * @Description:  根据流程任务piid，回退流程当前节点的上一个节点   - 组任务
+	 * @return: boolean        
+	 */  
+	public boolean backToBeforeNodeByPiidInGroup(String piid, Map<String,Object> map ) {
+		if( StringUtils.isBlank( piid ) ) {
+			logger.debug( "---S--------任务piid为null或空-------------" );
+			return false;
+		}	
+		
+		
+		String tsid = getTsidByPiid( piid );
+		if( StringUtils.isBlank( tsid ) ) {
+			logger.debug( "---S--------任务tsid为null或空-------------" );
+			return false;
+		}
+		logger.debug( "---S--------任务tsid为-------------" + tsid );
+		
+		
+		Object commentObj = map.get( "comment" );
+    	if( commentObj == null ) {
+    		logger.debug( "-------comment参数不存在--------" );
+    	}
+    	String comment = map.get( "comment" ).toString();
+    	logger.debug( "-------流程回退节点备注信息--------" + comment );
+	 	
+    		
+		try {			
+			
+			/*
+			 * 查询上一个节点
+			 */
+			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
+			logger.debug( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
+			String beforeNodeActid = beforeNode.getActivityId();
+			if( StringUtils.isBlank( beforeNodeActid ) ) {
+				logger.debug( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
+				return false;
+			}
+			logger.debug( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
+
+    		/*
+    		 * 增加备注信息
+    		 */
+    		boolean b = saveCommentByPiid( piid, comment );
+    		if( b ) {
+    			logger.debug( "---执行流转下一个节点，保存备注信息成功---------" );
+    		}else {
+    			logger.debug( "---执行流转下一个节点，保存备注信息失败---------" );
+    		}
+    		map.remove( "comment" );
+			
+			/*
+			 * 跳转
+			 */
+    		transferProcessInVarsAndGroup( tsid, beforeNodeActid, map );
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+    
+    /**   
 	 * @Title: backToBeforeNode   
-	 * @Description: 根据流程任务piid，回退流程当前节点的上一个节点  
+	 * @Description: 根据流程任务piid，回退流程当前节点的上一个节点   - 非组任务
 	 * @return: boolean        
 	 */
     @Override
