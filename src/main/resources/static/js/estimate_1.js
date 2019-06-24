@@ -203,7 +203,7 @@ function modifyEstimated(obj) {
 						
 						layer.msg("提交成功！",{time: 3000,icon:1},function() {
 							
-							window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
+							//window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
 						});
 //					}else{
 //						layer.msg("提交成功！",{time: 3000,icon:1});
@@ -619,7 +619,7 @@ function outhelperm(obj,dept,usernames){
 		,success: function(jsonData){
 			//后端返回值： ResultJson<Boolean>
 			if (jsonData.data) {
-				modifyEstimated(this);
+				(this);
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}

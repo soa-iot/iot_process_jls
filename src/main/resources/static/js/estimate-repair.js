@@ -147,7 +147,8 @@ layui.use(['tree', 'layer', 'form'], function() {
 	form.on('submit(back_previous)', function(data){
 		console.log(data.field)
 		$.ajax({
-		     type: "PUT"
+			 async:false
+		     ,type: "PUT"
 		     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id
 		     ,data: {
 		     	"comment": data.field.comment  //处理信息
