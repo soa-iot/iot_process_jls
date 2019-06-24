@@ -174,6 +174,8 @@ $.ajax({
 									estimate_next(this,usernames);
 			
 									layer.close(ope);
+								}else{
+									usernames = "";
 								}
 							}
 							,success:function(){
@@ -230,7 +232,7 @@ function workPlan(obj,usernames){
 			//后端返回值： ResultJson<Boolean>
 			console.log("人员提交："+jsonData.data);
 			if (jsonData.data) {
-				modifyEstimated(this);
+				modifyEstimated("作业安排成功，问题流转到："+usernames);
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}
@@ -239,6 +241,12 @@ function workPlan(obj,usernames){
 	});
 }
 
+/**
+ * 班组长评估下一步按钮
+ * @param obj
+ * @param usernames
+ * @returns
+ */
 function estimate_next(obj,usernames){
 	$.ajax({
 		type: "PUT"
@@ -259,7 +267,7 @@ function estimate_next(obj,usernames){
 			//后端返回值： ResultJson<Boolean>
 			console.log("人员提交："+jsonData.data);
 			if (jsonData.data) {
-				modifyEstimated(this);
+				modifyEstimated("下一步成功，问题流转到："+usernames);
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}

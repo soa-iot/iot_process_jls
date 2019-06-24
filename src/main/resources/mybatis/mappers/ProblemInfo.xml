@@ -71,31 +71,71 @@
 			problemclass,
 			profession,
 			depet,
-			inter_or_outer interOrOuter,
-			outer_deal_describe outerDealDescribe
+			inter_or_outer interOrOuter
 	</sql>
 		
 <select id="queryProblempro" resultType="cn.soa.entity.ProblemInfo" >
-    select 
-    <include refid="problemInfoSelectSql" />
-    from cz_task_problemreport
+    		select problemtype,problemstate from  (select piid,
+			problemstate,
+			CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
+								 	when  PROBLEMTYPE='净化工段' then  '净化工段' 
+									when  PROBLEMTYPE='电站' then  '维修工段'
+									when  PROBLEMTYPE='电气' then  '维修工段' 
+									when  PROBLEMTYPE='仪表' then  '维修工段' 
+								 	when  PROBLEMTYPE='机械' then  '维修工段'  
+								 	when  PROBLEMTYPE='维修工段' then  '维修工段' 
+									 when  PROBLEMTYPE='HSE办公室' then  'HSE办公室' 
+									when  PROBLEMTYPE='财务经营办' then  '财务经营办' 
+									when  PROBLEMTYPE='设备办' then  '设备办' 
+									when  PROBLEMTYPE='生产办' then  '生产办' 
+									when  PROBLEMTYPE='综合办' then  '综合办' 
+								else null end problemtype 
+  			from  CZ_TASK_PROBLEM_REPORT where piid is not null
+) problemreport
            <where>			
     	<if test ="record!=null">
   				<if test='record.problemtype!=null'>
-    		 and  EVENT_PERSON like concat('%', #{record.eventPerson}, '%')
+    		 and  problemtype =#{record.problemtype}
     			</if>
-    			<if test='record.eventIntro!=null'>
-    		and EVENT_INTRO like concat('%', #{record.eventIntro}, '%')
-    			</if>
-    			<if test='record.eventType!=null'>
-    		and EVENT_TYPE = #{record.eventType}
-    			</if>
+    	 </if>
+    	   <if test='startTime!=null'>
+    		and to_char(applydate,'YYYY-MM-DD') &gt;=#{startTime}
+    	 </if>
+    	  <if test='endTime!=null'>
+    		and to_char(applydate,'YYYY-MM-DD') &lt;=#{startTime}
     	 </if>
     	  </where>	
   </select>
     <select id="count"  resultType="int">
-  		select count(*) from  cz_task_problemreport
-  		where 
+  	  	select count(*) from  (
+  		select CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
+								 when  PROBLEMTYPE='净化工段' then  '净化工段' 
+									when  PROBLEMTYPE='电站' then  '维修工段'
+									when  PROBLEMTYPE='电气' then  '维修工段' 
+									when  PROBLEMTYPE='仪表' then  '维修工段' 
+								 when  PROBLEMTYPE='机械' then  '维修工段'  
+								 when  PROBLEMTYPE='维修工段' then  '维修工段' 
+								 when  PROBLEMTYPE='HSE办公室' then  'HSE办公室' 
+								when  PROBLEMTYPE='财务经营办' then  '财务经营办' 
+								when  PROBLEMTYPE='设备办' then  '设备办' 
+								when  PROBLEMTYPE='生产办' then  '生产办' 
+								when  PROBLEMTYPE='综合办' then  '综合办' 
+								else null end problemtype 
+  			from  CZ_TASK_PROBLEM_REPORT 
+  		) a
+  		           <where>			
+    	<if test ="record!=null">
+  				<if test='record.problemtype!=null'>
+    		 and  problemtype =#{record.problemtype}
+    			</if>
+    	 </if>
+    	   <if test='startTime!=null'>
+    		and to_char(applydate,'YYYY-MM-DD') &gt;=#{startTime}
+    	 </if>
+    	  <if test='endTime!=null'>
+    		and to_char(applydate,'YYYY-MM-DD') &lt;=#{startTime}
+    	 </if>
+    	  </where>	
   </select>
 		<!-- lixuefeng新增用于问题条件查询，返回list -->
 	<!-- lixuefeng新增用于问题统计 -->
@@ -835,13 +875,209 @@
 			</where>
 	</update>
 
-	<!-- 根据流程标识字段更新问题问题描述字段 -->
-	<!-- Integer updateByPiid(String piid); -->
-	<update id="updateProblemDescribeByPiid">
+	<!-- 根据流程标识字段更新问题问题评估字段 -->
+	<!-- Integer updateProblemDescribeByPiid(String piid); -->
+	<update id="updateProblemDescribeByPiid" parameterType="cn.soa.entity.ProblemInfo">
 		UPDATE 
 			cz_task_problem_report 
-		SET 
-			problemdescribe=#{problemdescribe} 
+			<set>
+			    <if test="tProblemRepId != null and tProblemRepId != ''">
+			   		T_PROBLEM_REP_ID = #{tProblemRepId},
+			   </if>
+			    <if test="tasId != null and tasId != ''">
+			   		tas_id = #{tasId},
+			   </if>
+			   <if test="problemtype != null and problemtype != ''">
+			   		PROBLEMTYPE = #{problemtype},
+			   </if>
+			   <if test="welId != null and welId != ''">
+			   		wel_id = #{welId},
+			   </if>
+			   <if test="welName != null and welName != ''">
+			   		WEL_NAME = #{welName},
+			   </if>
+			   <if test="adress != null and adress != ''">
+			   		adress = #{adress},
+			   </if>
+			   <if test="impacts != null and impacts != ''">
+			   		impacts = #{impacts},
+			   </if>
+			   <if test="problemdescribe != null and problemdescribe != ''">
+			   		PROBLEMDESCRIBE = #{problemdescribe},
+			   </if>
+			   <if test="resavepeople != null and resavepeople != ''">
+			   		RESAVEPEOPLE = #{resavepeople},
+			   </if>
+			   <if test="applypeople != null and applypeople != ''">
+			   		APPLYPEOPLE = #{applypeople},
+			   </if>
+			   <if test="applydate != null">
+			   		APPLYDATE = #{applydate},
+			   </if>
+			   <if test="problemstate != null and problemstate != ''">
+			   		PROBLEMSTATE = #{problemstate},
+			   </if>
+			   <if test="remark != null and remark != ''">
+			   		remark = #{remark},
+			   </if>
+			   <if test="remarkone != null and remarkone != ''">
+			   		remarkone = #{remarkone},
+			   </if>
+			   <if test="remarktwo != null and remarktwo != ''">
+			   		remarktwo = #{remarktwo},
+			   </if>
+			   <if test="remarkthree != null and remarkthree != ''">
+			   		remarkthree = #{remarkthree},
+			   </if>
+			   <if test="supervisoryperson != null and supervisoryperson != ''">
+			   		supervisoryperson = #{supervisoryperson},
+			   </if>
+			   <if test="maintenanceman != null and maintenanceman != ''">
+			   		maintenanceman = #{maintenanceman},
+			   </if>
+			   <if test="rectificationmeasures != null and rectificationmeasures != ''">
+			   		rectificationmeasures = #{rectificationmeasures},
+			   </if>
+			   <if test="rectificationperiod != null and rectificationperiod != ''">
+			   		rectificationperiod = #{rectificationperiod},
+			   </if>
+			   <if test="isSms != null and isSms != ''">
+			   		is_sms = #{isSms},
+			   </if>
+			   <if test="smsConment != null and smsConment != ''">
+			   		sms_conment = #{smsConment},
+			   </if>
+			   <if test="smsDate != null">
+			   		sms_date = #{smsDate},
+			   </if>
+			   <if test="taskPiid != null and taskPiid != ''">
+			   		task_piid = #{taskPiid},
+			   </if>
+			   <if test="processtype != null and processtype != ''">
+			   		processtype = #{processtype},
+			   </if>
+			   <if test="supervisorydate != null">
+			   		supervisorydate = #{supervisorydate},
+			   </if>
+			   <if test="supervisorydesc != null and supervisorydesc != ''">
+			   		supervisorydesc = #{supervisorydesc},
+			   </if>
+			   <if test="tasDistribute != null and tasDistribute != ''">
+			   		tas_distribute = #{tasDistribute},
+			   </if>
+			   <if test="departOrCentral != null and departOrCentral != ''">
+			   		depart_or_central = #{departOrCentral},
+			   </if>
+			   <if test="terBeginworkDate != null">
+			   		ter_beginwork_date = #{terBeginworkDate},
+			   </if>
+			   <if test="terEndworkDate != null">
+			   		ter_endwork_date = #{terEndworkDate},
+			   </if>
+			   <if test="terPlace != null and terPlace != ''">
+			   		ter_place = #{terPlace},
+			   </if>
+			   <if test="spId != null and spId != ''">
+			   		sp_id = #{spId},
+			   </if>
+			   <if test="spName != null and spName != ''">
+			   		sp_name = #{spName},
+			   </if>
+			   <if test="organizationSiteOffice != null and organizationSiteOffice != ''">
+			   		organization_site_officE = #{organizationSiteOffice},
+			   </if>
+			   <if test="officeProblem != null and officeProblem != ''">
+			   		office_problem = #{officeProblem},
+			   </if>
+			   <if test="materialsApplication != null and materialsApplication != ''">
+			   		materials_application = #{materialsApplication},
+			   </if>
+			   <if test="applicationRemark != null and applicationRemark != ''">
+			   		application_remark = #{applicationRemark},
+			   </if>
+			   <if test="controleApplication != null and controleApplication != ''">
+			   		controle_application = #{controleApplication},
+			   </if>
+			   <if test="opeCmId != null and opeCmId != ''">
+			   		ope_cm_id = #{opeCmId},
+			   </if>
+			   <if test="opecardNo != null and opecardNo != ''">
+			   		ope_card_no = #{opecardNo},
+			   </if>
+			   <if test="handleTicket != null and handleTicket != ''">
+			   		handle_ticket = #{handleTicket},
+			   </if>
+			   <if test="ticketNo != null and ticketNo != ''">
+			   		ticket_no = #{ticketNo},
+			   </if>
+			   <if test="correctiveAction != null and correctiveAction != ''">
+			   		corrective_action = #{correctiveAction},
+			   </if>
+			   <if test="action != null and action != ''">
+			   		action = #{action},
+			   </if>
+			   <if test="others != null and others != ''">
+			   		others = #{others},
+			   </if>
+			   <if test="remarkfive != null and remarkfive != ''">
+			   		REMARKFIVE = #{remarkfive},
+			   </if>
+			   <if test="remarksix != null and remarksix != ''">
+			   		REMARKSIX = #{remarksix},
+			   </if>
+			   <if test="remarkseven != null and remarkseven != ''">
+			   		remarkseven = #{remarkseven},
+			   </if>
+			   <if test="rfid != null and rfid != ''">
+			   		RFID = #{rfid},
+			   </if>
+			   <if test="isdownload != null and isdownload != ''">
+			   		isdownload = #{isdownload},
+			   </if>
+			   <if test="problemnum != null">
+			   		PROBLEMNUM = #{problemnum},
+			   </if>
+			   <if test="phoName != null and phoName != ''">
+			   		pho_name = #{phoName},
+			   </if>
+			   <if test="processDesc != null and processDesc != ''">
+			   		process_desc = #{processDesc},
+			   </if>
+			   <if test="phoDispiayName != null and phoDispiayName != ''">
+			   		pho_dispiay_name = #{phoDispiayName},
+			   </if>
+			   <if test="rectifInstruction != null and rectifInstruction != ''">
+			   		rectif_instruction = #{rectifInstruction},
+			   </if>
+			   <if test="phoAddress != null and phoAddress != ''">
+			   		pho_address = #{phoAddress},
+			   </if>
+			   <if test="gdName != null and gdName != ''">
+			   		gd_name = #{gdName},
+			   </if>
+			   <if test="workPermit != null and workPermit != ''">
+			   		work_permit = #{workPermit},
+			   </if>
+			   <if test="workPermitNumber != null and workPermitNumber != ''">
+			   		work_permit_number = #{workPermitNumber},
+			   </if>
+			   <if test="problemclass != null and problemclass != ''">
+			   		PROBLEMCLASS = #{problemclass},
+			   </if>
+			   <if test="profession != null and profession != ''">
+			   		PROFESSION = #{profession},
+			   </if>
+			   <if test="depet != null and depet != ''">
+			   		depet = #{depet},
+			   </if>
+			   <if test="interOrOuter != null and interOrOuter != ''">
+			   		inter_or_outer = #{interOrOuter},
+			   </if>
+			   <if test="outerDealDescribe != null and outerDealDescribe != ''">
+			   		outer_deal_describe = #{outerDealDescribe},
+			   </if>
+			</set>
+			<!-- problemdescribe=#{problemdescribe} --> 
 		WHERE 
 			piid=#{piid}
 	

@@ -49,6 +49,8 @@
 			        <input type="text" name="applydate" style="display: none;" class="layui-input">
 			        <!-- 问题上报部门 -->
 			      	<input type="text" name="dept" style="display: none;" class="layui-input">
+			      	<!-- 问题上报状态 -->
+			      	<input type="text" name="problemstate" value="UNFINISHED" style="display: none;" class="layui-input">
 			      </div>
 			    </div>
 		  	 	</div>
@@ -190,13 +192,11 @@
 	                    <div class="layui-input-inline" id="addProblemImg">
 	                         <button type="button" class="layui-btn">选择图片</button> 
 	                    </div>
-	                    <img class="img" src="../images/report/u166.png"/>
-	                    <span class="text-font-warm">最多允许上传三张图片</span>
 	                </div>
 					<div id="problem-img" style="display: none;">
 					  <label class="layui-form-label">&nbsp;</label>
 					  <div class="layui-input-inline">
-						  <ul id="imgZmList"></ul>
+						  <ul id="imgZmList" style="width:550px"></ul>
 					  </div>
 					</div>
 	  		  </div>
@@ -217,17 +217,12 @@
 		  </div>
 	  	</div>
 	 </div>
-	 
 	<script src="../jsPackage/js/jquery-1.9.1.min.js"></script>
 	<script src="../jsPackage/own/universal.js"></script>
-    <!-- 引入layui -->
+
     <script type="text/javascript" src="../jsPackage/layui-v2.4.2/layui.js"></script>
-<<<<<<< HEAD
-   
-      <script type="text/javascript" src="../js/url_param.js"></script>
-=======
     <script type="text/javascript" src="../js/url_param.js"></script>
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
+
     <script type="text/javascript" src="../js/report.js"></script>
   </body>
 </html>

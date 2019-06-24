@@ -40,7 +40,7 @@ public interface ProblemInfoSI {
 	 * @param piid 流程标识字段
 	 * @return 数据库更新数量
 	 */
-	Integer changeProblemDescribeByPiid(String piid,String problemdescribe);
+	Integer changeProblemDescribeByPiid(ProblemInfo problemInfo);
 	
 	/**   
 	 * @Title: ModifyEstiByPiid   

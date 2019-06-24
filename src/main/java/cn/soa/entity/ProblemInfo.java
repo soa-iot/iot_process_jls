@@ -44,7 +44,7 @@ public class ProblemInfo implements Serializable {
 	private String supervisoryperson;
 	private String maintenanceman;
 	private String rectificationmeasures;
-	private String rectificationperiod;
+	private Date rectificationperiod;
 	private String isSms;
 	private String smsConment;
 	private Date smsDate;

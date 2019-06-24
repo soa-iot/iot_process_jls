@@ -74,6 +74,8 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	
 							layer.close(ope);
 						}
+						
+						usernames="";
 					}
 				});
 			}
@@ -133,7 +135,7 @@ function workPlan(obj,usernames){
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
-			"estimators":usernames,
+			"receivor":usernames,
 			"userName":$.cookie("name").replace(/"/g,"")
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
@@ -142,7 +144,7 @@ function workPlan(obj,usernames){
 			//后端返回值： ResultJson<Boolean>
 			console.log("人员提交："+jsonData.data);
 			if (jsonData.data) {
-				modifyEstimated(this);
+				modifyEstimated("作业安排成功，问题流转到："+usernames);
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}

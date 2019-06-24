@@ -3,10 +3,12 @@ layui.use(['tree', 'layer', 'form'], function() {
 	var layer = layui.layer, form = layui.form;
 	
 	$("#sdate").val("");
-	var treeResult, assignUsers = new Array();
+	var treeResult, assignUsers = new Array(), ids = new Array();
 	
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
+	//属地单位
+	var area;
 	
 	/**
 	 * 作业指派异步请求
@@ -50,6 +52,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 			return false;
 		}
 		assignUsers.length = 0;
+		ids.length = 0;
 		//弹出层
 		layer.open({
 			type: 1
@@ -142,9 +145,10 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 回退到上一个节点
 	 */
 	form.on('submit(back_previous)', function(data){
-
+		console.log(data.field)
 		$.ajax({
-		     type: "PUT"
+			 async:false
+		     ,type: "PUT"
 		     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id
 		     ,data: {
 		     	"comment": data.field.comment  //处理信息
@@ -174,8 +178,10 @@ layui.use(['tree', 'layer', 'form'], function() {
 	/**
 	 * 外部协助跳转
 	 */
+	var out_coordinate_tree;
 	form.on('submit(out_coordinate)', function(data){
 		assignUsers.length = 0;
+		ids.length = 0;
 		//弹出层
 		layer.open({
 			type: 1
@@ -190,13 +196,34 @@ layui.use(['tree', 'layer', 'form'], function() {
 				if(assignUsers.length < 1){
 					layer.msg("至少选择一名人员", {icon:7});
 				}else{
+					var arr = getDeptByIds(ids);
+					for(var i=0;i<arr.length-1;i++){
+						if(arr[i] != arr[i+1]){
+							layer.msg("选择的人员必须属于同一个部门", {icon:7})
+							return;
+						}
+					}
+					
+					/**
+					 * 获取选择人员所属部门
+					 */
+					var flag = true;
+					$(".layui-form-checked").parents("[data-key]").each(function(){
+						var value = $(this).data("key");
+						if(value.indexOf("0") != -1 && flag){
+							area = value.substring(0,value.indexOf(","));
+							flag = false;
+						}
+					})
+					
+					console.log("属地单位area: "+area);
 					out_coordinate();
 				}
 				//layer.closeAll();
 		    }
 		,success:function(){	
 			//单选框
-			tree.render({
+			out_coordinate_tree = tree.render({
 				elem: '#task_tree'
 				,data: outhelper_data(outhelper)
 				,showCheckbox: true
@@ -219,7 +246,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     type: "PUT"
 		     ,url: '/iot_process/process/nodes/jump/group/piid/'+piidp   //piid为流程实例id
 		     ,data:{
-			     	"area": $("#problemtype").val()   //属地单位
+			     	"area": area   //属地单位
 					,"actId": "estimate"  //跳转节点id
 					,"estimators": assignUsers.join("，")  //下一步流程变量
 					,"userName": resavepeople  //当前节点任务执行人
@@ -248,7 +275,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 解析树型结构,获取选中人员信息
 	 */
 	function parseTree(obj){
-		 //console.log(obj.data); //得到当前点击的节点数据
+		 console.log(obj.data); //得到当前点击的节点数据
 		 // console.log(obj.checked); //得到当前节点的展开状态：open、close、normal
 		 var data = obj.data;
 		 //选中就添加人员
@@ -261,8 +288,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 	}
 	
 	function getUser(data){
-		if(data.children == null || data.children == undefined){
+		if(data.children == null || data.children == undefined || data.children.length == 0){
 			assignUsers.push(data.label);
+			ids.push(data.id);
 		 }else{
 			for(var i=0;i<data.children.length;i++){
 				getUser(data.children[i]);
@@ -271,10 +299,11 @@ layui.use(['tree', 'layer', 'form'], function() {
 	}
 	
 	function removeUser(data){
-		if(data.children == null || data.children == undefined){
+		if(data.children == null || data.children == undefined || data.children.length == 0){
 			for(var i=0;i<assignUsers.length;i++){
 				if(assignUsers[i] == data.label){
 					assignUsers.splice(i,1);
+					ids.splice(i,1);
 				}
 			}
 	    }else{
@@ -328,4 +357,17 @@ layui.use(['tree', 'layer', 'form'], function() {
 		}
 		return out_data_tree;
 	}
+	
+	/**
+	 * 从树的id中解析人员部门
+	 */
+	function getDeptByIds(data){
+		var arr = new Array();
+		for(var i=0;i<data.length;i++){
+			arr.push(data[i].substring(data[i].lastIndexOf(",")+1));
+		}
+		
+		return arr;
+	}
+	
 });

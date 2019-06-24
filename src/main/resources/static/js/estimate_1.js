@@ -7,7 +7,6 @@ var piidp = GetQueryString('piid');
  * 全局变量——属地单位
  */
 var area = GetQueryString('area');
-console.log(area);
 
 /**
  * 日期插件
@@ -147,8 +146,8 @@ layui.use('table', function(){
 	//第一个实例
 	table.render({
 		elem: '#process'
-			//,height: 200
-			//,width:'90%' //piid:processPure2:3:32523
+			,height: "194px"
+			//,width:'100%' //piid:processPure2:3:32523
 			,url: '/iot_process/process/nodes/historyTask/piid/'+piidp //数据接口
 			// ,page: true //开启分页
 			,parseData: function(res) { //res 即为原始返回的数据
@@ -171,9 +170,9 @@ layui.use('table', function(){
 });
 
 /**
- * 非净化工段问题处理更新ajax
+ * 问题处理更新ajax
  */
-function modifyEstimated(obj) {
+function modifyEstimated(msge) {
 	//问题描述
 	var problem_describe = $("#problem_describe").val();
 
@@ -201,7 +200,7 @@ function modifyEstimated(obj) {
 				if (json.state==0) {
 					//if ($(obj).attr("id")=="work_plant") {
 						
-						layer.msg("提交成功！",{time: 3000,icon:1},function() {
+						layer.msg(msge , {time: 3000,icon:1},function() {
 							
 							window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
 						});
@@ -209,7 +208,6 @@ function modifyEstimated(obj) {
 //						layer.msg("提交成功！",{time: 3000,icon:1});
 //					}
 					
-					//window.location.href=getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
 
 				}else{
 					layer.msg("提交失败！",{time: 3000,icon:2});
@@ -327,7 +325,7 @@ $("#rollback").click(function(){
 			     ,dataType: "json"
 			     ,success: function(jsonData){
 			     	if (jsonData.data==true) {
-			     		modifyEstimated(this);
+			     		modifyEstimated("回退成功！！" );
 					}else{
 						layer.msg(jsonData.message,{icon:2});
 					}
@@ -460,7 +458,7 @@ $("#complete").click(function(){
 				//后端返回值： ResultJson<Boolean>
 				
 				if (jsonData.state==0) {
-					modifyEstimated(this);
+					modifyEstimated("闭环成功！！");
 				}else{
 					layer.msg("数据提交失败！！",{icon:2});
 				}
@@ -517,6 +515,7 @@ layui.use('tree', function(){
 								var depts = deptOrDeptUser(check[i][1]);
 								if (depts != "") {
 									if (dept != "") {
+										usernames = "";
 										layer.msg('请选择同一部门的人！！！',{icon:7});
 										return;
 									}
@@ -542,15 +541,18 @@ layui.use('tree', function(){
 							console.log("外部协调选中的人："+usernames);
 							
 							if (usernames != "") {
+								if (yesCompare()) {
 								
-								if (area == "净化工段" && dept == "维修工段") {
-									outhelper_pure(this,usernames);
-								}else{
-									outhelperm(this,dept,usernames);
+									if (area == "净化工段" && dept == "维修工段") {
+										outhelper_pure(this,usernames);
+									}else{
+										outhelperm(this,dept,usernames);
+									}
 								}
-								usernames="";
 								
+								usernames="";
 								layer.closeAll();
+								
 							}else{
 								layer.msg('至少选择一个人！！！',{icon:7});
 							}
@@ -587,10 +589,11 @@ layui.use('tree', function(){
  */
 function outhelperm(obj,dept,usernames){
 	
-	var actualIds = dept == "净化工段" || dept == "净化工段" ?actualId[dept]:actualId["其他"];
+	
+	var actualIds = dept == "净化工段" || dept == "维修工段" ?actualId[dept]:actualId["其他"];
 	console.log("actualId:"+actualIds);
 	
-	var actualVars = dept == "净化工段" || dept == "净化工段" ?actualVar[dept]:actualVar["其他"];
+	var actualVars = dept == "净化工段" || dept == "维修工段" ?actualVar[dept]:actualVar["其他"];
 	console.log("actualId:"+actualVars);
 	
 	var data_out = {
@@ -599,7 +602,6 @@ function outhelperm(obj,dept,usernames){
 			,"actId": actualIds  //跳转节点id
 		     								 
 			,"comment": $("#comment").val()     //节点的处理信息
-			//,"estimators":usernames //下一步流程变量
 			,"userName":$.cookie("name").replace(/"/g,"")
 		}
 	data_out[actualVars] = usernames;
@@ -619,7 +621,7 @@ function outhelperm(obj,dept,usernames){
 		,success: function(jsonData){
 			//后端返回值： ResultJson<Boolean>
 			if (jsonData.data) {
-				modifyEstimated(this);
+				modifyEstimated("外部协调成功，问题流转到："+usernames);
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}
@@ -636,30 +638,24 @@ function outhelperm(obj,dept,usernames){
  * @returns
  */
 function outhelper_pure(obj,usernames){
-$.ajax({
-    type: "PUT"
-    ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
-    ,data: {
-    	,"comment": $("#comment").val()     //通用 -- 节点的处理信息
-    	,"repairor": usernames     //通用 -- 下一个节点问题处理人
-    						         问题评估节点执行人变量名：estimators
-    						         净化分配节点执行人变量名：puror
-    						         维修分配节点执行人变量名：repairor
-    						         作业安排节点执行人变量名：arrangor
-    						         接收作业节点执行人变量名：receivor
-    						         完成作业节点执行人变量名：complementor
-    						         作业验收节点执行人变量名：checkor
-    	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
-    }   //问题上报表单的内容
-    ,contentType: "application/x-www-form-urlencoded"
-    ,dataType: "json"
-    ,success: function(jsonData){
-    	//后端返回值： ResultJson<Boolean>
-    	if (jsonData.data) {
-			modifyEstimated(this);
-		}else{
-			layer.msg('安排人员发送失败！！！',{icon:7});
-		}
-    }
-    //,error:function(){}		       
-});
+	$.ajax({
+	    type: "PUT"
+	    ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+	    ,data: {
+	    	"comment": $("#comment").val()     //通用 -- 节点的处理信息
+	    	,"repairor": usernames     	 //通用 -- 下一个节点问题处理人
+	    	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
+	    }   //问题上报表单的内容
+	    ,contentType: "application/x-www-form-urlencoded"
+	    ,dataType: "json"
+	    ,success: function(jsonData){
+	    	//后端返回值： ResultJson<Boolean>
+	    	if (jsonData.data) {
+				modifyEstimated("外部协调成功，问题流转到："+usernames);
+			}else{
+				layer.msg('安排人员发送失败！！！',{icon:7});
+			}
+	    }
+	    //,error:function(){}		       
+	});
+}

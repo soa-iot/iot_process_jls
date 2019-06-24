@@ -45,7 +45,7 @@ public interface ProblemInfoMapper {
 	 * @param piid 流程标识字段
 	 * @return 数据库更新数量
 	 */
-	Integer updateProblemDescribeByPiid(@Param("piid")String piid,@Param("problemdescribe")String problemdescribe);
+	Integer updateProblemDescribeByPiid(ProblemInfo problemInfo);
 
 	/**   
 	 * @Title: findByResavepeopleOrPiid   

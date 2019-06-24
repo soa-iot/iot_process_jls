@@ -10,8 +10,8 @@ var piid = GetQueryString("piid");
  * @param obj
  * @returns
  */
-var url = area == "维修工段"?"../html/organization_tree_repair.html":"../html/organization_tree.html";
-console.log(area == "维修工段");
+/*var url = area == "维修工段"?"../html/organization_tree_repair.html":"../html/organization_tree.html";
+console.log(area == "维修工段");*/
 //弹出层
 layui.use('layer', function(){ //独立版的layer无需执行这一句
 	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
@@ -27,7 +27,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 				,id: 'work_plan'+type //防止重复弹出
 				,key:'id'
 					//../html/organization_tree.html
-				,content: '<iframe frameborder="no" id="addFrame" src="'+url+'" style="width:98%;height:98%;"></iframe>'
+				,content: '<iframe frameborder="no" id="addFrame" src="../html/organization_tree.html" style="width:98%;height:98%;"></iframe>'
 				,btn: ['确认',"取消"]
 				,btnAlign: 'c' //按钮居中
 					,yes: function(){
@@ -207,7 +207,7 @@ function workPlan(obj,usernames){
 			//后端返回值： ResultJson<Boolean>
 			console.log("人员提交："+jsonData.data);
 			if (jsonData.data) {
-				modifyEstimated(this);
+				modifyEstimated("作业安排成功，问题流转到："+usernames);
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}
