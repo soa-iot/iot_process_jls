@@ -12,6 +12,7 @@ $("#coordinate_tree").hide();
 $("#repair_cadre_tree").hide();
 $("#estimate_cadre_tree").hide();
 
+console.log("--------"+$.cookie("organ"));
 /**
  * 作业安排
  */
@@ -71,13 +72,16 @@ $.ajax({
 										}
 									console.log("选中的人："+usernames);
 
-									if (usernames=="") {
-										layer.msg('至少选定一人！！！',{icon:7});
-									}else if (yesCompare()) {
-										workPlan(this,usernames);
-				
-										layer.close(ope);
+									if (yesCompare()) {
+										if (usernames=="") {
+											layer.msg('至少选定一人！！！',{icon:7});
+										}else {
+											workPlan(this,usernames);
+											usernames="";
+											layer.close(ope);
+										}
 									}
+									usernames="";
 
 								}
 								,success:function(){
