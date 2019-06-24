@@ -202,7 +202,7 @@ function modifyEstimated(msge) {
 						
 						layer.msg(msge , {time: 3000,icon:1},function() {
 							
-							window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
+							//window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
 						});
 //					}else{
 //						layer.msg("提交成功！",{time: 3000,icon:1});
@@ -621,7 +621,11 @@ function outhelperm(obj,dept,usernames){
 		,success: function(jsonData){
 			//后端返回值： ResultJson<Boolean>
 			if (jsonData.data) {
+<<<<<<< HEAD
 				modifyEstimated("外部协调成功，问题流转到："+usernames);
+=======
+				(this);
+>>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}
@@ -638,6 +642,7 @@ function outhelperm(obj,dept,usernames){
  * @returns
  */
 function outhelper_pure(obj,usernames){
+<<<<<<< HEAD
 	$.ajax({
 	    type: "PUT"
 	    ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
@@ -659,3 +664,25 @@ function outhelper_pure(obj,usernames){
 	    //,error:function(){}		       
 	});
 }
+=======
+$.ajax({
+    type: "PUT"
+    ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+    ,data: {
+    	"comment": $("#comment").val()     //通用 -- 节点的处理信息
+    	,"repairor": usernames     //通用 -- 下一个节点问题处理人
+    	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
+    }   //问题上报表单的内容
+    ,contentType: "application/x-www-form-urlencoded"
+    ,dataType: "json"
+    ,success: function(jsonData){
+    	//后端返回值： ResultJson<Boolean>
+    	if (jsonData.data) {
+			modifyEstimated(this);
+		}else{
+			layer.msg('安排人员发送失败！！！',{icon:7});
+		}
+    }
+    //,error:function(){}		       
+});}
+>>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
