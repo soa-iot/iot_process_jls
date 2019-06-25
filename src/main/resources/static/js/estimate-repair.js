@@ -28,8 +28,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
+		    		 updateEstimated(data);
 		    		 layer.msg("作业指派成功",{icon:1, time: 2000}, function(){
-		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
 		    		 layer.msg("作业指派失败",{icon:2, time: 2000});
@@ -56,7 +57,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		//弹出层
 		layer.open({
 			type: 1
-			,offset: 'auto'
+			,offset: 't'
 			,area: ['300px','400px;']
 			,id: 'work_assignment'+1 //防止重复弹出
 			,content: $("#task_tree")
@@ -116,7 +117,8 @@ layui.use(['tree', 'layer', 'form'], function() {
 	form.on('submit(complete)', function(data){
 		
 		$.ajax({
-		     type: "PUT"
+			 async: false
+		     ,type: "PUT"
 		     ,url: '/iot_process/process/nodes/end/piid/'+piidp   //piid为流程实例id
 		     ,data: {
 		     	"comment": data.field.comment  //处理信息
@@ -126,6 +128,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
+		    		 updateEstimated(data);
 		    		 layer.msg("闭环处理成功",{icon:1, time: 2000}, function(){
 		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
@@ -185,7 +188,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		//弹出层
 		layer.open({
 			type: 1
-			,offset: 'auto'
+			,offset: 't'
 			,area: ['300px','400px;']
 			,id: 'out_coordinate'+1 //防止重复弹出
 			,content: $("#task_tree")
@@ -218,6 +221,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 					
 					console.log("属地单位area: "+area);
 					out_coordinate();
+					updateEstimated(data);
 				}
 				//layer.closeAll();
 		    }
@@ -243,6 +247,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 	
 	function out_coordinate(){
 		$.ajax({
+			async: false,
 		     type: "PUT"
 		     ,url: '/iot_process/process/nodes/jump/group/piid/'+piidp   //piid为流程实例id
 		     ,data:{
@@ -257,11 +262,11 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
-		    		 layer.msg("外部协调请求成功",{icon:1, time: 2000}, function(){
+		    		 layer.msg("外部协调成功,问题流转到:"+assignUsers.join("，"),{icon:1, time: 2000}, function(){
 		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
-		    		 layer.msg("外部协调请求成功",{icon:2});
+		    		 layer.msg("外部协调成功",{icon:2});
 		    	 }
 		     },
 		     error:function(){
@@ -324,7 +329,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		
 		for ( var key in outhelperData) {
 			
-				if (key != "龙王庙天然气净化厂" && key != "净化工段" && key != '维修工段') {
+				if (key != "龙王庙天然气净化厂" && key != '维修工段') {
 					$.ajax({    
 						url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
 						type : "get",
@@ -368,6 +373,34 @@ layui.use(['tree', 'layer', 'form'], function() {
 		}
 		
 		return arr;
+	}
+	
+	
+	/**
+	 * 更新问题处理信息
+	 */
+	function updateEstimated(data){
+		var field = data.field;
+		//日期如果为空，则设置成null
+		if(field.rectificationperiod == ''){
+			field.rectificationperiod = null;
+		}
+		
+		field.problemdescribe = $("#problem_describe").val();
+		
+		$.ajax({
+			async: false,
+			type: "POST",
+			url: "/iot_process/estimates/modifyestimated",
+			data: field,
+			dataType: "JSON",
+			success: function(json){
+				
+			},
+			error: function(){
+				
+			}
+		})
 	}
 	
 });
