@@ -31,7 +31,11 @@ public class ProblemInfoMapperTest {
 	
 	@Test
 	public void updateProblemDescribeByPiidTest() {
-		Integer row = problemInfoMapper.updateProblemDescribeByPiid("ADAA80DB601C4470BE8BB224705F5F9C", "test1");
+		
+		ProblemInfo problemInfo = new ProblemInfo();
+		problemInfo.setPiid("160130");
+		problemInfo.setProblemdescribe("160130");
+		Integer row = problemInfoMapper.updateProblemDescribeByPiid(problemInfo);
 		System.err.println(row);
 	}
 	

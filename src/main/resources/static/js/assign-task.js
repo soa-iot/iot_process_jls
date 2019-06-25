@@ -14,7 +14,6 @@ layui.use(['tree', 'layer', 'form'], function() {
 	/**
 	 * 作业指派异步请求
 	 */
-<<<<<<< HEAD
 	function workAssignment(comment, arrangor, username){
 		$.ajax({
 			 async: false
@@ -31,7 +30,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
 		    		 layer.msg("作业安排成功",{icon:1, time: 2000}, function(){
-		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+//		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
 		    		 layer.msg("作业安排失败",{icon:2, time: 2000});
@@ -65,63 +64,6 @@ layui.use(['tree', 'layer', 'form'], function() {
 				var arrangor = assignUsers.join("，");
 				console.log(arrangor);
 				workAssignment(comment, arrangor, resavepeople);
-=======
-	function workAssignment(comment, receivor, username){
-		$.ajax({
-			 async: false
-		     ,type: "PUT"
-		     ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
-		     ,data: {
-		     	"comment": comment     //通用 -- 节点的处理信息
-		     	,"receivor": receivor     //通用 -- 下一个节点问题处理人
-		     	,"userName": username    //当前任务的完成人
-		     }   //问题上报表单的内容
-		     ,contentType: "application/x-www-form-urlencoded"
-		     ,dataType: "json"
-		     ,success: function(jsonData){
-		     	//后端返回值： ResultJson<Boolean>
-		    	 if(jsonData.data){
-		    		 layer.msg("作业安排成功",{icon:1, time: 2000}, function(){
-		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
-		    		 })
-		    	 }else{
-		    		 layer.msg("作业安排失败",{icon:2, time: 2000});
-		    	 }
-		     }
-		     ,error:function(){
-		    	 layer.msg("作业安排失败",{icon:2, time: 2000});
-		     }		       
-		});
-		
-	    return false;
-	}
-	
-	/**
-	 * 校验表单是否为空, 为空则不弹出层
-	 */
-	form.on('submit(arrange)', function(data){
-		
-		//弹出层
-		layer.open({
-			type: 1
-			,offset: 'auto'
-			,area: ['300px','400px;']
-			,id: 'work_arrange'+1 //防止重复弹出
-			,content: $("#task_tree")
-			,btn: ['确认',"取消"]
-			,btnAlign: 'c' //按钮居中
-			,yes: function(index, layero){
-				//确认按钮的回调函数
-				var comment = $("#comment").val();
-				var receivor = assignUsers.join("，");
-				console.log(receivor);
-				if(assignUsers.length < 1){
-					layer.msg("至少选择一名人员", {icon:7});
-				}else{
-					workAssignment(comment, receivor, resavepeople);
-				}
-				
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
 				//layer.closeAll();
 		    }
 		,success:function(){	

@@ -7,6 +7,8 @@ layui.use(['tree', 'layer', 'form'], function() {
 	
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
+	//属地单位
+	var area;
 	
 	/**
 	 * 作业指派异步请求
@@ -143,9 +145,10 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 回退到上一个节点
 	 */
 	form.on('submit(back_previous)', function(data){
-
+		console.log(data.field)
 		$.ajax({
-		     type: "PUT"
+			 async:false
+		     ,type: "PUT"
 		     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id
 		     ,data: {
 		     	"comment": data.field.comment  //处理信息
@@ -175,6 +178,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 	/**
 	 * 外部协助跳转
 	 */
+	var out_coordinate_tree;
 	form.on('submit(out_coordinate)', function(data){
 		assignUsers.length = 0;
 		ids.length = 0;
@@ -199,13 +203,27 @@ layui.use(['tree', 'layer', 'form'], function() {
 							return;
 						}
 					}
+					
+					/**
+					 * 获取选择人员所属部门
+					 */
+					var flag = true;
+					$(".layui-form-checked").parents("[data-key]").each(function(){
+						var value = $(this).data("key");
+						if(value.indexOf("0") != -1 && flag){
+							area = value.substring(0,value.indexOf(","));
+							flag = false;
+						}
+					})
+					
+					console.log("属地单位area: "+area);
 					out_coordinate();
 				}
 				//layer.closeAll();
 		    }
 		,success:function(){	
 			//单选框
-			tree.render({
+			out_coordinate_tree = tree.render({
 				elem: '#task_tree'
 				,data: outhelper_data(outhelper)
 				,showCheckbox: true
@@ -228,7 +246,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     type: "PUT"
 		     ,url: '/iot_process/process/nodes/jump/group/piid/'+piidp   //piid为流程实例id
 		     ,data:{
-			     	"area": $("#problemtype").val()   //属地单位
+			     	"area": area   //属地单位
 					,"actId": "estimate"  //跳转节点id
 					,"estimators": assignUsers.join("，")  //下一步流程变量
 					,"userName": resavepeople  //当前节点任务执行人
@@ -351,4 +369,5 @@ layui.use(['tree', 'layer', 'form'], function() {
 		
 		return arr;
 	}
+	
 });

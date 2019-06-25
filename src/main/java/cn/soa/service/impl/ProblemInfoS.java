@@ -68,9 +68,9 @@ public class ProblemInfoS implements ProblemInfoSI {
 	 * @return 数据库更新数量
 	 */
 	@Override
-	public Integer changeProblemDescribeByPiid(String piid, String problemdescribe) {
+	public Integer changeProblemDescribeByPiid(ProblemInfo problemInfo) {
 		
-		return updateProblemDescribeByPiid(piid, problemdescribe);
+		return updateProblemDescribeByPiid(problemInfo);
 	}
 
 	/**   
@@ -106,9 +106,9 @@ public class ProblemInfoS implements ProblemInfoSI {
 	 * @param piid 流程标识字段
 	 * @return 数据库更新数量
 	 */
-	public Integer updateProblemDescribeByPiid(String piid,String problemdescribe) {
+	public Integer updateProblemDescribeByPiid(ProblemInfo problemInfo) {
 		try {
-			Integer rows = problemInfoMapper.updateProblemDescribeByPiid(piid, problemdescribe);
+			Integer rows = problemInfoMapper.updateProblemDescribeByPiid(problemInfo);
 			return rows;
 		} catch (Exception e) {
 			e.printStackTrace();
