@@ -75,7 +75,7 @@ $.ajax({
  * @returns
  */
 
-$("#complete").click(function(){
+$("#complete1").click(function(){
 
 	if ($("#comment").val()=="") {
 		layer.msg("处理说明不能为空",{icon:7});

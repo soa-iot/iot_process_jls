@@ -184,7 +184,7 @@ function modifyEstimated(obj) {
 
 	//日期格式处理
 	if (period == "") {
-		str = str.replace(/rectificationperiod=(\d+-\d+-\d+)/,period);
+		str = str.replace(/rectificationperiod=(\d+-\d+-\d+)/,null);
 	}else{
 		period = period.replace(/-/g, "/");
 		str = str.replace(/rectificationperiod=(\d+-\d+-\d+)/,"rectificationperiod="+period);
