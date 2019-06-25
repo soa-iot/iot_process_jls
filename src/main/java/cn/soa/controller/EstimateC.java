@@ -79,11 +79,13 @@ public class EstimateC {
 	 * 根据流程标识字段更新问题问题描述字段
 	 * @param piid 流程标识字段
 	 */
-	@PostMapping("/problemdescribe")
-	public ResultJson<ProblemInfo> changeProblemDescribeByPiid(@Param("piid")String piid,@Param("problemdescribe")String problemdescribe) {
+	@RequestMapping("/problemdescribe")
+	public ResultJson<ProblemInfo> changeProblemDescribeByPiid(ProblemInfo problemInfo) {
 
-		System.err.println(piid+problemdescribe);
-		Integer row = problemInfoSI.changeProblemDescribeByPiid(piid, problemdescribe);
+	//public ResultJson<ProblemInfo> changeProblemDescribeByPiid(@Param("piid")String piid,@Param("problemdescribe")String problemdescribe) {
+
+		//System.err.println(piid+problemdescribe);
+		Integer row = problemInfoSI.changeProblemDescribeByPiid(problemInfo);
 
 		if (row != -1) {
 			return new ResultJson<ProblemInfo>(0, "数据更新成功");

@@ -74,6 +74,8 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	
 							layer.close(ope);
 						}
+						
+						usernames="";
 					}
 				});
 			}
@@ -142,7 +144,7 @@ function workPlan(obj,usernames){
 			//后端返回值： ResultJson<Boolean>
 			console.log("人员提交："+jsonData.data);
 			if (jsonData.data) {
-				modifyEstimated(this);
+				modifyEstimated("作业安排成功，问题流转到："+usernames);
 			}else{
 				layer.msg('安排人员发送失败！！！',{icon:7});
 			}

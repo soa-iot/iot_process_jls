@@ -50,14 +50,14 @@ $.ajax({
 				if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
 					//img_div = '';
 					for (var i = 0; i < mode; i++) {
-						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
 						img_id++;
 					}
 
 				}else{
 
 					for (var i = 0; i < 3; i++) {
-						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片1" src="'+imgs[img_id].phoAddress+'">';
+						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
 						img_id++;
 					}
 
