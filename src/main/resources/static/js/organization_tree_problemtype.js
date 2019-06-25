@@ -20,7 +20,7 @@ var tree1 ;
 	$.ajax({  
 		url : "/iot_process/userOrganizationTree/userOrganizationArea",  
 		type : "get",
-		data : {area:$.cookie("organ"),username:$.cookice("name")},//$.cookice("name")
+		data : {area:$.cookie("organ").replace(/"/g,""),username:$.cookice("name").replace(/"/g,"")},//$.cookice("name")
 		dataType : "json",  
 		success: function( json) {
 			if (json.code == 0) {
