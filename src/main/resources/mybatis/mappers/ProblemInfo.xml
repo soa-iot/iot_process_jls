@@ -1764,6 +1764,17 @@
 				name =#{problemtype})
 	</select>
 	
+	<!-- 根据用部分problemdescribe查询对应的数据 -->
+	<!-- List<Title> findByProblemdescribe(String problemdescribe); -->
+	<select id="findByProblemdescribe"
+		resultType="cn.soa.entity.ProblemInfo">
+		SELECT 
+			DISTINCT problemdescribe 
+		FROM 
+			cz_task_problem_report
+		WHERE 
+			problemdescribe LIKE CONCAT(#{problemdescribe},'%')
+	</select>
 	
 	<delete id="deleteByPiid" parameterType="string">
 		delete from cz_task_problem_report

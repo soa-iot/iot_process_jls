@@ -159,5 +159,12 @@ public interface ProblemInfoMapper {
 	 * @return: int        
 	 */  
 	public int updatePiidByBsid( @Param("bsid") String bsid, @Param("piid") String piid );
+	
+	/**
+	 * 根据用部分problemdescribe查询对应的数据
+	 * @param problemdescribele
+	 * @return ProblemInfo集合
+	 */
+	List<ProblemInfo> findByProblemdescribe(String problemdescribe);
 
 }
