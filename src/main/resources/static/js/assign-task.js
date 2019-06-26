@@ -30,7 +30,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
 		    		 layer.msg("作业安排成功",{icon:1, time: 2000}, function(){
-		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+//		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
 		    		 layer.msg("作业安排失败",{icon:2, time: 2000});
