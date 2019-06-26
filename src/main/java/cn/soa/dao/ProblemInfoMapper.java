@@ -31,8 +31,44 @@ public interface ProblemInfoMapper {
 	 * @param  时间参数
 	 * @return 问题评估信息实体
 	 */
-	List<ProblemInfo> 	queryProblempro(@Param("record")ProblemInfo problemInfo,@Param("page")Integer page,Integer pageSize, @Param("startTime")String startTime,@Param("endTime")String endTime);
-	int 	count(@Param("record")ProblemInfo problemInfo,@Param("startTime")String startTime,@Param("endTime")String endTime);
+	List<ProblemInfo> queryProblempro(@Param("record")ProblemInfo problemInfo,@Param("page")Integer page,Integer pageSize, @Param("startTime")String startTime,@Param("endTime")String endTime);
+	int count(@Param("record")ProblemInfo problemInfo,@Param("startTime")String startTime,@Param("endTime")String endTime);
+	
+	/**
+	 * 
+	 * 分页查找问题上报信息
+	 * @param problemInfo - 查询条件 
+	 * @param page - 第几页
+	 * @param limit - 每页条数
+	 * @param startTime - 开始时间
+	 * @param endTime - 结束时间
+	 * @return 问题上报信息列表
+	 */
+	List<ProblemInfo> findPorblemInfoByPage(
+			@Param("record") ProblemInfo problemInfo,
+			@Param("page") Integer page,
+			@Param("limit") Integer limit, 
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime);
+
+	Map<String, Object> PorblemCount(
+			@Param("record") ProblemInfo problemInfo,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime);
+	
+	/**
+	 * 
+	 * 查找出满足条件的问题上报信息
+	 * @param problemInfo - 查询条件 
+	 * @param startTime - 开始时间
+	 * @param endTime - 结束时间
+	 * @return 问题上报信息列表
+	 */
+	List<ProblemInfo> findPorblemInfo(
+			@Param("record") ProblemInfo problemInfo,
+			@Param("startTime") String startTime,
+			@Param("endTime") String endTime);
+	
 	/**
 	 * 根据流程标识字段查询问题评估信息
 	 * @param piid 流程标识字段

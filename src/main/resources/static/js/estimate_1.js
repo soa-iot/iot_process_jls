@@ -206,6 +206,12 @@ layui.use('table', function(){
 			,url: '/iot_process/process/nodes/historyTask/piid/'+piidp //数据接口
 			// ,page: true //开启分页
 			,parseData: function(res) { //res 即为原始返回的数据
+				var data = res.data     
+		    	if(data != null || data != ''){
+		    		 for(var i=0;i<data.length;i++){
+		    			 data[i].nodeEndTime = data[i].nodeEndTime.replace(/T/, ' ').replace(/\..*/, '');
+		    		 }
+		    	}
 				return {
 					"code": res.state, //解析接口状态
 					"msg": res.message, //解析提示文本
@@ -218,7 +224,7 @@ layui.use('table', function(){
 		{field: 'nodeExecutor', title: '处理人', width:'25%'}
 		,{field: 'nodeName', title: '处理节点', width:'25%'}
 		,{field: 'nodeComment', title: '处理说明', width:'25%'}
-		,{field: 'nodeEndTime', title: '时间', width:'25%',templet:"<div>{{layui.util.toDateString(d.nodeEndTime,'yyyy-MM-dd HH:mm:ss')}}</div>"} 
+		,{field: 'nodeEndTime', title: '时间', width:'25%'} 
 		]]
 	});
 

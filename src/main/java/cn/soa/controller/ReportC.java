@@ -32,6 +32,7 @@ import cn.soa.service.inter.ReportSI;
 import cn.soa.service.inter.UnsafeSI;
 import cn.soa.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
+import oracle.jdbc.proxy.annotation.Post;
 
 /**
  * @ClassName: ReportC
@@ -87,6 +88,59 @@ public class ReportC {
 		List<UnsafeType> result = unsafeS.getList();
 		
 		return new ResultJson<List<UnsafeType>>(ResultJson.SUCCESS, null, result);
+	}
+	
+	/**   
+	 * @Title: showProblemInfo   
+	 * @Description: 显示当前登录用户暂存的问题报告数据
+	 * @return: ResultJson<ProblemInfo> 返回成功响应数据 
+	 */
+	@PostMapping("/showproblem")
+	public ResultJsonForTable<List<ProblemInfo>> showProblemInfo(
+			@RequestParam(name = "info",required=false) ProblemInfo info,
+			@RequestParam(name = "page",required=false) Integer page,
+			@RequestParam(name = "limit",required=false) Integer limit,
+			@RequestParam(name = "startTime",required=false) String startTime,
+			@RequestParam(name = "endTime",required=false) String endTime) {
+		
+		log.debug("------查询条件：{}", info);
+		log.debug("------第几页：{}", page);
+		log.debug("------每页数量：{}", limit);
+		log.debug("------查询开始时间：{}", startTime);
+		log.debug("------查询结束时间：{}", endTime);
+		
+		List<ProblemInfo> result = reportS.getProblemInfoByPage(info, page, limit, startTime, endTime);
+		if(result != null) {
+			Map<String, Object> map = reportS.ProblemCount(info, startTime, endTime);
+			System.err.println(map);
+			//查询出的数据量
+			Integer count = Integer.valueOf(map.get("TOTAL").toString());
+			//查询出的已完成整改数量
+			Integer complete = Integer.valueOf(map.get("COMPLETE").toString());
+			return new ResultJsonForTable<List<ProblemInfo>>(0, String.valueOf(complete), count, result);
+		}
+		
+		return new ResultJsonForTable<>(0,"查询失败", 0, null);
+	}
+	
+	/**   
+	 * @Title: exportproblem   
+	 * @Description: 显示当前登录用户暂存的问题报告数据
+	 * @return: ResultJson<ProblemInfo> 返回成功响应数据 
+	 */
+	@PostMapping("/exportproblem")
+	public ResultJson<List<ProblemInfo>> exportProblemInfo(
+			@RequestParam(name = "info",required=false) ProblemInfo info,
+			@RequestParam(name = "startTime",required=false) String startTime,
+			@RequestParam(name = "endTime",required=false) String endTime) {
+		
+		log.debug("------查询条件：{}", info);
+		log.debug("------查询开始时间：{}", startTime);
+		log.debug("------查询结束时间：{}", endTime);
+		
+		List<ProblemInfo> result = reportS.getProblemInfo(info, startTime, endTime);
+		
+		return new ResultJson<List<ProblemInfo>>(0,"导出成功", result);
 	}
 	
 	/**   
@@ -244,5 +298,5 @@ public class ReportC {
 		}
 		
 	}
-	
+
 }

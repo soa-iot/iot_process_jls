@@ -18,16 +18,10 @@
     	.text-font{
     		color: black;
     		font-weight: 400;
-    	}
-    	.text-font-warm{
-    		color: red;
-    		/* display: inline-block; */
-    		/* position: relative; */	
-    	}
-    
+    	} 
     </style>
   </head>
-  <body style="background-color: #F0F0F0;">
+  <body style="min-width: 1000px;">
   
   	<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
 	<!--[if lt IE 9]>
@@ -35,10 +29,10 @@
 	  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
 	<![endif]-->  
   
-    <div id="base" class="layui-container" >
+    <div id="base" class="layui-container" style="padding-left:0px;">
 	      <!-- (问题信息) -->
 		  <div class="layui-row">
-		  	 <div class="layui-col-xs1 layui-col-md2">&nbsp;</div>
+		  	 <!-- <div class="layui-col-xs1 layui-col-md2">&nbsp;</div> -->
 		  	 <div class="layui-col-xs11 layui-col-md10">
 		  	 <form class="layui-form" lay-filter="report-form">
 		  	 	<!-- 隐藏字段 问题上报时间和上报部门-->
@@ -203,13 +197,13 @@
 			 </div>
 
 			  <div class="layui-form-item" id="problem_report" style="display: none;">
-			  	<div class="layui-col-md-offset5">
+			  	<div class="layui-col-md-offset4 layui-col-xs-offset4">
 				    <button class="layui-btn saveBtn" lay-submit lay-filter="saveBtn" id="saveBtn">暂存</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				    <button class="layui-btn" type="button" lay-submit lay-filter="problem_report">问题上报</button>
 			    </div>
 			 </div>
 			 <div class="layui-form-item" id="problem_back" style="display: none;">
-			  	<div class="layui-col-md-offset5">
+			  	<div class="layui-col-md-offset4">
 				    <button class="layui-btn" type="button" lay-submit lay-filter="problem_report_again">问题上报</button>
 			    </div>
 			 </div>
