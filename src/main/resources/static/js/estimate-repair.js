@@ -129,15 +129,15 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
 		    		 updateEstimated(data);
-		    		 layer.msg("闭环处理成功",{icon:1, time: 2000}, function(){
+		    		 layer.msg("闭环处理成功",{icon:1, time: 2000, offset: '100px'}, function(){
 		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
-		    		 layer.msg("闭环处理失败",{icon:2});
+		    		 layer.msg("闭环处理失败",{icon:2, offset: '100px'});
 		    	 }
 		     },
 		     error:function(){
-		    	 layer.msg("闭环处理失败",{icon:2});
+		    	 layer.msg("闭环处理失败",{icon:2, offset: '100px'});
 		     }		       
 		});
 		
@@ -162,15 +162,15 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
-		    		 layer.msg("回退成功",{icon:1, time: 2000}, function(){
+		    		 layer.msg("回退成功",{icon:1, time: 2000, offset: '100px'}, function(){
 		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
-		    		 layer.msg("回退失败",{icon:2});
+		    		 layer.msg("回退失败",{icon:2, offset: '100px'});
 		    	 }
 		     },
 		     error:function(){
-		    	 layer.msg("回退失败",{icon:2});
+		    	 layer.msg("回退失败",{icon:2, offset: '100px'});
 		     }		       
 		});
 		
@@ -266,11 +266,11 @@ layui.use(['tree', 'layer', 'form'], function() {
 		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
-		    		 layer.msg("外部协调成功",{icon:2});
+		    		 layer.msg("外部协调失败",{icon:2});
 		    	 }
 		     },
 		     error:function(){
-		    	 layer.msg("外部协调请求成功",{icon:2});
+		    	 layer.msg("外部协调失败",{icon:2});
 		     }		       
 		});
 	}

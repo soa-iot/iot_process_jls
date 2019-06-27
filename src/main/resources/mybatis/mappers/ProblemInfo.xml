@@ -90,7 +90,7 @@
 									when  PROBLEMTYPE='生产办' then  '生产办' 
 									when  PROBLEMTYPE='综合办' then  '综合办' 
 								else null end problemtype 
-  			from  CZ_TASK_PROBLEM_REPORT where piid is not null
+  			from  CZ_TASK_PROBLEM_REPORT_6 where piid is not null
 ) problemreport
            <where>			
     	<if test ="record!=null">
@@ -121,7 +121,7 @@
 								when  PROBLEMTYPE='生产办' then  '生产办' 
 								when  PROBLEMTYPE='综合办' then  '综合办' 
 								else null end problemtype 
-  			from  CZ_TASK_PROBLEM_REPORT 
+  			from  CZ_TASK_PROBLEM_REPORT_6 
   		) a
   		           <where>			
     	<if test ="record!=null">
@@ -153,7 +153,7 @@
 								when  PROBLEMTYPE='生产办' then  '生产办' 
 								when  PROBLEMTYPE='综合办' then  '综合办' 
 								else null end area ,  count(1) count,PROBLEMSTATE
-  			from  CZ_TASK_PROBLEM_REPORT where TO_CHAR(APPLYDATE,'YYYY-MM-DD')  BETWEEN  #{beginTime} AND  #{endTime} AND PIID IS NOT NULL
+  			from  CZ_TASK_PROBLEM_REPORT_6 where TO_CHAR(APPLYDATE,'YYYY-MM-DD')  BETWEEN  #{beginTime} AND  #{endTime} AND PIID IS NOT NULL
   			GROUP BY  CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
 								 when  PROBLEMTYPE='净化工段' then  '净化工段' 
 								when  PROBLEMTYPE='电站' then  '维修工段'
@@ -172,7 +172,7 @@
 		select 
 			<include refid="problemInfoSelectSql"></include>
 		from 
-			cz_task_problem_report 
+			CZ_TASK_PROBLEM_REPORT_6 
 		where 
 			piid = #{piid}
 	</select>
@@ -189,8 +189,8 @@
 			<include refid="problemInfoSelectSql"></include>
 		FROM
 			(
-				SELECT ROWNUM rownum1, CZ_TASK_PROBLEM_REPORT.*
-				FROM CZ_TASK_PROBLEM_REPORT
+				SELECT ROWNUM rownum1, CZ_TASK_PROBLEM_REPORT_6.*
+				FROM CZ_TASK_PROBLEM_REPORT_6
 				<where>
 					<if test="record != null">
 					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">
@@ -398,7 +398,7 @@
 	
 	<select id="PorblemCount" resultType="map">
 		SELECT COUNT(1) total,COUNT(CASE when problemstate='FINISHED' THEN '1' else null end) complete
-				FROM CZ_TASK_PROBLEM_REPORT
+				FROM CZ_TASK_PROBLEM_REPORT_6
 				<where>
 					<if test="record != null">
 					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">
@@ -602,7 +602,7 @@
 		<select id="findPorblemInfo" resultType="cn.soa.entity.ProblemInfo">
 			SELECT
 				<include refid="problemInfoSelectSql"></include>
-			FROM CZ_TASK_PROBLEM_REPORT
+			FROM CZ_TASK_PROBLEM_REPORT_6
 			<where>
 				<if test="record != null">
 					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">
@@ -806,7 +806,7 @@
 		SELECT
 			<include refid="problemInfoSelectSql"></include>
 		FROM
-			CZ_TASK_PROBLEM_REPORT
+			CZ_TASK_PROBLEM_REPORT_6
 		WHERE
 			T_PROBLEM_REP_ID = #{RepId, jdbcType=VARCHAR} AND PIID is null			
 	</select>
@@ -845,7 +845,7 @@
 			RFID,PROBLEMCLASS,REMARKFIVE,REMARKSIX,PROBLEMDESCRIBE,RESAVEPEOPLE,T_PROBLEM_PHO_ID, prp.PHO_NAME phoName,
 			prp.PHO_ADDRESS phoAddress, prp.PHO_DISPIAY_NAME phoDisplayName,prp.PHO_UPLOAD_PEOPLE phoUploadPeople
 		FROM
-			CZ_TASK_PROBLEM_REPORT pr LEFT JOIN CZ_TASK_PROBLEM_REPORTPHO prp
+			CZ_TASK_PROBLEM_REPORT_6 pr LEFT JOIN CZ_TASK_PROBLEM_REPORTPHO prp
 			ON pr.T_PROBLEM_REP_ID = prp.T_PROBLEM_REP_ID
 	    <where>
 	    	<choose>
@@ -865,7 +865,7 @@
 	<!-- 1.4、根据问题报告主键id查找问题报告    -->
 	<!-- public Integer findMaxProblemNum() -->
 	<select id="findMaxProblemNum" resultType="java.lang.Integer">
-		SELECT MAX(PROBLEMNUM) ma FROM CZ_TASK_PROBLEM_REPORT
+		SELECT MAX(PROBLEMNUM) ma FROM CZ_TASK_PROBLEM_REPORT_6
 	</select>
 	
 	<!-- 1.4、根据用户名查找上报申请用户    -->
@@ -882,7 +882,7 @@
 			select sys_guid() from dual
 		</selectKey>
 		INSERT INTO
-			CZ_TASK_PROBLEM_REPORT
+			CZ_TASK_PROBLEM_REPORT_6
 			<trim prefix="(" suffix=")" suffixOverrides=",">
 			   <if test="tProblemRepId != null and tProblemRepId != ''">
 			   		T_PROBLEM_REP_ID,
@@ -1291,7 +1291,7 @@
 	<!-- 3.1、修改一条问题报告数据 	-->
 	<!-- public Integer updateOne(ProblemInfo info)	 -->
 	<update id="updateOne" parameterType="cn.soa.entity.ProblemInfo">
-		UPDATE CZ_TASK_PROBLEM_REPORT
+		UPDATE CZ_TASK_PROBLEM_REPORT_6
 			<set>
 			    <if test="tProblemRepId != null and tProblemRepId != ''">
 			   		T_PROBLEM_REP_ID = #{tProblemRepId},
@@ -1501,7 +1501,7 @@
 	<!-- Integer updateProblemDescribeByPiid(String piid); -->
 	<update id="updateProblemDescribeByPiid" parameterType="cn.soa.entity.ProblemInfo">
 		UPDATE 
-			cz_task_problem_report 
+			CZ_TASK_PROBLEM_REPORT_6 
 			<set>
 			    <if test="tProblemRepId != null and tProblemRepId != ''">
 			   		T_PROBLEM_REP_ID = #{tProblemRepId},
@@ -1708,7 +1708,7 @@
 	<!-- 根据bsid，更新业务表数据的piid -->
 	<update id="updatePiidByBsid">
 		UPDATE 
-			cz_task_problem_report 
+			CZ_TASK_PROBLEM_REPORT_6 
 		SET 
 			piid=#{piid} 
 		WHERE 
@@ -1721,7 +1721,7 @@
 	<!-- public Integer updateEstiByPiid(ProblemInfo info); -->
 	<update id="updateEstiByPiid">
 		UPDATE 
-			cz_task_problem_report 
+			CZ_TASK_PROBLEM_REPORT_6 
 		SET 
 			remark=#{remark},
 			problemdescribe=#{problemdescribe},
@@ -1766,12 +1766,12 @@
 	
 	
 	<delete id="deleteByPiid" parameterType="string">
-		delete from cz_task_problem_report
+		delete from CZ_TASK_PROBLEM_REPORT_6
 		where piid=#{piid}
 	</delete>
 	
 	<delete id="deleteByBsid" parameterType="string">
-		delete from cz_task_problem_report
+		delete from CZ_TASK_PROBLEM_REPORT_6
 		where T_PROBLEM_REP_ID=#{bsid}
 	</delete>
 </mapper>
