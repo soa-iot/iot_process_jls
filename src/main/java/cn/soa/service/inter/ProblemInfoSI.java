@@ -77,4 +77,11 @@ public interface ProblemInfoSI {
 	 */  
 	int updatePiidByBsid( String bsid, String piid );
 	
+	/**
+	 * 根据用部分problemdescribe查询对应的数据
+	 * @param problemdescribele
+	 * @return ProblemInfo集合
+	 */
+	List<ProblemInfo> getAutoFill(String problemdescribe);
+	
 }

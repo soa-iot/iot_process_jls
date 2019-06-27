@@ -73,7 +73,7 @@ $.ajax({
 									console.log("选中的人："+usernames);
 
 										if (usernames=="") {
-											layer.msg('至少选定一人！！！',{icon:7});
+											layer.msg('至少选定一人！！！',{icon:7,offset:"100px"});
 										}else {
 											workPlan(this,usernames);
 											layer.close(ope);
@@ -172,7 +172,7 @@ $.ajax({
 								}
 								console.log("选中的人："+usernames);
 								if (usernames=="") {
-									layer.msg('至少选定一人！！！',{icon:7});
+									layer.msg('至少选定一人！！！',{icon:7,offset:"100px"});
 								}else{
 									estimate_next(this,usernames);
 			
@@ -238,7 +238,7 @@ function workPlan(obj,usernames){
 			if (jsonData.data) {
 				modifyEstimated("作业安排成功，问题流转到："+usernames);
 			}else{
-				layer.msg('安排人员发送失败！！！',{icon:7});
+				layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
 			}
 		},
 		//,error:function(){}		       
@@ -283,7 +283,7 @@ function estimate_next(obj,usernames){
 			if (jsonData.data) {
 				modifyEstimated("下一步成功，问题流转到："+usernames);
 			}else{
-				layer.msg('安排人员发送失败！！！',{icon:7});
+				layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
 			}
 		},
 		//,error:function(){}		       

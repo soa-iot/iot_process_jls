@@ -18,7 +18,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
 			    async : false,
-		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
+		    	url : "/iot_process/process/nodes/next/group/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "put",
 		        data : {
 	        		"comment": data.field.comment,
@@ -31,15 +31,15 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        	if(jsonData.data == true){
 		        		//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("完成作业提交成功",{icon: 1, time:2000}, function(){
+				   		layer.msg("完成作业提交成功",{icon: 1, time:2000, offset: '100px'}, function(){
 				   			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 				   		});
 		        	}else{
-		        		layer.msg("完成作业提交失败",{icon: 2});
+		        		layer.msg("完成作业提交失败",{icon: 2, offset: '100px'});
 		        	}
 		        } 
 		        ,error:function(){
-		        	layer.msg("完成作业提交失败",{icon: 2});
+		        	layer.msg("完成作业提交失败",{icon: 2, offset: '100px'});
 		        }	
 		   });
 		  
@@ -102,7 +102,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
          ,error: function(index, upload){
        	 // layer.closeAll('loading'); //关闭loading
        	 // upload();   //重新上传
-        	 layer.msg("图片上传失败",{icon: 2});
+        	 layer.msg("图片上传失败",{icon: 2, offset: '100px'});
          }
      });
     

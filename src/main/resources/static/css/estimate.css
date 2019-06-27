@@ -2,6 +2,9 @@
 		padding: 6px;
 	} */
 	
+	body{
+		min-width: 750px;
+	}
 	.layui-input-one {
 		width: 181px;
 		/* height: 25px; */

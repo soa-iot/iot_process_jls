@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +115,42 @@ public class ReportS implements ReportSI {
 		}
 		
 		return msg;
+	}
+	
+	/**   
+	 * @Title: ggetProblemInfoByPage   
+	 * @Description: 根据条件分页查询出问题上报信息列表
+	 * @return: ProblemInfo  查到的问题报告数据列表 
+	 */
+	@Override
+	public List<ProblemInfo> getProblemInfoByPage(ProblemInfo problemInfo, Integer page, Integer limit, String startTime,
+			String endTime) {
+		
+		List<ProblemInfo> result = reportMapper.findPorblemInfoByPage(problemInfo, page, limit, startTime, endTime);
+		return result;
+	}
+	
+	/**   
+	 * @Title: ProblemCount   
+	 * @Description: 根据条件查询出问题上报信息的条数
+	 * @return: Integer   查询数据的条数
+	 */
+	@Override
+	public Map<String, Object> ProblemCount(ProblemInfo problemInfo, String startTime, String endTime) {
+		
+		return reportMapper.PorblemCount(problemInfo, startTime, endTime);
+	}
+	
+	/**   
+	 * @Title: ggetProblemInfoByPage   
+	 * @Description: 根据条件查询出问题上报信息列表
+	 * @return: ProblemInfo  查到的问题报告数据列表 
+	 */
+	@Override
+	public List<ProblemInfo> getProblemInfo(ProblemInfo problemInfo, String startTime, String endTime) {
+		
+		List<ProblemInfo> result = reportMapper.findPorblemInfo(problemInfo, startTime, endTime);
+		return result;
 	}
 }
 

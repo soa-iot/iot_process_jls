@@ -28,4 +28,5 @@ var dfid ="",
 		"净化工段": "puror"
 		,"维修工段": "repairor"
 		,"其他": "estimators"
-};
+},
+url = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";

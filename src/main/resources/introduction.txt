@@ -256,9 +256,9 @@
 	$.ajax({
 	     type: "PUT"
 	     ,url: '/iot_process/process/nodes/jump/group/piid/{piid}'    //piid为流程实例id
-	     ,data: data{
+	     , data{
 	     	"area": ""  //属地单位
-			,"actId": ""  //跳转节点id
+			,"actId": "receive"  //跳转节点id
 			,"": ""  //下一步流程变量
 			,"userName": ""  //当前节点任务执行人
 			,"comment": ""   //备注信息

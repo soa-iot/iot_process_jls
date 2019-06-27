@@ -1,16 +1,12 @@
 package cn.soa.controller;
 
-import java.util.Date;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import cn.soa.entity.LayuiTree;
 import cn.soa.entity.ProblemInfo;
@@ -131,6 +127,15 @@ public class EstimateC {
 		List<LayuiTree> result = userManagerS.findRepair();
 		
 		return new ResultJson<List<LayuiTree>>(result);
+	}
+	
+	@GetMapping("/autoFill")
+	public ResultJson<List<ProblemInfo>> getByAutoFill(String problemdescribe) {
+		
+		List<ProblemInfo> data = problemInfoSI.getAutoFill(problemdescribe);
+		
+		return data != null ? new ResultJson<List<ProblemInfo>>(0,"数据获取成功", data):new ResultJson<List<ProblemInfo>>(1,"数据获取成功", data);
+		
 	}
 	
 }

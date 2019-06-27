@@ -218,7 +218,9 @@ layui.use('table', function(){
 		{field: 'nodeExecutor', title: '处理人', width:'25%'}
 		,{field: 'nodeName', title: '处理节点', width:'25%'}
 		,{field: 'nodeComment', title: '处理说明', width:'25%'}
-		,{field: 'nodeEndTime', title: '时间', width:'25%',templet:"<div>{{layui.util.toDateString(d.nodeEndTime,'yyyy-MM-dd HH:mm:ss')}}</div>"} 
+		,{field: 'nodeEndTime', title: '时间', width:'25%', templet:function(d){
+			return d.nodeEndTime.replace(/T/, ' ').replace(/\..*/, '');
+		}} 
 		]]
 	});
 
@@ -256,7 +258,7 @@ function modifyEstimated(msge) {
 				if (json.state==0) {
 					//if ($(obj).attr("id")=="work_plant") {
 					$("#comment").val("");
-						layer.msg(msge , {time: 3000,icon:1},function() {
+						layer.msg(msge , {time: 3000,icon:1,offset:"100px"},function() {
 							
 							//window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
 						});
@@ -266,7 +268,7 @@ function modifyEstimated(msge) {
 					
 
 				}else{
-					layer.msg("提交失败！",{time: 3000,icon:2});
+					layer.msg("提交失败！",{time: 3000,icon:2,offset:"100px"});
 				}
 			}  
 		});
@@ -290,13 +292,13 @@ function yesCompare(){
 	var date_amtch = period.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
 
 	if (($("#sele").val() =="指定日期" && period=="") || ($("#sele").val() =="指定日期" && date_amtch == null)) {
-		layer.msg('请正确输入指定日期！！！',{icon:7});
+		layer.msg('请正确输入指定日期！！！',{icon:7,offset:"100px"});
 		return false;
 	}else if(problem_describe == ""){
-		layer.msg('问题描述不能为空！！！',{icon:7});
+		layer.msg('问题描述不能为空！！！',{icon:7,offset:"100px"});
 		return false;
 	}else if ($("#comment").val()=="") {
-		layer.msg('处理说明不能为空！！！',{icon:7});
+		layer.msg('处理说明不能为空！！！',{icon:7,offset:"100px"});
 		return false;
 	}else{
 		return true;
@@ -359,7 +361,7 @@ $("#rollback").click(function(){
 				     		
 				     		modifyEstimated("回退成功！！" );
 						}else{
-							layer.msg(jsonData.message,{icon:2});
+							layer.msg(jsonData.message,{icon:2,offset:"100px"});
 						}
 				     },
 				});
@@ -505,7 +507,7 @@ $("#complete").click(function(){
 						if (jsonData.state==0) {
 							modifyEstimated("闭环成功！！");
 						}else{
-							layer.msg("数据提交失败！！",{icon:2});
+							layer.msg("数据提交失败！！",{icon:2,offset:"100px"});
 						}
 					},
 						//,error:function(){}		       
@@ -564,7 +566,7 @@ layui.use('tree', function(){
 								if (depts != "") {
 									if (dept != "") {
 										usernames = "";
-										layer.msg('请选择同一部门的人！！！',{icon:7});
+										layer.msg('请选择同一部门的人！！！',{icon:7,offset:"100px"});
 										return;
 									}
 									dept_one = depts;
@@ -596,7 +598,7 @@ layui.use('tree', function(){
 										outhelperm(this,dept,usernames);
 									}
 								}else{
-									layer.msg('至少选择一个人！！！',{icon:7});
+									layer.msg('至少选择一个人！！！',{icon:7,offset:"100px"});
 								}
 								
 								usernames="";
@@ -672,7 +674,7 @@ function outhelperm(obj,dept,usernames){
 
 				modifyEstimated("外部协调成功，问题流转到："+usernames);
 			}else{
-				layer.msg('安排人员发送失败！！！',{icon:7});
+				layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
 			}
 		}
 		//,error:function(){}		       
@@ -702,7 +704,7 @@ $.ajax({
     	if (jsonData.data) {
 			modifyEstimated("外部协调成功，问题流转到："+usernames);
 		}else{
-			layer.msg('安排人员发送失败！！！',{icon:7});
+			layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
 		}
     }
     //,error:function(){}		       

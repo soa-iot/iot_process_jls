@@ -12,7 +12,6 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var num = getCookie1("num").replace(/"/g,'');
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
-
 	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;
@@ -241,14 +240,14 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   				type = 0;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("问题暂存成功", {icon: 1});
+				   		layer.msg("问题暂存成功", {icon: 1, offset: '100px'});
 		   			}else{
-		   				layer.msg("问题暂存失败", {icon: 2});
+		   				layer.msg("问题暂存失败", {icon: 2, offset: '100px'});
 		   			}
 		   			
 		   		},
 		   		error: function(){
-			   		layer.msg("问题暂存失败", {icon: 2});
+			   		layer.msg("问题暂存失败", {icon: 2, offset: '100px'});
 			   	}
 		  })
 	    return false;
@@ -363,12 +362,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			    	type = 1;
 		    		//上传问题图片
 			    	uploadList.upload();
-			    	layer.msg("问题上报成功",{icon: 1});
+			    	layer.msg("问题上报成功",{icon: 1, offset: '100px'});
 			    	$("#problemdescribe").val("");
 			    	$('#imgZmList').empty();
 			    	imgCount();
 		    	}else{
-		    		layer.msg("问题上报失败",{icon: 2});
+		    		layer.msg("问题上报失败",{icon: 2, offset: '100px'});
 		    	}
 		     }
 		     ,error:function(){}		       
@@ -437,20 +436,20 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 				   			type = 1;
 				    		//上传问题图片
 					    	uploadList.upload();
-					    	layer.msg("问题上报成功",{icon: 1});
+					    	layer.msg("问题上报成功",{icon: 1, offset: '100px'});
 					    	$("#problemdescribe").val("");
 					    	$('#imgZmList').empty();
 					    	imgCount();
 				   		}else{
-				   			layer.msg("问题上报失败", {icon: 2});
+				   			layer.msg("问题上报失败", {icon: 2,offset: '100px'});
 				   		}
 		   			}else{
-		   				layer.msg("问题上报失败", {icon: 2});
+		   				layer.msg("问题上报失败", {icon: 2, offset: '100px'});
 		   			}
 		   			
 		   	  },
 		   	  error: function(){
-		   		layer.msg("问题上报失败", {icon: 2});
+		   		layer.msg("问题上报失败", {icon: 2, offset: '100px'});
 		   	  }
 		  })
 	    return false;
