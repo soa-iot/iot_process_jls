@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.soa.dao.UserOrganizationTreeMapper;
 import cn.soa.dao.UserRoleMapper;
 import cn.soa.entity.LayuiTree;
 import cn.soa.entity.ResultJson;
@@ -40,6 +41,9 @@ public class UserManagerS implements UserManagerSI {
 	
 	@Autowired
 	private UserRoleMapper userRoleMapper;
+	
+	@Autowired
+	private UserOrganizationTreeMapper userOrganizationTreeMapper;
 	
 	
 	public void findOrganByUsernameS( String usernum, String url, int level ) {
@@ -204,20 +208,20 @@ public class UserManagerS implements UserManagerSI {
 	 * @return 用户列表树形结构
 	 */
 	@Override
-	public List<LayuiTree> findUserByOrgid(String orgID) {
-		String orgName = userRoleMapper.findOrgNameByOrgid(orgID);
-		List<String> result = userRoleMapper.findUserByOrgid(orgID);
-		if(orgName == null || result == null) {
+	public List<LayuiTree> findUserByDept(String dept) {
+		List<UserOrganization> result = userOrganizationTreeMapper.findUserOrganizationByName(dept);
+		
+		if(result == null) {
 			logger.debug("-------获取所在组下的用户列表数据失败--------");
 			return null;
 		}
 		//将查找结果填充到layui树形结构实体类中
 		List<LayuiTree> treeList = new ArrayList<>();
 		LayuiTree tree = new LayuiTree();
-		tree.setLabel(orgName);
+		tree.setLabel(dept);
 		List<LayuiTree> subTree = new ArrayList<>();
-		for(String str : result) {
-			subTree.add(new LayuiTree(str));
+		for(UserOrganization user : result) {
+			subTree.add(new LayuiTree(user.getName()));
 		}
 		tree.setChildren(subTree);
 		treeList.add(tree);

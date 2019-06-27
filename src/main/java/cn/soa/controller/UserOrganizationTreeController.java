@@ -77,10 +77,10 @@ public class UserOrganizationTreeController {
 	}
 
 	@PostMapping("/users")
-	public ResultJson<List<LayuiTree>> getUserByOrgid(String orgID) {
+	public ResultJson<List<LayuiTree>> getUserByOrgid(String dept) {
 
-		System.err.println("组织编号orgID："+orgID);	
-		List<LayuiTree> result = userManagerS.findUserByOrgid(orgID);
+		System.err.println("部门名称："+dept);	
+		List<LayuiTree> result = userManagerS.findUserByDept(dept);
 		
 		return new ResultJson<List<LayuiTree>>(result);
 	}

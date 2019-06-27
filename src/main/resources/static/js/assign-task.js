@@ -93,7 +93,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		url : '/iot_process/userOrganizationTree/users',
 		type : 'POST',
 		dataType : 'json',
-		data : {"orgID":dept},
+		data : {"dept":dept},
 		success : function(json) {
 			treeResult = json.data;
 		},
