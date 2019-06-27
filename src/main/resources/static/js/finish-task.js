@@ -32,7 +32,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        		//上传问题图片
 				   		uploadList.upload();
 				   		layer.msg("完成作业提交成功",{icon: 1, time:2000, offset: '100px'}, function(){
-				   			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+				   			//window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 				   		});
 		        	}else{
 		        		layer.msg("完成作业提交失败",{icon: 2, offset: '100px'});
@@ -53,7 +53,6 @@ layui.use(['form', 'jquery','upload','layer'], function(){
          , data: {		resavepeople: function(){ return resavepeople;}, 
 			  			piid: function(){console.log("piid: "+piid); return piid;},
 			  	   		tProblemRepId: function(){ console.log("tProblemRepId: "+tProblemRepId); return tProblemRepId;},
-			  			num: function(){ console.log("num: "+num); return num; },
 			  			remark: "1"
          			}
          , accept: 'images'
@@ -102,7 +101,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
          ,error: function(index, upload){
        	 // layer.closeAll('loading'); //关闭loading
        	 // upload();   //重新上传
-        	 layer.msg("图片上传失败",{icon: 2, offset: '100px'});
+        	 layer.msg("图片上传失败",{icon: 2, offset:'100px'});
          }
      });
     
@@ -110,7 +109,8 @@ layui.use(['form', 'jquery','upload','layer'], function(){
     form.verify({
     	imgs: function(value, item){  //value：表单的值、item：表单的DOM对象
     		if($('#imgZmList').children("li").length < 1){
-    			return '必须上传现场施工图';
+    			layer.msg("必须上传现场施工图",{icon: 2, offset:'100px'});
+    			return "1";
     		}
     	}
     });

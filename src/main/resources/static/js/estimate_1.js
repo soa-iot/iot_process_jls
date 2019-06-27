@@ -17,6 +17,7 @@ layui.use('laydate', function(){
 	//常规用法
 	laydate.render({
 		elem: '#sdate'
+		,min:0
 		//,format:'yyyy/MM/dd'
 	});
 
@@ -168,8 +169,6 @@ $.ajax({
 					});
 
 				});
-
-				
 				/* //轮播图
 				layui.use(['carousel', 'form'], function(){
 					var carousel = layui.carousel
@@ -191,6 +190,7 @@ $.ajax({
 
 	}  
 });
+
 
 /**
  * 处理过程表格

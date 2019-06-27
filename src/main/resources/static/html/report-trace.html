@@ -17,7 +17,7 @@
 			    <div class="layui-inline"> 
 			      <label class="text-font layui-form-label">专业</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <select>
+			        <select id="profession">
 			       	  <option value="">请选择</option>
 			          <option value="管理">管理</option>
 				      <option value="工艺">工艺</option>
@@ -37,7 +37,7 @@
 			    <div class="layui-inline">
 			      <label class="text-font layui-form-label">描述</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <input type="text" id="test" class="layui-input">
+			        <input type="text" id="problemdescribe" class="layui-input">
 			      </div>
 			    </div>
 			    <div class="layui-inline"> 
@@ -57,7 +57,7 @@
 			    <div class="layui-inline"> 
 			      <label class="text-font layui-form-label">类别</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <select>
+			        <select id="problemclass">
 			          <option value="">请选择</option>
 			          <option value="分厂级检查">分厂级检查</option>
 				      <option value="总厂级检查">总厂级检查</option>
@@ -75,9 +75,8 @@
 			    <div class="layui-inline">
 			      <label class="text-font layui-form-label">来源</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <select>
+			        <select id="welName">
 			          <option value="">请选择</option>
-			          <option value="">请输入问题区域</option>
 			          <option value="主体装置一列">主体装置一列</option>
 			          <option value="主体装置二列">主体装置二列</option>
 			          <option value="主体装置三列" >主体装置三列</option>
@@ -107,13 +106,22 @@
 			    <div class="layui-inline"> 
 			      <label class="text-font layui-form-label">装置</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <input type="text" class="layui-input">
+			        <select id="equipment">
+			          <option value="">请选择</option>
+			          <option value="主体装置一列">主体装置一列</option>
+			          <option value="主体装置二列">主体装置二列</option>
+			          <option value="主体装置三列" >主体装置三列</option>
+			          <option value="主体装置四列">主体装置四列</option>
+			          <option value="主体装置五列">主体装置五列</option>
+			          <option value="主体装置六列">主体装置六列</option>
+			          <option value="主体装置七列">主体装置七列</option>
+			         </select>
 			      </div>
 			    </div>
 			    <div class="layui-inline"> 
 			      <label class="text-font layui-form-label">进度</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <select>
+			        <select id="schedule">
 			          <option value="">请选择</option>
 			          <option value="问题上报">问题上报</option>
 			          <option value="问题评估">问题评估</option>
@@ -132,7 +140,7 @@
 			    <div class="layui-inline"> 
 			      <label class="text-font layui-form-label">状态</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <select>
+			        <select id="problemstate">
 			          <option value="">请选择</option>
 			          <option value="FINISHED">已整改</option>
 			          <option value="UNFINISHED">未整改</option>
@@ -142,7 +150,7 @@
 			    <div class="layui-inline">
 			      <label class="text-font layui-form-label">部门</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <select>
+			        <select id="problemtype">
 			          <option value="">请选择</option>
 			          <option value="净化工段">净化工段</option>
 			          <option value="维修工段">维修工段</option>
@@ -160,7 +168,7 @@
 			    <div class="layui-inline"> 
 			      <label class="text-font layui-form-label">相关处理人</label>
 			      <div class="layui-input-inline" style="width: 150px;">
-			        <input type="text" class="layui-input">
+			        <input id="handler" type="text" class="layui-input">
 			      </div>
 			    </div>
 			 </div>
@@ -185,16 +193,16 @@
 			</div>
 		</div>
 		<div class="layui-col-xs12 layui-col-md5 layui-col-md-offset4">
-			<button type="button" class="layui-btn" id="export">
+			<button type="button" class="layui-btn" id="export" lay-event="export">
 				<i class="layui-icon">&#xe621;</i>导出
 			</button>
-			<button type="button" class="layui-btn layui-btn-danger" id="delete">
+			<button type="button" class="layui-btn layui-btn-danger" id="delete" lay-event="delete">
 				<i class="layui-icon">&#xe640;</i>删除
 			</button> 
-			<button type="button" class="layui-btn layui-btn-normal" data-type="reload" id="query">
+			<button type="button" class="layui-btn layui-btn-normal" data-type="reload" lay-event="querydata">
 				<i class="layui-icon">&#xe615;</i>查询
 			</button>  
-			<button type="button" class="layui-btn layui-btn-warm" id="open-advance">
+			<button type="button" class="layui-btn layui-btn-warm" id="open-advance" lay-event="open-advance">
 				<i class="layui-icon">&#xe608;</i><span id="advance-search">打开高级搜索</span>
 			</button>
 	  </div>

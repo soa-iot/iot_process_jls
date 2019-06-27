@@ -141,16 +141,5 @@ public class ReportS implements ReportSI {
 		return reportMapper.PorblemCount(problemInfo, startTime, endTime);
 	}
 	
-	/**   
-	 * @Title: ggetProblemInfoByPage   
-	 * @Description: 根据条件查询出问题上报信息列表
-	 * @return: ProblemInfo  查到的问题报告数据列表 
-	 */
-	@Override
-	public List<ProblemInfo> getProblemInfo(ProblemInfo problemInfo, String startTime, String endTime) {
-		
-		List<ProblemInfo> result = reportMapper.findPorblemInfo(problemInfo, startTime, endTime);
-		return result;
-	}
 }
 

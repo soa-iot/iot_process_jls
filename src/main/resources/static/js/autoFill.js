@@ -26,7 +26,7 @@ function getAutoFill() {
 		$.ajax({  
 			url : "/iot_process/estimates/autoFill",  
 			type : "get",
-			data : {problemdescribe : $("#problemdescribe").val()},
+			data : {problemdescribe : $("#problemdescribe").val().trim()},
 			dataType : "json",  
 			success: function( json) {
 				if (json.state == 0) {

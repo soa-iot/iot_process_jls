@@ -5,6 +5,11 @@
 	body{
 		min-width: 750px;
 	}
+	
+	.layui-collapse{
+		border: none;
+	}
+	
 	.layui-input-one {
 		width: 181px;
 		/* height: 25px; */
@@ -57,7 +62,7 @@
 			margin-left: 50px;
 		} */
 		
-	.big-img{
+	.big-img,.big-img-new{
 		width: 180px;
 		height: 150px;
 		/* margin-top: 50px;
@@ -79,7 +84,7 @@
 	}
 	
 	.h2c{
-		background-color: #b2b2b2;
+		background-color: #B8DEE5;;
 	}
 		
 	.labelr{

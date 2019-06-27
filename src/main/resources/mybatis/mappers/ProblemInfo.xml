@@ -90,7 +90,7 @@
 									when  PROBLEMTYPE='生产办' then  '生产办' 
 									when  PROBLEMTYPE='综合办' then  '综合办' 
 								else null end problemtype 
-  			from  CZ_TASK_PROBLEM_REPORT_6 where piid is not null
+  			from  CZ_TASK_PROBLEM_REPORT_NEW where piid is not null
 ) problemreport
            <where>			
     	<if test ="record!=null">
@@ -121,7 +121,7 @@
 								when  PROBLEMTYPE='生产办' then  '生产办' 
 								when  PROBLEMTYPE='综合办' then  '综合办' 
 								else null end problemtype 
-  			from  CZ_TASK_PROBLEM_REPORT_6 
+  			from  CZ_TASK_PROBLEM_REPORT_NEW 
   		) a
   		           <where>			
     	<if test ="record!=null">
@@ -153,7 +153,7 @@
 								when  PROBLEMTYPE='生产办' then  '生产办' 
 								when  PROBLEMTYPE='综合办' then  '综合办' 
 								else null end area ,  count(1) count,PROBLEMSTATE
-  			from  CZ_TASK_PROBLEM_REPORT_6 where TO_CHAR(APPLYDATE,'YYYY-MM-DD')  BETWEEN  #{beginTime} AND  #{endTime} AND PIID IS NOT NULL
+  			from  CZ_TASK_PROBLEM_REPORT_NEW where TO_CHAR(APPLYDATE,'YYYY-MM-DD')  BETWEEN  #{beginTime} AND  #{endTime} AND PIID IS NOT NULL
   			GROUP BY  CASE   when  PROBLEMTYPE='化验' then  '净化工段' 
 								 when  PROBLEMTYPE='净化工段' then  '净化工段' 
 								when  PROBLEMTYPE='电站' then  '维修工段'
@@ -172,7 +172,7 @@
 		select 
 			<include refid="problemInfoSelectSql"></include>
 		from 
-			CZ_TASK_PROBLEM_REPORT_6 
+			CZ_TASK_PROBLEM_REPORT_NEW 
 		where 
 			piid = #{piid}
 	</select>
@@ -189,198 +189,198 @@
 			<include refid="problemInfoSelectSql"></include>
 		FROM
 			(
-				SELECT ROWNUM rownum1, CZ_TASK_PROBLEM_REPORT_6.*
-				FROM CZ_TASK_PROBLEM_REPORT_6
+				SELECT ROWNUM rownum1, CZ_TASK_PROBLEM_REPORT_NEW.*
+				FROM CZ_TASK_PROBLEM_REPORT_NEW
 				<where>
 					<if test="record != null">
 					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">
-					   		T_PROBLEM_REP_ID = #{record.tProblemRepId},
+					   		T_PROBLEM_REP_ID = #{record.tProblemRepId}
 					   </if>
 					   <if test="record.piid != null and record.piid != ''">
-					   		and piid = #{record.piid},
+					   		and piid = #{record.piid}
 					   </if>
 					    <if test="record.tasId != null and record.tasId != ''">
-					   		and tas_id = #{record.tasId},
+					   		and tas_id = #{record.tasId}
 					   </if>
 					   <if test="record.problemtype != null and record.problemtype != ''">
-					   		and PROBLEMTYPE = #{record.problemtype},
+					   		and PROBLEMTYPE = #{record.problemtype}
 					   </if>
 					   <if test="record.welId != null and record.welId != ''">
-					   		and wel_id = #{record.welId},
+					   		and wel_id = #{record.welId}
 					   </if>
 					   <if test="record.welName != null and record.welName != ''">
-					   		and WEL_NAME = #{record.welName},
+					   		and WEL_NAME = #{record.welName}
 					   </if>
 					   <if test="record.adress != null and record.adress != ''">
-					   		and adress = #{record.adress},
+					   		and adress = #{record.adress}
 					   </if>
 					   <if test="record.impacts != null and record.impacts != ''">
-					   		and impacts = #{record.impacts},
+					   		and impacts = #{record.impacts}
 					   </if>
 					   <if test="record.problemdescribe != null and record.problemdescribe != ''">
-					   		and PROBLEMDESCRIBE = #{record.problemdescribe},
+					   		and PROBLEMDESCRIBE LIKE '%${record.problemdescribe}%'
 					   </if>
 					   <if test="record.resavepeople != null and record.resavepeople != ''">
-					   		and RESAVEPEOPLE = #{record.resavepeople},
+					   		and RESAVEPEOPLE = #{record.resavepeople}
 					   </if>
 					   <if test="record.applypeople != null and record.applypeople != ''">
-					   		and APPLYPEOPLE = #{record.applypeople},
+					   		and APPLYPEOPLE = #{record.applypeople}
 					   </if>
 					   <if test="record.problemstate != null and record.problemstate != ''">
-					   		and PROBLEMSTATE = #{record.problemstate},
+					   		and PROBLEMSTATE = #{record.problemstate}
 					   </if>
 					   <if test="record.remark != null and record.remark != ''">
-					   		and remark = #{record.remark},
+					   		and remark = #{record.remark}
 					   </if>
 					   <if test="record.remarkone != null and record.remarkone != ''">
-					   		and remarkone = #{record.remarkone},
+					   		and remarkone = #{record.remarkone}
 					   </if>
 					   <if test="record.remarktwo != null and record.remarktwo != ''">
-					   		and remarktwo = #{record.remarktwo},
+					   		and remarktwo = #{record.remarktwo}
 					   </if>
 					   <if test="record.remarkthree != null and record.remarkthree != ''">
-					   		and remarkthree = #{record.remarkthree},
+					   		and remarkthree = #{record.remarkthree}
 					   </if>
 					   <if test="record.supervisoryperson != null and record.supervisoryperson != ''">
-					   		and supervisoryperson = #{record.supervisoryperson},
+					   		and supervisoryperson = #{record.supervisoryperson}
 					   </if>
 					   <if test="record.maintenanceman != null and record.maintenanceman != ''">
-					   		and maintenanceman = #{record.maintenanceman},
+					   		and maintenanceman = #{record.maintenanceman}
 					   </if>
 					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
-					   		and rectificationmeasures = #{record.rectificationmeasures},
+					   		and rectificationmeasures = #{record.rectificationmeasures}
 					   </if>
 					   <if test="record.rectificationperiod != null and record.rectificationperiod != ''">
-					   		and rectificationperiod = #{record.rectificationperiod},
+					   		and rectificationperiod = #{record.rectificationperiod}
 					   </if>
 					   <if test="record.isSms != null and record.isSms != ''">
-					   		and is_sms = #{record.isSms},
+					   		and is_sms = #{record.isSms}
 					   </if>
 					   <if test="record.smsConment != null and record.smsConment != ''">
-					   		and sms_conment = #{record.smsConment},
+					   		and sms_conment = #{record.smsConment}
 					   </if>
 					   <if test="record.taskPiid != null and record.taskPiid != ''">
-					   		and task_piid = #{record.taskPiid},
+					   		and task_piid = #{record.taskPiid}
 					   </if>
 					   <if test="record.processtype != null and record.processtype != ''">
-					   		and processtype = #{record.processtype},
+					   		and processtype = #{record.processtype}
 					   </if>
 					   <if test="record.supervisorydesc != null and record.supervisorydesc != ''">
-					   		and supervisorydesc = #{record.supervisorydesc},
+					   		and supervisorydesc = #{record.supervisorydesc}
 					   </if>
 					   <if test="record.tasDistribute != null and record.tasDistribute != ''">
-					   		and tas_distribute = #{record.tasDistribute},
+					   		and tas_distribute = #{record.tasDistribute}
 					   </if>
 					   <if test="record.departOrCentral != null and record.departOrCentral != ''">
-					   		and depart_or_central = #{record.departOrCentral},
+					   		and depart_or_central = #{record.departOrCentral}
 					   </if>
 					   <if test="record.terPlace != null and record.terPlace != ''">
-					   		and ter_place = #{record.terPlace},
+					   		and ter_place = #{record.terPlace}
 					   </if>
 					   <if test="record.spId != null and record.spId != ''">
-					   		and sp_id = #{record.spId},
+					   		and sp_id = #{record.spId}
 					   </if>
 					   <if test="record.spName != null and record.spName != ''">
-					   		and sp_name = #{record.spName},
+					   		and sp_name = #{record.spName}
 					   </if>
 					   <if test="record.organizationSiteOffice != null and record.organizationSiteOffice != ''">
-					   		and organization_site_officE = #{record.organizationSiteOffice},
+					   		and organization_site_officE = #{record.organizationSiteOffice}
 					   </if>
 					   <if test="record.officeProblem != null and record.officeProblem != ''">
-					   		and office_problem = #{record.officeProblem},
+					   		and office_problem = #{record.officeProblem}
 					   </if>
 					   <if test="record.materialsApplication != null and record.materialsApplication != ''">
-					   		and materials_application = #{record.materialsApplication},
+					   		and materials_application = #{record.materialsApplication}
 					   </if>
 					   <if test="record.applicationRemark != null and record.applicationRemark != ''">
-					   		and application_remark = #{record.applicationRemark},
+					   		and application_remark = #{record.applicationRemark}
 					   </if>
 					   <if test="record.controleApplication != null and record.controleApplication != ''">
-					   		and controle_application = #{record.controleApplication},
+					   		and controle_application = #{record.controleApplication}
 					   </if>
 					   <if test="record.opeCmId != null and record.opeCmId != ''">
-					   		and ope_cm_id = #{record.opeCmId},
+					   		and ope_cm_id = #{record.opeCmId}
 					   </if>
 					   <if test="record.opecardNo != null and record.opecardNo != ''">
-					   		and ope_card_no = #{record.opecardNo},
+					   		and ope_card_no = #{record.opecardNo}
 					   </if>
 					   <if test="record.handleTicket != null and record.handleTicket != ''">
-					   		and handle_ticket = #{record.handleTicket},
+					   		and handle_ticket = #{record.handleTicket}
 					   </if>
 					   <if test="record.ticketNo != null and record.ticketNo != ''">
-					   		and ticket_no = #{record.ticketNo},
+					   		and ticket_no = #{record.ticketNo}
 					   </if>
 					   <if test="record.correctiveAction != null and record.correctiveAction != ''">
-					   		and corrective_action = #{record.correctiveAction},
+					   		and corrective_action = #{record.correctiveAction}
 					   </if>
 					   <if test="record.action != null and record.action != ''">
-					   		and action = #{record.action},
+					   		and action = #{record.action}
 					   </if>
 					   <if test="record.others != null and record.others != ''">
-					   		and others = #{record.others},
+					   		and others = #{record.others}
 					   </if>
 					   <if test="record.remarkfive != null and record.remarkfive != ''">
-					   		and REMARKFIVE = #{record.remarkfive},
+					   		and REMARKFIVE = #{record.remarkfive}
 					   </if>
 					   <if test="record.remarksix != null and record.remarksix != ''">
-					   		and REMARKSIX = #{record.remarksix},
+					   		and REMARKSIX = #{record.remarksix}
 					   </if>
 					   <if test="record.remarkseven != null and record.remarkseven != ''">
-					   		and remarkseven = #{record.remarkseven},
+					   		and remarkseven = #{record.remarkseven}
 					   </if>
 					   <if test="record.rfid != null and record.rfid != ''">
-					   		and RFID = #{record.rfid},
+					   		and RFID = #{record.rfid}
 					   </if>
 					   <if test="record.isdownload != null and record.isdownload != ''">
-					   		and isdownload = #{record.isdownload},
+					   		and isdownload = #{record.isdownload}
 					   </if>
 					   <if test="record.problemnum != null">
-					   		and PROBLEMNUM = #{record.problemnum},
+					   		and PROBLEMNUM = #{record.problemnum}
 					   </if>
 					   <if test="record.phoName != null and record.phoName != ''">
-					   		and pho_name = #{record.phoName},
+					   		and pho_name = #{record.phoName}
 					   </if>
 					   <if test="record.processDesc != null and record.processDesc != ''">
-					   		and process_desc = #{record.processDesc},
+					   		and process_desc = #{record.processDesc}
 					   </if>
 					   <if test="record.phoDispiayName != null and record.phoDispiayName != ''">
-					   		and pho_dispiay_name = #{record.phoDispiayName},
+					   		and pho_dispiay_name = #{record.phoDispiayName}
 					   </if>
 					   <if test="record.rectifInstruction != null and record.rectifInstruction != ''">
-					   		and rectif_instruction = #{record.rectifInstruction},
+					   		and rectif_instruction = #{record.rectifInstruction}
 					   </if>
 					   <if test="record.phoAddress != null and record.phoAddress != ''">
-					   		and pho_address = #{record.phoAddress},
+					   		and pho_address = #{record.phoAddress}
 					   </if>
 					   <if test="record.gdName != null and record.gdName != ''">
-					   		and gd_name = #{record.gdName},
+					   		and gd_name = #{record.gdName}
 					   </if>
 					   <if test="record.workPermit != null and record.workPermit != ''">
-					   		and work_permit = #{record.workPermit},
+					   		and work_permit = #{record.workPermit}
 					   </if>
 					   <if test="record.workPermitNumber != null and record.workPermitNumber != ''">
-					   		and work_permit_number = #{record.workPermitNumber},
+					   		and work_permit_number = #{record.workPermitNumber}
 					   </if>
 					   <if test="record.problemclass != null and record.problemclass != ''">
-					   		and PROBLEMCLASS = #{record.problemclass},
+					   		and PROBLEMCLASS = #{record.problemclass}
 					   </if>
 					   <if test="record.profession != null and record.profession != ''">
-					   		and PROFESSION = #{record.profession},
+					   		and PROFESSION = #{record.profession}
 					   </if>
 					   <if test="record.depet != null and record.depet != ''">
-					   		and depet = #{record.depet},
+					   		and depet = #{record.depet}
 					   </if>
 					   <if test="record.interOrOuter != null and record.interOrOuter != ''">
-					   		and inter_or_outer = #{record.interOrOuter},
+					   		and inter_or_outer = #{record.interOrOuter}
 					   </if>
 					   <if test="record.outerDealDescribe != null and record.outerDealDescribe != ''">
-					   		and outer_deal_describe = #{record.outerDealDescribe},
+					   		and outer_deal_describe = #{record.outerDealDescribe}
 					   </if>
 					</if>
-					<if test='startTime!=null'>
+					<if test="startTime!=null and startTime!=''">
 			    		and to_char(applydate,'YYYY-MM-DD') &gt;=#{startTime}
 			    	</if>
-			    	<if test='endTime!=null'>
+			    	<if test="endTime!=null and endTime!=''">
 			    		and to_char(applydate,'YYYY-MM-DD') &lt;=#{endTime}
 			    	</if>
 					<if test="limit != null and limit != ''">
@@ -398,406 +398,201 @@
 	
 	<select id="PorblemCount" resultType="map">
 		SELECT COUNT(1) total,COUNT(CASE when problemstate='FINISHED' THEN '1' else null end) complete
-				FROM CZ_TASK_PROBLEM_REPORT_6
+				FROM CZ_TASK_PROBLEM_REPORT_NEW
 				<where>
 					<if test="record != null">
 					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">
-					   		T_PROBLEM_REP_ID = #{record.tProblemRepId},
+					   		T_PROBLEM_REP_ID = #{record.tProblemRepId}
 					   </if>
 					   <if test="record.piid != null and record.piid != ''">
-					   		and piid = #{record.piid},
+					   		and piid = #{record.piid}
 					   </if>
 					    <if test="record.tasId != null and record.tasId != ''">
-					   		and tas_id = #{record.tasId},
+					   		and tas_id = #{record.tasId}
 					   </if>
 					   <if test="record.problemtype != null and record.problemtype != ''">
-					   		and PROBLEMTYPE = #{record.problemtype},
+					   		and PROBLEMTYPE = #{record.problemtype}
 					   </if>
 					   <if test="record.welId != null and record.welId != ''">
-					   		and wel_id = #{record.welId},
+					   		and wel_id = #{record.welId}
 					   </if>
 					   <if test="record.welName != null and record.welName != ''">
-					   		and WEL_NAME = #{record.welName},
+					   		and WEL_NAME = #{record.welName}
 					   </if>
 					   <if test="record.adress != null and record.adress != ''">
-					   		and adress = #{record.adress},
+					   		and adress = #{record.adress}
 					   </if>
 					   <if test="record.impacts != null and record.impacts != ''">
-					   		and impacts = #{record.impacts},
+					   		and impacts = #{record.impacts}
 					   </if>
 					   <if test="record.problemdescribe != null and record.problemdescribe != ''">
-					   		and PROBLEMDESCRIBE = #{record.problemdescribe},
+					   		and PROBLEMDESCRIBE = #{record.problemdescribe}
 					   </if>
 					   <if test="record.resavepeople != null and record.resavepeople != ''">
-					   		and RESAVEPEOPLE = #{record.resavepeople},
+					   		and RESAVEPEOPLE = #{record.resavepeople}
 					   </if>
 					   <if test="record.applypeople != null and record.applypeople != ''">
-					   		and APPLYPEOPLE = #{record.applypeople},
+					   		and APPLYPEOPLE = #{record.applypeople}
 					   </if>
 					   <if test="record.problemstate != null and record.problemstate != ''">
-					   		and PROBLEMSTATE = #{record.problemstate},
+					   		and PROBLEMSTATE = #{record.problemstate}
 					   </if>
 					   <if test="record.remark != null and record.remark != ''">
-					   		and remark = #{record.remark},
+					   		and remark = #{record.remark}
 					   </if>
 					   <if test="record.remarkone != null and record.remarkone != ''">
-					   		and remarkone = #{record.remarkone},
+					   		and remarkone = #{record.remarkone}
 					   </if>
 					   <if test="record.remarktwo != null and record.remarktwo != ''">
-					   		and remarktwo = #{record.remarktwo},
+					   		and remarktwo = #{record.remarktwo}
 					   </if>
 					   <if test="record.remarkthree != null and record.remarkthree != ''">
-					   		and remarkthree = #{record.remarkthree},
+					   		and remarkthree = #{record.remarkthree}
 					   </if>
 					   <if test="record.supervisoryperson != null and record.supervisoryperson != ''">
-					   		and supervisoryperson = #{record.supervisoryperson},
+					   		and supervisoryperson = #{record.supervisoryperson}
 					   </if>
 					   <if test="record.maintenanceman != null and record.maintenanceman != ''">
-					   		and maintenanceman = #{record.maintenanceman},
+					   		and maintenanceman = #{record.maintenanceman}
 					   </if>
 					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
-					   		and rectificationmeasures = #{record.rectificationmeasures},
+					   		and rectificationmeasures = #{record.rectificationmeasures}
 					   </if>
 					   <if test="record.rectificationperiod != null and record.rectificationperiod != ''">
-					   		and rectificationperiod = #{record.rectificationperiod},
+					   		and rectificationperiod = #{record.rectificationperiod}
 					   </if>
 					   <if test="record.isSms != null and record.isSms != ''">
-					   		and is_sms = #{record.isSms},
+					   		and is_sms = #{record.isSms}
 					   </if>
 					   <if test="record.smsConment != null and record.smsConment != ''">
-					   		and sms_conment = #{record.smsConment},
+					   		and sms_conment = #{record.smsConment}
 					   </if>
 					   <if test="record.taskPiid != null and record.taskPiid != ''">
-					   		and task_piid = #{record.taskPiid},
+					   		and task_piid = #{record.taskPiid}
 					   </if>
 					   <if test="record.processtype != null and record.processtype != ''">
-					   		and processtype = #{record.processtype},
+					   		and processtype = #{record.processtype}
 					   </if>
 					   <if test="record.supervisorydesc != null and record.supervisorydesc != ''">
-					   		and supervisorydesc = #{record.supervisorydesc},
+					   		and supervisorydesc = #{record.supervisorydesc}
 					   </if>
 					   <if test="record.tasDistribute != null and record.tasDistribute != ''">
-					   		and tas_distribute = #{record.tasDistribute},
+					   		and tas_distribute = #{record.tasDistribute}
 					   </if>
 					   <if test="record.departOrCentral != null and record.departOrCentral != ''">
-					   		and depart_or_central = #{record.departOrCentral},
+					   		and depart_or_central = #{record.departOrCentral}
 					   </if>
 					   <if test="record.terPlace != null and record.terPlace != ''">
-					   		and ter_place = #{record.terPlace},
+					   		and ter_place = #{record.terPlace}
 					   </if>
 					   <if test="record.spId != null and record.spId != ''">
-					   		and sp_id = #{record.spId},
+					   		and sp_id = #{record.spId}
 					   </if>
 					   <if test="record.spName != null and record.spName != ''">
-					   		and sp_name = #{record.spName},
+					   		and sp_name = #{record.spName}
 					   </if>
 					   <if test="record.organizationSiteOffice != null and record.organizationSiteOffice != ''">
-					   		and organization_site_officE = #{record.organizationSiteOffice},
+					   		and organization_site_officE = #{record.organizationSiteOffice}
 					   </if>
 					   <if test="record.officeProblem != null and record.officeProblem != ''">
-					   		and office_problem = #{record.officeProblem},
+					   		and office_problem = #{record.officeProblem}
 					   </if>
 					   <if test="record.materialsApplication != null and record.materialsApplication != ''">
-					   		and materials_application = #{record.materialsApplication},
+					   		and materials_application = #{record.materialsApplication}
 					   </if>
 					   <if test="record.applicationRemark != null and record.applicationRemark != ''">
-					   		and application_remark = #{record.applicationRemark},
+					   		and application_remark = #{record.applicationRemark}
 					   </if>
 					   <if test="record.controleApplication != null and record.controleApplication != ''">
-					   		and controle_application = #{record.controleApplication},
+					   		and controle_application = #{record.controleApplication}
 					   </if>
 					   <if test="record.opeCmId != null and record.opeCmId != ''">
-					   		and ope_cm_id = #{record.opeCmId},
+					   		and ope_cm_id = #{record.opeCmId}
 					   </if>
 					   <if test="record.opecardNo != null and record.opecardNo != ''">
-					   		and ope_card_no = #{record.opecardNo},
+					   		and ope_card_no = #{record.opecardNo}
 					   </if>
 					   <if test="record.handleTicket != null and record.handleTicket != ''">
-					   		and handle_ticket = #{record.handleTicket},
+					   		and handle_ticket = #{record.handleTicket}
 					   </if>
 					   <if test="record.ticketNo != null and record.ticketNo != ''">
-					   		and ticket_no = #{record.ticketNo},
+					   		and ticket_no = #{record.ticketNo}
 					   </if>
 					   <if test="record.correctiveAction != null and record.correctiveAction != ''">
-					   		and corrective_action = #{record.correctiveAction},
+					   		and corrective_action = #{record.correctiveAction}
 					   </if>
 					   <if test="record.action != null and record.action != ''">
-					   		and action = #{record.action},
+					   		and action = #{record.action}
 					   </if>
 					   <if test="record.others != null and record.others != ''">
-					   		and others = #{record.others},
+					   		and others = #{record.others}
 					   </if>
 					   <if test="record.remarkfive != null and record.remarkfive != ''">
-					   		and REMARKFIVE = #{record.remarkfive},
+					   		and REMARKFIVE = #{record.remarkfive}
 					   </if>
 					   <if test="record.remarksix != null and record.remarksix != ''">
-					   		and REMARKSIX = #{record.remarksix},
+					   		and REMARKSIX = #{record.remarksix}
 					   </if>
 					   <if test="record.remarkseven != null and record.remarkseven != ''">
-					   		and remarkseven = #{record.remarkseven},
+					   		and remarkseven = #{record.remarkseven}
 					   </if>
 					   <if test="record.rfid != null and record.rfid != ''">
-					   		and RFID = #{record.rfid},
+					   		and RFID = #{record.rfid}
 					   </if>
 					   <if test="record.isdownload != null and record.isdownload != ''">
-					   		and isdownload = #{record.isdownload},
+					   		and isdownload = #{record.isdownload}
 					   </if>
 					   <if test="record.problemnum != null">
-					   		and PROBLEMNUM = #{record.problemnum},
+					   		and PROBLEMNUM = #{record.problemnum}
 					   </if>
 					   <if test="record.phoName != null and record.phoName != ''">
-					   		and pho_name = #{record.phoName},
+					   		and pho_name = #{record.phoName}
 					   </if>
 					   <if test="record.processDesc != null and record.processDesc != ''">
-					   		and process_desc = #{record.processDesc},
+					   		and process_desc = #{record.processDesc}
 					   </if>
 					   <if test="record.phoDispiayName != null and record.phoDispiayName != ''">
-					   		and pho_dispiay_name = #{record.phoDispiayName},
+					   		and pho_dispiay_name = #{record.phoDispiayName}
 					   </if>
 					   <if test="record.rectifInstruction != null and record.rectifInstruction != ''">
-					   		and rectif_instruction = #{record.rectifInstruction},
+					   		and rectif_instruction = #{record.rectifInstruction}
 					   </if>
 					   <if test="record.phoAddress != null and record.phoAddress != ''">
-					   		and pho_address = #{record.phoAddress},
+					   		and pho_address = #{record.phoAddress}
 					   </if>
 					   <if test="record.gdName != null and record.gdName != ''">
-					   		and gd_name = #{record.gdName},
+					   		and gd_name = #{record.gdName}
 					   </if>
 					   <if test="record.workPermit != null and record.workPermit != ''">
-					   		and work_permit = #{record.workPermit},
+					   		and work_permit = #{record.workPermit}
 					   </if>
 					   <if test="record.workPermitNumber != null and record.workPermitNumber != ''">
-					   		and work_permit_number = #{record.workPermitNumber},
+					   		and work_permit_number = #{record.workPermitNumber}
 					   </if>
 					   <if test="record.problemclass != null and record.problemclass != ''">
-					   		and PROBLEMCLASS = #{record.problemclass},
+					   		and PROBLEMCLASS = #{record.problemclass}
 					   </if>
 					   <if test="record.profession != null and record.profession != ''">
-					   		and PROFESSION = #{record.profession},
+					   		and PROFESSION = #{record.profession}
 					   </if>
 					   <if test="record.depet != null and record.depet != ''">
-					   		and depet = #{record.depet},
+					   		and depet = #{record.depet}
 					   </if>
 					   <if test="record.interOrOuter != null and record.interOrOuter != ''">
-					   		and inter_or_outer = #{record.interOrOuter},
+					   		and inter_or_outer = #{record.interOrOuter}
 					   </if>
 					   <if test="record.outerDealDescribe != null and record.outerDealDescribe != ''">
-					   		and outer_deal_describe = #{record.outerDealDescribe},
+					   		and outer_deal_describe = #{record.outerDealDescribe}
 					   </if>
 					</if>
-					<if test='startTime!=null'>
+					<if test="startTime!=null and startTime!=''">
 			    		and to_char(applydate,'YYYY-MM-DD') &gt;=#{startTime}
 			    	</if>
-			    	<if test='endTime!=null'>
+			    	<if test="endTime!=null and endTime!=''">
 			    		and to_char(applydate,'YYYY-MM-DD') &lt;=#{endTime}
 			    	</if>
 				</where>
 		</select>
-		
-		<!-- 查找出满足条件的问题上报信息 -->
-		<!-- List<ProblemInfo> findPorblemInfo(
-			@Param("record") ProblemInfo problemInfo,
-			@Param("startTime") String startTime,
-			@Param("endTime") String endTime); -->
-		<select id="findPorblemInfo" resultType="cn.soa.entity.ProblemInfo">
-			SELECT
-				<include refid="problemInfoSelectSql"></include>
-			FROM CZ_TASK_PROBLEM_REPORT_6
-			<where>
-				<if test="record != null">
-					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">
-					   		T_PROBLEM_REP_ID = #{record.tProblemRepId},
-					   </if>
-					   <if test="record.piid != null and record.piid != ''">
-					   		and piid = #{record.piid},
-					   </if>
-					    <if test="record.tasId != null and record.tasId != ''">
-					   		and tas_id = #{record.tasId},
-					   </if>
-					   <if test="record.problemtype != null and record.problemtype != ''">
-					   		and PROBLEMTYPE = #{record.problemtype},
-					   </if>
-					   <if test="record.welId != null and record.welId != ''">
-					   		and wel_id = #{record.welId},
-					   </if>
-					   <if test="record.welName != null and record.welName != ''">
-					   		and WEL_NAME = #{record.welName},
-					   </if>
-					   <if test="record.adress != null and record.adress != ''">
-					   		and adress = #{record.adress},
-					   </if>
-					   <if test="record.impacts != null and record.impacts != ''">
-					   		and impacts = #{record.impacts},
-					   </if>
-					   <if test="record.problemdescribe != null and record.problemdescribe != ''">
-					   		and PROBLEMDESCRIBE = #{record.problemdescribe},
-					   </if>
-					   <if test="record.resavepeople != null and record.resavepeople != ''">
-					   		and RESAVEPEOPLE = #{record.resavepeople},
-					   </if>
-					   <if test="record.applypeople != null and record.applypeople != ''">
-					   		and APPLYPEOPLE = #{record.applypeople},
-					   </if>
-					   <if test="record.problemstate != null and record.problemstate != ''">
-					   		and PROBLEMSTATE = #{record.problemstate},
-					   </if>
-					   <if test="record.remark != null and record.remark != ''">
-					   		and remark = #{record.remark},
-					   </if>
-					   <if test="record.remarkone != null and record.remarkone != ''">
-					   		and remarkone = #{record.remarkone},
-					   </if>
-					   <if test="record.remarktwo != null and record.remarktwo != ''">
-					   		and remarktwo = #{record.remarktwo},
-					   </if>
-					   <if test="record.remarkthree != null and record.remarkthree != ''">
-					   		and remarkthree = #{record.remarkthree},
-					   </if>
-					   <if test="record.supervisoryperson != null and record.supervisoryperson != ''">
-					   		and supervisoryperson = #{record.supervisoryperson},
-					   </if>
-					   <if test="record.maintenanceman != null and record.maintenanceman != ''">
-					   		and maintenanceman = #{record.maintenanceman},
-					   </if>
-					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
-					   		and rectificationmeasures = #{record.rectificationmeasures},
-					   </if>
-					   <if test="record.rectificationperiod != null and record.rectificationperiod != ''">
-					   		and rectificationperiod = #{record.rectificationperiod},
-					   </if>
-					   <if test="record.isSms != null and record.isSms != ''">
-					   		and is_sms = #{record.isSms},
-					   </if>
-					   <if test="record.smsConment != null and record.smsConment != ''">
-					   		and sms_conment = #{record.smsConment},
-					   </if>
-					   <if test="record.taskPiid != null and record.taskPiid != ''">
-					   		and task_piid = #{record.taskPiid},
-					   </if>
-					   <if test="record.processtype != null and record.processtype != ''">
-					   		and processtype = #{record.processtype},
-					   </if>
-					   <if test="record.supervisorydesc != null and record.supervisorydesc != ''">
-					   		and supervisorydesc = #{record.supervisorydesc},
-					   </if>
-					   <if test="record.tasDistribute != null and record.tasDistribute != ''">
-					   		and tas_distribute = #{record.tasDistribute},
-					   </if>
-					   <if test="record.departOrCentral != null and record.departOrCentral != ''">
-					   		and depart_or_central = #{record.departOrCentral},
-					   </if>
-					   <if test="record.terPlace != null and record.terPlace != ''">
-					   		and ter_place = #{record.terPlace},
-					   </if>
-					   <if test="record.spId != null and record.spId != ''">
-					   		and sp_id = #{record.spId},
-					   </if>
-					   <if test="record.spName != null and record.spName != ''">
-					   		and sp_name = #{record.spName},
-					   </if>
-					   <if test="record.organizationSiteOffice != null and record.organizationSiteOffice != ''">
-					   		and organization_site_officE = #{record.organizationSiteOffice},
-					   </if>
-					   <if test="record.officeProblem != null and record.officeProblem != ''">
-					   		and office_problem = #{record.officeProblem},
-					   </if>
-					   <if test="record.materialsApplication != null and record.materialsApplication != ''">
-					   		and materials_application = #{record.materialsApplication},
-					   </if>
-					   <if test="record.applicationRemark != null and record.applicationRemark != ''">
-					   		and application_remark = #{record.applicationRemark},
-					   </if>
-					   <if test="record.controleApplication != null and record.controleApplication != ''">
-					   		and controle_application = #{record.controleApplication},
-					   </if>
-					   <if test="record.opeCmId != null and record.opeCmId != ''">
-					   		and ope_cm_id = #{record.opeCmId},
-					   </if>
-					   <if test="record.opecardNo != null and record.opecardNo != ''">
-					   		and ope_card_no = #{record.opecardNo},
-					   </if>
-					   <if test="record.handleTicket != null and record.handleTicket != ''">
-					   		and handle_ticket = #{record.handleTicket},
-					   </if>
-					   <if test="record.ticketNo != null and record.ticketNo != ''">
-					   		and ticket_no = #{record.ticketNo},
-					   </if>
-					   <if test="record.correctiveAction != null and record.correctiveAction != ''">
-					   		and corrective_action = #{record.correctiveAction},
-					   </if>
-					   <if test="record.action != null and record.action != ''">
-					   		and action = #{record.action},
-					   </if>
-					   <if test="record.others != null and record.others != ''">
-					   		and others = #{record.others},
-					   </if>
-					   <if test="record.remarkfive != null and record.remarkfive != ''">
-					   		and REMARKFIVE = #{record.remarkfive},
-					   </if>
-					   <if test="record.remarksix != null and record.remarksix != ''">
-					   		and REMARKSIX = #{record.remarksix},
-					   </if>
-					   <if test="record.remarkseven != null and record.remarkseven != ''">
-					   		and remarkseven = #{record.remarkseven},
-					   </if>
-					   <if test="record.rfid != null and record.rfid != ''">
-					   		and RFID = #{record.rfid},
-					   </if>
-					   <if test="record.isdownload != null and record.isdownload != ''">
-					   		and isdownload = #{record.isdownload},
-					   </if>
-					   <if test="record.problemnum != null">
-					   		and PROBLEMNUM = #{record.problemnum},
-					   </if>
-					   <if test="record.phoName != null and record.phoName != ''">
-					   		and pho_name = #{record.phoName},
-					   </if>
-					   <if test="record.processDesc != null and record.processDesc != ''">
-					   		and process_desc = #{record.processDesc},
-					   </if>
-					   <if test="record.phoDispiayName != null and record.phoDispiayName != ''">
-					   		and pho_dispiay_name = #{record.phoDispiayName},
-					   </if>
-					   <if test="record.rectifInstruction != null and record.rectifInstruction != ''">
-					   		and rectif_instruction = #{record.rectifInstruction},
-					   </if>
-					   <if test="record.phoAddress != null and record.phoAddress != ''">
-					   		and pho_address = #{record.phoAddress},
-					   </if>
-					   <if test="record.gdName != null and record.gdName != ''">
-					   		and gd_name = #{record.gdName},
-					   </if>
-					   <if test="record.workPermit != null and record.workPermit != ''">
-					   		and work_permit = #{record.workPermit},
-					   </if>
-					   <if test="record.workPermitNumber != null and record.workPermitNumber != ''">
-					   		and work_permit_number = #{record.workPermitNumber},
-					   </if>
-					   <if test="record.problemclass != null and record.problemclass != ''">
-					   		and PROBLEMCLASS = #{record.problemclass},
-					   </if>
-					   <if test="record.profession != null and record.profession != ''">
-					   		and PROFESSION = #{record.profession},
-					   </if>
-					   <if test="record.depet != null and record.depet != ''">
-					   		and depet = #{record.depet},
-					   </if>
-					   <if test="record.interOrOuter != null and record.interOrOuter != ''">
-					   		and inter_or_outer = #{record.interOrOuter},
-					   </if>
-					   <if test="record.outerDealDescribe != null and record.outerDealDescribe != ''">
-					   		and outer_deal_describe = #{record.outerDealDescribe},
-					   </if>
-					</if>
-					<if test='startTime!=null'>
-			    		and to_char(applydate,'YYYY-MM-DD') &gt;=#{startTime}
-			    	</if>
-			    	<if test='endTime!=null'>
-			    		and to_char(applydate,'YYYY-MM-DD') &lt;=#{endTime}
-			    	</if>
-				</where>
-		</select>
-	
 	
 	<!-- 1.2、根据问题报告主键id查找暂存状态的问题报告  -->
 	<!-- public ProblemInfo findByRepId(String RepId) -->
@@ -806,7 +601,7 @@
 		SELECT
 			<include refid="problemInfoSelectSql"></include>
 		FROM
-			CZ_TASK_PROBLEM_REPORT_6
+			CZ_TASK_PROBLEM_REPORT_NEW
 		WHERE
 			T_PROBLEM_REP_ID = #{RepId, jdbcType=VARCHAR} AND PIID is null			
 	</select>
@@ -845,7 +640,7 @@
 			RFID,PROBLEMCLASS,REMARKFIVE,REMARKSIX,PROBLEMDESCRIBE,RESAVEPEOPLE,T_PROBLEM_PHO_ID, prp.PHO_NAME phoName,
 			prp.PHO_ADDRESS phoAddress, prp.PHO_DISPIAY_NAME phoDisplayName,prp.PHO_UPLOAD_PEOPLE phoUploadPeople
 		FROM
-			CZ_TASK_PROBLEM_REPORT_6 pr LEFT JOIN CZ_TASK_PROBLEM_REPORTPHO prp
+			CZ_TASK_PROBLEM_REPORT_NEW pr LEFT JOIN CZ_TASK_PROBLEM_REPORTPHO prp
 			ON pr.T_PROBLEM_REP_ID = prp.T_PROBLEM_REP_ID
 	    <where>
 	    	<choose>
@@ -865,7 +660,7 @@
 	<!-- 1.4、根据问题报告主键id查找问题报告    -->
 	<!-- public Integer findMaxProblemNum() -->
 	<select id="findMaxProblemNum" resultType="java.lang.Integer">
-		SELECT MAX(PROBLEMNUM) ma FROM CZ_TASK_PROBLEM_REPORT_6
+		SELECT MAX(PROBLEMNUM) ma FROM CZ_TASK_PROBLEM_REPORT_NEW
 	</select>
 	
 	<!-- 1.4、根据用户名查找上报申请用户    -->
@@ -882,7 +677,7 @@
 			select sys_guid() from dual
 		</selectKey>
 		INSERT INTO
-			CZ_TASK_PROBLEM_REPORT_6
+			CZ_TASK_PROBLEM_REPORT_NEW
 			<trim prefix="(" suffix=")" suffixOverrides=",">
 			   <if test="tProblemRepId != null and tProblemRepId != ''">
 			   		T_PROBLEM_REP_ID,
@@ -1291,7 +1086,7 @@
 	<!-- 3.1、修改一条问题报告数据 	-->
 	<!-- public Integer updateOne(ProblemInfo info)	 -->
 	<update id="updateOne" parameterType="cn.soa.entity.ProblemInfo">
-		UPDATE CZ_TASK_PROBLEM_REPORT_6
+		UPDATE CZ_TASK_PROBLEM_REPORT_NEW
 			<set>
 			    <if test="tProblemRepId != null and tProblemRepId != ''">
 			   		T_PROBLEM_REP_ID = #{tProblemRepId},
@@ -1501,7 +1296,7 @@
 	<!-- Integer updateProblemDescribeByPiid(String piid); -->
 	<update id="updateProblemDescribeByPiid" parameterType="cn.soa.entity.ProblemInfo">
 		UPDATE 
-			CZ_TASK_PROBLEM_REPORT_6 
+			CZ_TASK_PROBLEM_REPORT_NEW 
 			<set>
 			    <if test="tProblemRepId != null and tProblemRepId != ''">
 			   		T_PROBLEM_REP_ID = #{tProblemRepId},
@@ -1708,7 +1503,7 @@
 	<!-- 根据bsid，更新业务表数据的piid -->
 	<update id="updatePiidByBsid">
 		UPDATE 
-			CZ_TASK_PROBLEM_REPORT_6 
+			CZ_TASK_PROBLEM_REPORT_NEW 
 		SET 
 			piid=#{piid} 
 		WHERE 
@@ -1721,7 +1516,7 @@
 	<!-- public Integer updateEstiByPiid(ProblemInfo info); -->
 	<update id="updateEstiByPiid">
 		UPDATE 
-			CZ_TASK_PROBLEM_REPORT_6 
+			CZ_TASK_PROBLEM_REPORT_NEW 
 		SET 
 			remark=#{remark},
 			problemdescribe=#{problemdescribe},
@@ -1771,18 +1566,18 @@
 		SELECT 
 			DISTINCT problemdescribe 
 		FROM 
-			cz_task_problem_report
+			CZ_TASK_PROBLEM_REPORT_NEW
 		WHERE 
 			problemdescribe LIKE CONCAT(#{problemdescribe},'%')
 	</select>
 	
 	<delete id="deleteByPiid" parameterType="string">
-		delete from CZ_TASK_PROBLEM_REPORT_6
+		delete from CZ_TASK_PROBLEM_REPORT_NEW
 		where piid=#{piid}
 	</delete>
 	
 	<delete id="deleteByBsid" parameterType="string">
-		delete from CZ_TASK_PROBLEM_REPORT_6
+		delete from CZ_TASK_PROBLEM_REPORT_NEW
 		where T_PROBLEM_REP_ID=#{bsid}
 	</delete>
 </mapper>
