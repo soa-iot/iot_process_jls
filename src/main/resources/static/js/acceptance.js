@@ -67,43 +67,6 @@ $.ajax({
 						,interval: 5000
 					});
 				});
-				/**
-				 * 图片点击放大
-				 * @returns
-				 */
-				//弹出层
-				layui.use('layer', function(){ //独立版的layer无需执行这一句
-					var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
-					
-					
-					//触发事件
-					var active = {
-							offset: function(othis){
-								
-							var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='600px'  height='500px'/>";
-								//var type = othis.data('type')
-								layer.open({
-								type: 1
-								//,offset: type 
-								,area: ['600px','500px']
-								,content: imgHtml
-								,title:false
-								//,shadeClose:true
-								//,cancel:false
-								,offset:'auto'
-								
-								});
-							}
-					};
-
-					$('.big-img').on('click', function(){
-						var othis = $(this), method = othis.data('method');
-						active[method] ? active[method].call(this, othis) : '';
-					});
-
-				});
-
-				
 			}
 		}
 
