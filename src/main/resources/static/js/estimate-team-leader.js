@@ -263,9 +263,9 @@ function estimate_next(obj,usernames){
 			"userName":$.cookie("name").replace(/"/g,"")
 	}
 	
-	if (area=="净化工段") {
+	if (area=="净化工段" || area=="化验") {
 		estimate_next_data["puror"] = usernames;
-	}else if(area=="维修工段"){
+	}else if(area=="维修工段" ||area=="电机" || area=="电站"){
 		estimate_next_data["repairor"] = usernames;
 	}
 	
