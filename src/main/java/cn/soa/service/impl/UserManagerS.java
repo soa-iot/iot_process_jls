@@ -224,4 +224,14 @@ public class UserManagerS implements UserManagerSI {
 		
 		return treeList;
 	}
+	
+	/**
+	 * 根据用户名查找用户编号
+	 * @param  name 用户名
+	 * @return 用户编号
+	 */
+	@Override
+	public String getUsernumByName(String name) {
+		return userRoleMapper.findUsernumByName(name);
+	}
 }

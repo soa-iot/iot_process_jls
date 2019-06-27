@@ -9,7 +9,6 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	var num = getCookie1("num").replace(/"/g,'');
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	var piid = GetQueryString("piid");
@@ -268,7 +267,6 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           , data: {		resavepeople: function(){ return resavepeople;}, 
         	  			piid: function(){console.log("piid: "+piid); return piid;},
         	  	   		tProblemRepId: function(){ console.log("tProblemRepId: "+tProblemRepId); return tProblemRepId;},
-        	  			num: function(){ console.log("num: "+num); return num; },
         	  			remark: "0"
           		 }
           , accept: 'images'

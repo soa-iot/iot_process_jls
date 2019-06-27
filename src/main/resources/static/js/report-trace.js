@@ -206,11 +206,23 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	})
 	
 	/**
-	 *  监听头工具栏事件 
+	 * 监听头工具栏事件 
 	 */ 
 	  table.on('toolbar(reportTrace)', function(obj){
-	    var checkStatus = table.checkStatus(obj.config.id);
-	
+	     //var checkStatus = table.checkStatus(obj.config.id);
+		 console.log(obj);
+		 switch(obj.event){
+	      case 'querydata':
+	    	problemTable.reload({
+	    	   where: { //设定异步数据接口的额外参数，任意设
+	    		   id: '1'
+	    	   }
+	    	   ,page: {
+	    		   page: 1 //重新从第 1 页开始
+	    	   }
+	    	})
+	        break;
+	    };
 	  });
 	
 })

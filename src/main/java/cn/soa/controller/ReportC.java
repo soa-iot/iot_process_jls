@@ -30,6 +30,7 @@ import cn.soa.service.impl.ProblemInfoS;
 import cn.soa.service.impl.ReportPhoS;
 import cn.soa.service.inter.ReportSI;
 import cn.soa.service.inter.UnsafeSI;
+import cn.soa.service.inter.UserManagerSI;
 import cn.soa.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import oracle.jdbc.proxy.annotation.Post;
@@ -51,6 +52,8 @@ public class ReportC {
 	private ReportSI reportS;
 	@Autowired
 	private ReportPhoS reportPhoS;
+	@Autowired
+	private UserManagerSI userManagerS;
 	@Autowired
 	private  ProblemInfoS  problemInfoS;
 	/**
@@ -204,7 +207,6 @@ public class ReportC {
 			@RequestParam("file") MultipartFile file, 
 			@RequestParam("resavepeople") String resavepeople, 
 			@RequestParam("piid") String piid,
-			@RequestParam("num") String num,
 			@RequestParam("remark") String remark,
 			@RequestParam("tProblemRepId") String tProblemRepId, HttpServletRequest request){
 		
@@ -212,12 +214,11 @@ public class ReportC {
 		
 		log.info("上传图片名为：{}", file.getOriginalFilename());
 		log.info("当前系统登录人为：{}", resavepeople);
-		log.info("用户编号：{}", num);
 		log.info("问题报告piid：{}", piid);
 		log.info("上报问题报告id：{}", tProblemRepId);
 		log.info("图片来源remark：{}", remark);
 		
-		if("".equals(resavepeople) || "".equals(tProblemRepId) || "".equals(num)) {
+		if("".equals(resavepeople) || "".equals(tProblemRepId)) {
 			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		}
 		
@@ -230,19 +231,23 @@ public class ReportC {
 		
 		//生成图片存储位置，数据库保存的是虚拟映射路径
 		Date date = new Date();
-		File imagePath = CommonUtil.imageSaved(num, rootPath, date);
+		String usernum = userManagerS.getUsernumByName(resavepeople);
+		if(usernum == null || "".equals(usernum)) {
+			usernum = "DefaultUser";
+		}
+		File imagePath = CommonUtil.imageSaved(usernum, rootPath, date);
 		
 		try {
 			file.transferTo(new File(imagePath, phoName));
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
-			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
+			return new ResultJson<>(ResultJson.ERROR, "图片上传失败1");
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
+			return new ResultJson<>(ResultJson.ERROR, "图片上传失败2");
 		}
 		//request.getContextPath() 或  request.getServletPath()
-		String phoAddress =  new StringBuilder(request.getServletPath()+"/image/").append(num).append("/")
+		String phoAddress =  new StringBuilder(request.getServletPath()+"/image/").append(usernum).append("/")
 				.append(CommonUtil.dateFormat(date)).append("/").append(phoName).toString();
 		
 		//将上传图片信息封装实体类中
@@ -264,7 +269,7 @@ public class ReportC {
 		if(result) {
 			return new ResultJson<>(ResultJson.SUCCESS, "图片上传成功");
 		}else {
-			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
+			return new ResultJson<>(ResultJson.ERROR, "图片上传失败3");
 		}
 	}
 	
