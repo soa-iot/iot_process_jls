@@ -35,16 +35,19 @@ public class CommonUtil {
 	 * @param date 日期
 	 * @return 最终生成的文件对象
 	 */
-	
-	
 	public static File imageSaved(String resavepeople, String rootPath, Date date) {
 		rootPath = rootPath.replace("file:", "");
 		//rootPath = "D:/files/";
 		File dirParent = new File(rootPath);
 		
 		if(!dirParent.exists()) {
-			log.error("图片路径{}不存在！", rootPath);
-			return null;
+			log.debug("----------图片路径{}不存在！", rootPath);
+			try {
+				dirParent.mkdirs();
+			}catch (Exception e) {
+				log.error("----------图片文件夹{}创建失败！", rootPath);
+				return null;
+			}
 		}
 		//使用当前登录人id创建文件夹
 		File dirChild = new File(dirParent, resavepeople);

@@ -59,4 +59,11 @@ public interface UserManagerSI {
 	 * @return 用户列表树形结构
 	 */
 	List<LayuiTree> findUserByOrgid(String orgID);
+	
+	/**
+	 * 根据用户名查找用户编号
+	 * @param  name 用户名
+	 * @return 用户编号
+	 */
+	String getUsernumByName(String name);
 }
