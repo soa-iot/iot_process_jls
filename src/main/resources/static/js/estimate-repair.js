@@ -13,7 +13,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 	/**
 	 * 作业指派异步请求
 	 */
-	function workAssignment(comment, arrangor, username){
+	function workAssignment(comment, arrangor, username, data){
 		$.ajax({
 			 async: false
 		     ,type: "PUT"
@@ -71,7 +71,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 				if(assignUsers.length < 1){
 					layer.msg("至少选择一名人员", {icon:7});
 				}else{
-					workAssignment(comment, arrangor, resavepeople);
+					workAssignment(comment, arrangor, resavepeople, data);
 				}
 				//layer.closeAll();
 		    }

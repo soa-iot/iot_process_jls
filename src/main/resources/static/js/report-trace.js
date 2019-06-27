@@ -45,7 +45,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	var problemTable = table.render({
 		elem: '#reportTrace',
 		method: 'post',
-		url: '/iot_process/report/showproblem',
+		url: '/iot_process/report/showproblembycondition',
 		toolbar: '#toolbarBtn',
 		defaultToolbar: ['filter'],
 		cellMinWidth:70,
@@ -81,7 +81,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			{field:'problemclass', title:'问题类别', width:120, sort:true, align:'center'},
 			{field:'profession', title:'专业', width:90, sort:true, align:'center'},
 			{field:'problemtype', title:'部门', width:90, sort:true, align:'center'},
-			{field:'problemdescribe', title:'描述', width:207, sort:true, align:'center'},
+			{field:'problemdescribe', title:'描述', width:209, sort:true, align:'center'},
 			{field:'problemstate', title:'问题状态', width:100, sort:true, align:'center'},
 			{fixed:'right',  title:'处理过程', width:105, align:'center', toolbar:'#barBtn'} ]]  
 	});
@@ -144,16 +144,27 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	/**
 	 * 导出表事件
 	 */
-	$("#export").click(function(){
+	function exportExcel(){
 		//从后台取出表数据
 		$.ajax({
 			async: false,
 			type: "POST",
-			url: "/iot_process/report/exportproblem",
-			data: {},
+			url: "/iot_process/report/showproblembycondition",
+			data: {
+				'welName': $("#welName").val(),
+    			'problemclass': $("#problemclass").val(),
+    			'profession': $("#profession").val(),
+    			'problemtype': $("#problemtype").val(),
+    			'problemdescribe': $("#problemdescribe").val(),
+    			'problemstate': $("#problemstate").val(),
+    			'startTime': $("#startdate").val(),
+    			'endTime': $("#enddate").val(),
+    			'schedule': $("#schedule").val(),
+    			'handler': $("#handler").val()
+			},
 			dataType: "json",
 			success: function(json){
-				if(json.state == 0){
+				if(json.code == 0){
 					var data = json.data     
 			    	if(data != null || data != ''){
 			    		 for(var i=0;i<data.length;i++){
@@ -174,7 +185,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 					});
 					//2. 过滤多余属性
 					var exportData = excel.filterExportData(data, ['applydate', 'applypeople', 'welName', 'problemclass', 'profession', 'problemtype', 'problemdescribe', 'problemstate']);
-					
+					console.log(123);
 					//3. 执行导出函数，系统会弹出弹框
 					excel.exportExcel({
 			            sheet1: exportData
@@ -187,13 +198,13 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 				layer.msg("获取数据失败,请检查网路情况 !", {icon:2})
 			}
 		});	
-	})
+	}
 	
 	/**
 	 * 打开/关闭高级搜索
 	 */
 	var isopen = 0;
-	$("#open-advance").click(function(){
+	function opneAdvanceQuery(){
 		if(isopen){
 			$(".layui-form-hidden").css({"display":"none"});
 			$("#advance-search").text("打开高级搜索");
@@ -203,7 +214,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			$("#advance-search").text("关闭高级搜索");
 			isopen = 1;
 		}
-	})
+	}
 	
 	/**
 	 * 监听头工具栏事件 
@@ -213,15 +224,37 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		 console.log(obj);
 		 switch(obj.event){
 	      case 'querydata':
+	    	console.log('querydata');
 	    	problemTable.reload({
-	    	   where: { //设定异步数据接口的额外参数，任意设
-	    		   id: '1'
-	    	   }
+	    		url: '/iot_process/report/showproblembycondition'
 	    	   ,page: {
 	    		   page: 1 //重新从第 1 页开始
 	    	   }
+	    	   ,where: {
+	    			'welName': $("#welName").val(),
+	    			'problemclass': $("#problemclass").val(),
+	    			'profession': $("#profession").val(),
+	    			'problemtype': $("#problemtype").val(),
+	    			'problemdescribe': $("#problemdescribe").val(),
+	    			'problemstate': $("#problemstate").val(),
+	    			'startTime': $("#startdate").val(),
+	    			'endTime': $("#enddate").val(),
+	    			'schedule': $("#schedule").val(),
+	    			'handler': $("#handler").val()
+	    	   }
 	    	})
 	        break;
+	      case 'open-advance':
+	    	  console.log('open-advance');
+	    	  opneAdvanceQuery();
+	    	  break;
+	      case 'export':
+	    	  console.log('export');
+	    	  exportExcel();
+	    	  break;
+	      case 'delete':
+	    	  console.log('delete');
+	    	  layer.msg("功能正在完善中...",{icon: 5})
 	    };
 	  });
 	
