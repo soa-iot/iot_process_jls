@@ -31,13 +31,11 @@
 	<script src="../jsPackage/js/jquery-1.9.1.min.js"></script>
 	<script src="../jsPackage/js/jquery.cookie.js"></script>
 	<!-- 引入layui -->
-	<script type="text/javascript" src="../jsPackage/layui-v2.4.2/layui.js"></script>
+	<script type="text/javascript" src="../jsPackage/layui-v2.4.2/layui.all.js"></script>
 	<script type="text/javascript">
     	//加载layui内置模块
-		layui.use(['jquery','table'], function(){
 		  var form = layui.form
-		  ,table = layui.table
-		  ,$ = layui.$; //重点处,使用jQuery
+		  ,table = layui.table; //重点处,使用jQuery
 		  window.addEventListener('message', function(e) {
 		        var data = JSON.parse(e.data);
 		        console.log(data);
@@ -46,61 +44,62 @@
 		        	$.cookie('name',data.name);
 		        	$.cookie('organ',data.organ);
 		        }
-		    }, false); 
-  		  table.render({
-			    elem: '#pending'
-			    ,height: 420
-			    ,url: '/iot_process/process/tasks/layui' //数据接口
-			    ,where:{
-			    	"userName":$.cookie("name").replace(/"/g,"")
-			    }
-		  		,skin:'line'
-			    ,cols: [[ //表头
-			      {field: 'piid', title: 'ID', hide:true}
-			      ,{field: 'area', title: '属地', hide:true}
-			      ,{field: 'currentnode', title: '流程节点'}
-			      ,{field: 'describle', title: '问题描述'}
-			      ,{field: 'reportperson', title: '上报人'}
-			      ,{field: 'tip', title: '是否超期'}
-			      ,{fixed: 'right', width: 165, align:'center', toolbar: '#barDemo'}
-			    ]]
-			  });
-		  //监听行工具事件
-		  table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
-		    var data = obj.data //获得当前行数据
-		    ,layEvent = obj.event; //获得 lay-event 对应的值
-		    if(layEvent === 'edit'){
-		    	//根据属地判断跳转页面
-		    	
-		    	var  toHtml={"问题上报":'report.html',"作业安排":"assign-task.html","作业接收":"receive-task.html","作业完成":"finish-task.html","作业验收":"acceptance.html","净化分配":"estimate-pure.html","维修分配":"estimate-repair.html"};
-		    	if(data.currentnode=="问题评估"){
-			    	switch(data.area){
-			    	case "HSE办公室":			    		
-			    	case "设备办":
-			    	case "生产办":
-			    	case "综合办":
-			    	case "财务经营办":
-			    		html="estimate.html";
-			    		break;
-			    	case "净化工段":			    		
-			    	case "维修工段":
-			    	case "化验":
-			    	case "电站":
-			    	case "机械":
-			    	case "电气":
-			    	case "电工":
-		    			html="estimate-team-leader.html";
-		    			break;
-		    		default:
-		    			html="estimate-repair.html";
+		        
+		        table.render({
+				    elem: '#pending'
+				    ,height: 420
+				    ,url: '/iot_process/process/tasks/layui' //数据接口
+				    ,where:{
+				    	"userName":$.cookie("name").replace(/"/g,"")
+				    }
+			  		,skin:'line'
+				    ,cols: [[ //表头
+				      {field: 'piid', title: 'ID', hide:true}
+				      ,{field: 'area', title: '属地', hide:true}
+				      ,{field: 'currentnode', title: '流程节点'}
+				      ,{field: 'describle', title: '问题描述'}
+				      ,{field: 'reportperson', title: '上报人'}
+				      ,{field: 'tip', title: '是否超期'}
+				      ,{fixed: 'right', width: 165, align:'center', toolbar: '#barDemo'}
+				    ]]
+			   });
+			  //监听行工具事件
+			  table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+			    var data = obj.data //获得当前行数据
+			    ,layEvent = obj.event; //获得 lay-event 对应的值
+			    if(layEvent === 'edit'){
+			    	//根据属地判断跳转页面
+			    	
+			    	var  toHtml={"问题上报":'report.html',"作业安排":"assign-task.html","作业接收":"receive-task.html","作业完成":"finish-task.html","作业验收":"acceptance.html","净化分配":"estimate-pure.html","维修分配":"estimate-repair.html"};
+			    	if(data.currentnode=="问题评估"){
+				    	switch(data.area){
+				    	case "HSE办公室":			    		
+				    	case "设备办":
+				    	case "生产办":
+				    	case "综合办":
+				    	case "财务经营办":
+				    		html="estimate.html";
+				    		break;
+				    	case "净化工段":			    		
+				    	case "维修工段":
+				    	case "化验":
+				    	case "电站":
+				    	case "机械":
+				    	case "电气":
+				    	case "电工":
+			    			html="estimate-team-leader.html";
+			    			break;
+			    		default:
+			    			html="estimate-repair.html";
+				    	}
+			    	}else{
+			    		html=toHtml[data.currentnode]
 			    	}
-		    	}else{
-		    		html=toHtml[data.currentnode]
-		    	}
-				location.href=html+"?piid="+data.piid+"&area="+data.area;
-		    }
-		  });
-})	    
+					location.href=html+"?piid="+data.piid+"&area="+data.area;
+			    }
+			  });  
+		    }, false); 
+  		    
 </script>
 </body>
 </html>
