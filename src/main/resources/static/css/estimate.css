@@ -11,6 +11,7 @@
 		width: 150px;
 		margin-left: 60px;
 		margin-right: 50px;
+		color: blue;
 	}
 	
 	.btn {
@@ -60,8 +61,14 @@
 		margin-left: 10px; */
 	}
 	
-	.img_p{
-		text-align: center;
+	.big-img:hover {
+		cursor: pointer;
+		border-color: #9a9fa4;
+        box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.85);
+	}
+
+	.layui-carousel>[carousel-item]>*{
+		background-color: #FFF;
 	}
 	
 	.bott{
@@ -76,4 +83,3 @@
 		width: 90px;
 		margin-left: -10px;
 	}
-	

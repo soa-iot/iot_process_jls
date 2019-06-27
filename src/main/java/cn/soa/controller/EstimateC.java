@@ -103,7 +103,7 @@ public class EstimateC {
 	public ResultJson<Integer> ModifyEstiByPiid(ProblemInfo problemInfo){
 		
 		Integer row = problemInfoSI.ModifyEstiByPiid(problemInfo);
-		return row > 0 ? new ResultJson<Integer>(0, "数据更新成功"): new ResultJson<Integer>(1, "问题描述更新失败");
+		return row > 0 ? new ResultJson<Integer>(0, "数据更新成功",row): new ResultJson<Integer>(1, "问题描述更新失败",row);
 		
 	}
 	

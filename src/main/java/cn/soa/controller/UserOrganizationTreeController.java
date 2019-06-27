@@ -54,7 +54,12 @@ public class UserOrganizationTreeController {
 		return resObj;
 	}
 	
-	
+	/**
+	 * 根据组织获取所在组织人员
+	 * @param area 当前组织
+	 * @param username 当前用户
+	 * @return
+	 */
 	@GetMapping("/userOrganizationArea")
 	public ResponseObject<List<UserOrganization>> getUserOrganizationByNameTreeData(String area,String username) {
 
@@ -82,7 +87,8 @@ public class UserOrganizationTreeController {
 
 
 	/**
-	 * 获取净化技术干部/维修技术部控制层
+	 * 
+	 * 根据角色获取人员控制层
 	 * @return
 	 */
 	@GetMapping("/userOrganizationOrgan")

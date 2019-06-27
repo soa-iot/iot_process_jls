@@ -82,8 +82,10 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	};
 
 	$('#work_plan').on('click', function(){
-		var othis = $(this), method = othis.data('method');
-		active[method] ? active[method].call(this, othis) : '';
+		if (yesCompare()) {
+			var othis = $(this), method = othis.data('method');
+			active[method] ? active[method].call(this, othis) : '';
+		}
 	});
 
 });

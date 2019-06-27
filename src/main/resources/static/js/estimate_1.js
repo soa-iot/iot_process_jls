@@ -17,26 +17,10 @@ layui.use('laydate', function(){
 	//常规用法
 	laydate.render({
 		elem: '#sdate'
+		//,format:'yyyy/MM/dd'
 	});
 
 });
-
-/**
- * 轮播图
- */
-layui.use(['carousel', 'form'], function(){
-	var carousel = layui.carousel
-	,form = layui.form;
-
-	//常规轮播
-	carousel.render({
-		elem: '.imgshow'
-		//,arrow: 'always'
-			//,width: '778px'
-		,height: '150px'
-		,interval: 5000
-	});
-});  
 
 /**
  * 折叠
@@ -46,7 +30,6 @@ layui.use([ 'element', 'layer' ], function() {
 	var layer = layui.layer;
 
 });
-
 
 /**
  * 信息问题请求
@@ -104,33 +87,105 @@ $.ajax({
 		if (json.state == 0) {
 			var imgs = json.data;
 			if (imgs.length==0) {
-				$("#imag").html("无图");
+				$("#test11").hide();
 			}else{
-			var mode = imgs.length%3;
-			var img_id = 0;
-			console.log("图片路径："+imgs[img_id].phoAddress);
-			for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
-				var img_div='<div class="img_p">';
-				if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
-					//img_div = '';
-
-					for (var i = 0; i < mode; i++) {
-						img_div = img_div+'<img  class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
-						img_id++;
+				$("#test11").show();
+				var mode = imgs.length%3;
+				var img_id = 0;
+				console.log("图片路径："+imgs[img_id].phoAddress);
+				for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
+					var img_div='<div class="img_p">';
+					if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
+						//img_div = '';
+	
+						for (var i = 0; i < mode; i++) {
+							img_div = img_div+'<img  class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
+							img_id++;
+						}
+	
+					}else{
+	
+						for (var i = 0; i < 3; i++) {
+							img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
+							
+							img_id++;
+						}
+	
 					}
-
-				}else{
-
-					for (var i = 0; i < 3; i++) {
-						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
-						
-						img_id++;
-					}
-
+					img_div = img_div+'</div>'
+					$("#imag").append(img_div);
 				}
-				img_div = img_div+'</div>'
-				$("#imag").append(img_div);
-			}
+				$("#test11").show();
+				
+				//轮播图
+				layui.use(['carousel', 'form'], function(){
+					var carousel = layui.carousel
+					,form = layui.form;
+
+					//常规轮播
+					carousel.render({
+						elem: '#test11'
+						,arrow: 'always'
+							
+							//,width: '778px'
+						,height: '150px'
+						,interval: 5000
+					});
+				}); 
+
+				/**
+				 * 图片点击放大
+				 * @returns
+				 */
+				//弹出层
+				layui.use('layer', function(){ //独立版的layer无需执行这一句
+					var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+					
+					
+					//触发事件
+					var active = {
+							offset: function(othis){
+								
+							var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='600px'  height='500px'/>";
+								//var type = othis.data('type')
+								layer.open({
+								type: 1
+								//,offset: type 
+								,area: ['600px','500px']
+								,content: imgHtml
+								,title:false
+								//,shadeClose:true
+								//,cancel:false
+								,offset:'auto'
+								
+								});
+							}
+					};
+
+					$('.big-img').on('click', function(){
+						var othis = $(this), method = othis.data('method');
+						active[method] ? active[method].call(this, othis) : '';
+					});
+
+				});
+
+				
+				/* //轮播图
+				layui.use(['carousel', 'form'], function(){
+					var carousel = layui.carousel
+					,form = layui.form;
+
+					//常规轮播
+					carousel.render({
+						elem: '.imgshow'
+						,arrow: 'always'
+							
+							//,width: '778px'
+						,height: '150px'
+						,interval: 5000
+					});
+				}); */ 
+
 			}
 		}
 
@@ -146,7 +201,7 @@ layui.use('table', function(){
 	//第一个实例
 	table.render({
 		elem: '#process'
-			,height: "194px"
+			//,height: "291px"
 			//,width:'100%' //piid:processPure2:3:32523
 			,url: '/iot_process/process/nodes/historyTask/piid/'+piidp //数据接口
 			// ,page: true //开启分页
@@ -173,33 +228,34 @@ layui.use('table', function(){
  * 问题处理更新ajax
  */
 function modifyEstimated(msge) {
-	//问题描述
-	var problem_describe = $("#problem_describe").val();
-
-	//问题处理信息
-	var str = "problemdescribe="+problem_describe+"&piid="+piidp+"&"+$("#estimate").serialize();
 
 	var period = $("#sdate").val();
 
-	//日期格式处理
-	if (period == "") {
-		str = str.replace(/rectificationperiod=(\d+-\d+-\d+)/,null);
-	}else{
-		period = period.replace(/-/g, "/");
-		str = str.replace(/rectificationperiod=(\d+-\d+-\d+)/,"rectificationperiod="+period);
+	var dateEstimated = {
+		"piid" : piidp
+		,"ticketNo": $("#ticketNo").val()
+		,"remark" : $("#sele").val()
+		,"problemdescribe" : $("#problem_describe").val()
 	}
-	console.log("日期格式处理："+str);
+	
+	if ($("#sele").val() == "指定日期") {
+		dateEstimated["rectificationperiod"] = period.replace(/-/g, "/");
+	}
+	/*if ($("#problem_describe").val() != "") {
+		dateEstimated[] = $("#problem_describe").val();
+	}*/
+	
 
 		$.ajax({  
 			url : "/iot_process/estimates/modifyestimated",  
 			type : "post",
-			data : str,
+			data : dateEstimated,
 			dataType : "json",  
 			success: function( json) {
-				console.log("问题处理json："+json);
+				console.log("问题处理json："+json.state);
 				if (json.state==0) {
 					//if ($(obj).attr("id")=="work_plant") {
-						
+					$("#comment").val("");
 						layer.msg(msge , {time: 3000,icon:1},function() {
 							
 							//window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
@@ -230,6 +286,7 @@ function yesCompare(){
 	var str = "problemdescribe="+problem_describe+"&piid="+piidp+"&"+$("#estimate").serialize();
 
 	var period = $("#sdate").val();
+	console.log(period);
 	var date_amtch = period.match(/^(\d{4})(-)(\d{2})(-)(\d{2})$/);
 
 	if (($("#sele").val() =="指定日期" && period=="") || ($("#sele").val() =="指定日期" && date_amtch == null)) {
@@ -246,42 +303,6 @@ function yesCompare(){
 	}
 	
 }
-
-/**
- * 图片点击放大
- * @returns
- */
-//弹出层
-layui.use('layer', function(){ //独立版的layer无需执行这一句
-	var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
-	
-	
-	//触发事件
-	var active = {
-			offset: function(othis){
-				
-			var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='600px'  height='500px'/>";
-				//var type = othis.data('type')
-				layer.open({
-				type: 1
-				//,offset: type 
-				,area: ['600px','500px']
-				,content: imgHtml
-				,title:false
-				//,shadeClose:true
-				//,cancel:false
-				,offset:'auto'
-				
-				});
-			}
-	};
-
-	$('.big-img').on('click', function(){
-		var othis = $(this), method = othis.data('method');
-		active[method] ? active[method].call(this, othis) : '';
-	});
-
-});
 
 
 
@@ -312,27 +333,42 @@ layui.use(['layer', 'jquery', 'form'], function () {
  * 回退
  */
 $("#rollback").click(function(){
-
-		if (yesCompare()) {
-			$.ajax({
-			     type: "PUT"
-			     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp    //piid为流程实例id
-			     ,data: {
-			     	"comment": $("#comment").val()  //处理信息
-			     	,"userName":$.cookie("name").replace(/"/g,"")
-			     }  
-			     ,contentType: "application/x-www-form-urlencoded"
-			     ,dataType: "json"
-			     ,success: function(jsonData){
-			     	if (jsonData.data==true) {
-			     		modifyEstimated("回退成功！！" );
-					}else{
-						layer.msg(jsonData.message,{icon:2});
-					}
-			     },
-			});
-			
-		}
+	
+	if (yesCompare()) {
+		var rollback = layer.msg("是否确认回退？",{
+			btn:["确认","取消"]
+			,time:20000
+			,offset:"100px"
+			,btnAlign:"c"
+			,area:"300px"
+			,icon:3
+			,yes:function(){
+				
+				console.log($("#sele").val());
+				$.ajax({
+				     type: "PUT"
+				     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp    //piid为流程实例id
+				     ,data: {
+				     	"comment": $("#comment").val()  //处理信息
+				     	,"userName":$.cookie("name").replace(/"/g,"")
+				     }  
+				     ,contentType: "application/x-www-form-urlencoded"
+				     ,dataType: "json"
+				     ,success: function(jsonData){
+				     	if (jsonData.data==true) {
+				     		
+				     		modifyEstimated("回退成功！！" );
+						}else{
+							layer.msg(jsonData.message,{icon:2});
+						}
+				     },
+				});
+				
+			layer.close(rollback);
+			}
+		});
+	}
+		/**/
 });
 
 /**
@@ -399,7 +435,7 @@ function outhelper_data(outhelperData){
 					url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
 					type : "get",
 					//$.cookie("organ")$.cookie("name")
-					data : {organ:outhelper[key],username:"无"},
+					data : {organ:outhelper[key],username:$.cookie("name").replace(/"/g,"")},
 					dataType : "json",  
 					async:false,
 					success: function(json) {
@@ -441,30 +477,42 @@ function outhelper_data(outhelperData){
 
 $("#complete").click(function(){
 
-	if (yesCompare()){
+	if (yesCompare()) {
+		var complete = layer.msg("是否确认闭环？",{
+			btn:["确认","取消"]
+			,time:20000
+			,offset:"100px"
+			,btnAlign:"c"
+			,area:"300px"
+			,icon:3
+			,yes:function(){
+		//	if (yesCompare()){
 
-		$.ajax({
-			type: "PUT"
-			,url: '/iot_process/process/nodes/end/group/piid/'+piidp    //piid为流程实例id
-			,data: {
+				$.ajax({
+					type: "PUT"
+					,url: '/iot_process/process/nodes/end/group/piid/'+piidp    //piid为流程实例id
+					,data: {
 
-				"comment": $("#comment").val()     //节点的处理信息
-				,"userName":$.cookie("name").replace(/"/g,"")
+						"comment": $("#comment").val()     //节点的处理信息
+						,"userName":$.cookie("name").replace(/"/g,"")
 
-			}   //问题上报表单的内容
-			,contentType: "application/x-www-form-urlencoded"
-			,dataType: "json"
-			,success: function(jsonData){
-				//后端返回值： ResultJson<Boolean>
-				
-				if (jsonData.state==0) {
-					modifyEstimated("闭环成功！！");
-				}else{
-					layer.msg("数据提交失败！！",{icon:2});
-				}
-			},
-				//,error:function(){}		       
-		});
+					}   //问题上报表单的内容
+					,contentType: "application/x-www-form-urlencoded"
+					,dataType: "json"
+					,success: function(jsonData){
+						//后端返回值： ResultJson<Boolean>
+						
+						if (jsonData.state==0) {
+							modifyEstimated("闭环成功！！");
+						}else{
+							layer.msg("数据提交失败！！",{icon:2});
+						}
+					},
+						//,error:function(){}		       
+				});
+			layer.close(complete);
+			}
+		})
 	}
 
 })
@@ -540,7 +588,6 @@ layui.use('tree', function(){
 							}
 							console.log("外部协调选中的人："+usernames);
 							
-							if (yesCompare()) {
 								if (usernames != "") {
 								
 									if (area == "净化工段" && dept == "维修工段") {
@@ -555,7 +602,6 @@ layui.use('tree', function(){
 								usernames="";
 								layer.closeAll();
 								
-							}
 							usernames="";
 							
 						}
@@ -574,8 +620,10 @@ layui.use('tree', function(){
 		};
 		
 		$('#coordinate').on('click', function(){
-			var othis = $(this), method = othis.data('method');
-			active[method] ? active[method].call(this, othis) : '';
+			if (yesCompare()) {
+				var othis = $(this), method = othis.data('method');
+				active[method] ? active[method].call(this, othis) : '';
+			}
 		});
 		
 	});
@@ -652,7 +700,7 @@ $.ajax({
     ,success: function(jsonData){
     	//后端返回值： ResultJson<Boolean>
     	if (jsonData.data) {
-			modifyEstimated(this);
+			modifyEstimated("外部协调成功，问题流转到："+usernames);
 		}else{
 			layer.msg('安排人员发送失败！！！',{icon:7});
 		}

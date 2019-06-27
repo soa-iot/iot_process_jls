@@ -17,7 +17,7 @@
 	     ,error:function(){}		       
 	});
 	
-2、获取所有的流程定义对象dfid：
+2、获取所有的流程定义对象id：
 	$.ajax({
 	     type: "GET"
 	     ,url: '/iot_process/process/processdefinitions/dfids' 
@@ -72,7 +72,7 @@
 6、部署流程
 	$.ajax({
 	     type: "POST"
-	     ,url: '/iot_process/process/deployment'    //dfid为流程定义id
+	     ,url: '/iot_process/process/deployment'  
 	     ,data: {
 			"name": "",
 	     	"xmlUrl": "",
@@ -90,7 +90,7 @@
 7、部署流程(测试专用)
 	$.ajax({
 	     type: "GET"
-	     ,url: '/iot_process/process/deployment'    //dfid为流程定义id
+	     ,url: '/iot_process/process/deployment'   
 	     ,data: {
 	     	"name": "",
 	     	"xmlUrl": "",

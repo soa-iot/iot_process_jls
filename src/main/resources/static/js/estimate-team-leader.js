@@ -72,16 +72,13 @@ $.ajax({
 										}
 									console.log("选中的人："+usernames);
 
-									if (yesCompare()) {
 										if (usernames=="") {
 											layer.msg('至少选定一人！！！',{icon:7});
 										}else {
 											workPlan(this,usernames);
-											usernames="";
 											layer.close(ope);
 										}
-									}
-									usernames="";
+										usernames="";
 
 								}
 								,success:function(){
@@ -99,8 +96,10 @@ $.ajax({
 					};
 
 					$('#work_plan').on('click', function(){
-						var othis = $(this), method = othis.data('method');
-						active[method] ? active[method].call(this, othis) : '';
+						if (yesCompare()) {
+							var othis = $(this), method = othis.data('method');
+							active[method] ? active[method].call(this, othis) : '';
+						}
 					});
 
 				});
@@ -170,17 +169,16 @@ $.ajax({
 									if (usernames != "" && i != check.length - 1) {
 										usernames +=",";
 									}
-									}
+								}
 								console.log("选中的人："+usernames);
 								if (usernames=="") {
 									layer.msg('至少选定一人！！！',{icon:7});
-								}else if (yesCompare()) {
+								}else{
 									estimate_next(this,usernames);
 			
 									layer.close(ope);
-								}else{
-									usernames = "";
 								}
+								usernames = "";
 							}
 							,success:function(){
 								//console.log(data);
@@ -197,8 +195,10 @@ $.ajax({
 				};
 
 				$('#estimate_next').on('click', function(){
-					var othis = $(this), method = othis.data('method');
-					active[method] ? active[method].call(this, othis) : '';
+					if (yesCompare()) {
+						var othis = $(this), method = othis.data('method');
+						active[method] ? active[method].call(this, othis) : '';
+					}
 				});
 
 			});
@@ -252,19 +252,29 @@ function workPlan(obj,usernames){
  * @returns
  */
 function estimate_next(obj,usernames){
+	
+	var estimate_next_data = {
+			"isIngroup": 3,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
+								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
+								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
+			"comment": $("#comment").val(),     //节点的处理信息
+
+			"userName":$.cookie("name").replace(/"/g,"")
+	}
+	
+	if (area=="净化工段") {
+		estimate_next_data["puror"] = usernames;
+	}else if(area=="维修工段"){
+		estimate_next_data["repairor"] = usernames;
+	}
+	
+	
+	
 	$.ajax({
 		type: "PUT"
 		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
-		,data: {
-			"isIngroup": 3,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
-		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
-		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
-		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-			"comment": $("#comment").val(),     //节点的处理信息
-			"puror":usernames,
-
-			"userName":$.cookie("name").replace(/"/g,"")
-		}   //问题上报表单的内容
+		,data: estimate_next_data
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
 		,success: function(jsonData){

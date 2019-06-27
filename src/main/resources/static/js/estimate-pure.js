@@ -44,6 +44,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 								if (i<checkData.length-2) {
 									if (!compareTodept(checkData[i][1],checkData[i+1][1])) {
 										layer.msg('请选择同一部门的人！！！',{icon:7});
+										usernames = "";
 										return;
 									}
 									
@@ -59,19 +60,21 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 	
 						if (usernames=="") {
 							layer.msg('至少选定一人！！！',{icon:7});
-						}else if (yesCompare()) {
+						}else{
 							workPlan(this,usernames);
-	
 							layer.close(ope);
 						}
+						usernames="";
 					}
 				});
 			}
 	};
 
 	$('#work_plan').on('click', function(){
-		var othis = $(this), method = othis.data('method');
-		active[method] ? active[method].call(this, othis) : '';
+		if (yesCompare()) {
+			var othis = $(this), method = othis.data('method');
+			active[method] ? active[method].call(this, othis) : '';
+		}
 	});
 
 });
