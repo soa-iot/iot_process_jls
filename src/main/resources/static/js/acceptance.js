@@ -118,7 +118,7 @@ $.ajax({
 $("#complete1").click(function(){
 
 	if ($("#comment").val()=="") {
-		layer.msg("处理说明不能为空",{icon:7});
+		layer.msg("处理说明不能为空",{icon:7,offset:"100px"});
 	}else{
 
 		$.ajax({
@@ -136,11 +136,11 @@ $("#complete1").click(function(){
 				//后端返回值： ResultJson<Boolean>
 				
 				if (jsonData.data) {
-					layer.msg("闭环处理成功！",{time: 3000,icon:1},function() {
+					layer.msg("闭环处理成功！",{time: 3000,icon:1,offset:"100px"},function() {
 						location.href = getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
 					});
 				}else{
-					layer.msg("闭环处理失败！！",{icon:2});
+					layer.msg("闭环处理失败！！",{icon:2,offset:"100px"});
 				}
 			},
 				//,error:function(){}		       

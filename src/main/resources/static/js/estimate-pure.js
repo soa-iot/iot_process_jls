@@ -43,7 +43,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 								//对比是否为同一部门
 								if (i<checkData.length-2) {
 									if (!compareTodept(checkData[i][1],checkData[i+1][1])) {
-										layer.msg('请选择同一部门的人！！！',{icon:7});
+										layer.msg('请选择同一部门的人！！！',{icon:7,offset:"100px"});
 										usernames = "";
 										return;
 									}
@@ -59,7 +59,7 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 						console.log("选中的人："+usernames);
 	
 						if (usernames=="") {
-							layer.msg('至少选定一人！！！',{icon:7});
+							layer.msg('至少选定一人！！！',{icon:7,offset:"100px"});
 						}else{
 							workPlan(this,usernames);
 							layer.close(ope);
@@ -212,7 +212,7 @@ function workPlan(obj,usernames){
 			if (jsonData.data) {
 				modifyEstimated("作业安排成功，问题流转到："+usernames);
 			}else{
-				layer.msg('安排人员发送失败！！！',{icon:7});
+				layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
 			}
 		},
 		//,error:function(){}		       
