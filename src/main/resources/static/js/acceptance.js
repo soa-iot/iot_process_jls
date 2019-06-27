@@ -36,14 +36,14 @@ $.ajax({
 					if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
 						//img_div = '';
 						for (var i = 0; i < mode; i++) {
-							img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
+							img_div = img_div+'<img class="big-img-new"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
 							img_id++;
 						}
 	
 					}else{
 	
 						for (var i = 0; i < 3; i++) {
-							img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
+							img_div = img_div+'<img class="big-img-new"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
 							img_id++;
 						}
 	
@@ -66,6 +66,42 @@ $.ajax({
 						,height: '150px'
 						,interval: 5000
 					});
+				});
+				
+				/**
+				 * 图片点击放大
+				 * @returns
+				 */
+				//弹出层
+				layui.use('layer', function(){ //独立版的layer无需执行这一句
+					var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+					
+					
+					//触发事件
+					var active = {
+							offset: function(othis){
+								
+							var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='600px'  height='500px'/>";
+								//var type = othis.data('type')
+								layer.open({
+								type: 1
+								//,offset: type 
+								,area: ['600px','500px']
+								,content: imgHtml
+								,title:false
+								//,shadeClose:true
+								//,cancel:false
+								,offset:'auto'
+								
+								});
+							}
+					};
+
+					$('.big-img-new').on('click', function(){
+						var othis = $(this), method = othis.data('method');
+						active[method] ? active[method].call(this, othis) : '';
+					});
+
 				});
 			}
 		}
