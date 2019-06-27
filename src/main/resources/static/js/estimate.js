@@ -20,7 +20,7 @@ console.log(area+","+piidp);
 var usernames="";
 //如果为这个几个部门这显示全厂人员
 //var era = "生产办公室";
-var url = area=='生产办公室' || area=='生产办' || area == 'HSE办公室' || area == 'HSE办' || area == '设备办公室' || area == '设备办'?'../html/organization_tree.html':'../html/organization_tree_problemtype.html?area='+area;
+var url = area=='生产办公室' || area =='生产办' || area == 'HSE办公室' || area == 'HSE办' || area == '设备办公室' || area == '设备办'?'../html/organization_tree.html':'../html/organization_tree_problemtype.html?area='+area;
 console.log(area);
 //弹出层
 layui.use('layer', function(){ //独立版的layer无需执行这一句
