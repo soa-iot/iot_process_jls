@@ -17,7 +17,7 @@
 	     ,error:function(){}		       
 	});
 	
-2、获取所有的流程定义对象dfid：
+2、获取所有的流程定义对象id：
 	$.ajax({
 	     type: "GET"
 	     ,url: '/iot_process/process/processdefinitions/dfids' 

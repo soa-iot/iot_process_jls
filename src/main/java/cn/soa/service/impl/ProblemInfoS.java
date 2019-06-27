@@ -148,6 +148,24 @@ public class ProblemInfoS implements ProblemInfoSI {
 		return list;
 	}
 	
+	/**
+	 * 根据用部分problemdescribe查询对应的数据
+	 * @param problemdescribele
+	 * @return ProblemInfo集合
+	 */
+	public List<ProblemInfo> getAutoFill(String problemdescribe){
+		return findByProblemdescribe(problemdescribe);
+	}
+	
+	/**
+	 * 根据用部分problemdescribe查询对应的数据
+	 * @param problemdescribele
+	 * @return ProblemInfo集合
+	 */
+	private List<ProblemInfo> findByProblemdescribe(String problemdescribe){
+		return problemInfoMapper.findByProblemdescribe(problemdescribe);
+	}
+	
 	/**   
 	 * @Title: updateEstiByPiid   
 	 * @Description: 更新一条问题评估实现方法

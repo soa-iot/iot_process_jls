@@ -12,24 +12,6 @@ var piidp = GetQueryString('piid');
 var area = GetQueryString('area');
 
 /**
- * 轮播图
- */
-layui.use(['carousel', 'form'], function(){
-	var carousel = layui.carousel
-	,form = layui.form;
-
-	//常规轮播
-	carousel.render({
-		elem: '#doimg-div'
-		//,arrow: 'always'
-			//,width: '778px'
-		,height: '150px'
-		,interval: 5000
-	});
-});  
-
-
-/**
  *作业完成图片
  */
 $.ajax({  
@@ -41,29 +23,87 @@ $.ajax({
 		//console.log(json.state);
 		if (json.state == 0) {
 			var imgs = json.data;
-			var mode = imgs.length%3;
-			var img_id = 0;
-
-
-			for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
-				var img_div='<div  class="img_p">';
-				if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
-					//img_div = '';
-					for (var i = 0; i < mode; i++) {
-						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
-						img_id++;
+			if (imgs.length==0) {
+				$("#doimg-div").hide();
+			}else{
+				$("#doimg-div").show();
+				var mode = imgs.length%3;
+				var img_id = 0;
+	
+	
+				for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
+					var img_div='<div  class="img_p">';
+					if (mode != 0 && j == (Math.ceil(imgs.length/3) - 1) ) {
+						//img_div = '';
+						for (var i = 0; i < mode; i++) {
+							img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
+							img_id++;
+						}
+	
+					}else{
+	
+						for (var i = 0; i < 3; i++) {
+							img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
+							img_id++;
+						}
+	
 					}
-
-				}else{
-
-					for (var i = 0; i < 3; i++) {
-						img_div = img_div+'<img class="big-img"  data-method="offset" alt="图片无法显示" src="'+imgs[img_id].phoAddress+'">';
-						img_id++;
-					}
-
+					img_div = img_div+'</div>'
+					$("#doimg").append(img_div);
 				}
-				img_div = img_div+'</div>'
-				$("#doimg").append(img_div);
+				$("#doimg-div").show();
+				
+				//轮播图
+				layui.use(['carousel', 'form'], function(){
+					var carousel = layui.carousel
+					,form = layui.form;
+
+					//常规轮播
+					carousel.render({
+						elem: '#doimg-div'
+						//,arrow: 'always'
+							//,width: '778px'
+						,height: '150px'
+						,interval: 5000
+					});
+				});
+				/**
+				 * 图片点击放大
+				 * @returns
+				 */
+				//弹出层
+				layui.use('layer', function(){ //独立版的layer无需执行这一句
+					var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+					
+					
+					//触发事件
+					var active = {
+							offset: function(othis){
+								
+							var imgHtml= "<img alt='图片无法显示' src='"+$(this).attr("src")+"'width='600px'  height='500px'/>";
+								//var type = othis.data('type')
+								layer.open({
+								type: 1
+								//,offset: type 
+								,area: ['600px','500px']
+								,content: imgHtml
+								,title:false
+								//,shadeClose:true
+								//,cancel:false
+								,offset:'auto'
+								
+								});
+							}
+					};
+
+					$('.big-img').on('click', function(){
+						var othis = $(this), method = othis.data('method');
+						active[method] ? active[method].call(this, othis) : '';
+					});
+
+				});
+
+				
 			}
 		}
 
@@ -78,7 +118,7 @@ $.ajax({
 $("#complete1").click(function(){
 
 	if ($("#comment").val()=="") {
-		layer.msg("处理说明不能为空",{icon:7});
+		layer.msg("处理说明不能为空",{icon:7,offset:"100px"});
 	}else{
 
 		$.ajax({
@@ -96,11 +136,11 @@ $("#complete1").click(function(){
 				//后端返回值： ResultJson<Boolean>
 				
 				if (jsonData.data) {
-					layer.msg("闭环处理成功！",{time: 3000,icon:1},function() {
+					layer.msg("闭环处理成功！",{time: 3000,icon:1,offset:"100px"},function() {
 						location.href = getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
 					});
 				}else{
-					layer.msg("闭环处理失败！！",{icon:2});
+					layer.msg("闭环处理失败！！",{icon:2,offset:"100px"});
 				}
 			},
 				//,error:function(){}		       

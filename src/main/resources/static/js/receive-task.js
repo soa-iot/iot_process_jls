@@ -166,15 +166,15 @@ layui.use(['form', 'jquery','layer'], function(){
 		        dataType : "json",  
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
-		        		layer.msg("接收作业成功", {icon: 1, time: 2000}, function(){
+		        		layer.msg("接收作业成功", {icon: 1, time: 2000, offset: '100px'}, function(){
 		        			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		        		});
 		        	}else{
-		        		layer.msg("接收作业失败",{icon: 2});
+		        		layer.msg("接收作业失败",{icon: 2, offset: '100px'});
 		        	}
 		        } 
 		        ,error:function(){
-		        	layer.msg("接收作业失败",{icon: 2});
+		        	layer.msg("接收作业失败",{icon: 2, offset: '100px'});
 		        }	
 		   });		  
 		  
