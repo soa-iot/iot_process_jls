@@ -194,15 +194,19 @@ function workPlan(obj,usernames){
 	console.log("isIngroupg:"+isIngroup);
 	$.ajax({
 		type: "PUT"
-		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+		,url: '/iot_process/process/nodes/jump/group/piid/'+piidp    //piid为流程实例id
 		,data: {
-			"isIngroup": isIngroup,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
-		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
-		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
-		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
+			
+			//"area": ""  //属地单位
+			"actId": "receive"  //跳转节点id
+			,"receivor": usernames  //下一步流程变量
+			,"userName": $.cookie("name").replace(/"/g,"")  //当前节点任务执行人
+			,"comment": $("#comment").val()   //备注信息\
+					
+			/*"isIngroup": isIngroup,   
 			"comment": $("#comment").val(),     //节点的处理信息
 			"receivor":usernames,
-			"userName":$.cookie("name").replace(/"/g,"")
+			"userName":$.cookie("name").replace(/"/g,"")*/
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
