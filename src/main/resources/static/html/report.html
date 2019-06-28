@@ -62,6 +62,7 @@
 			      <label class="text-font layui-form-label">属地单位</label>
 			      <div class="layui-input-inline">
 			        <select id="problemtype" name="problemtype">
+			          <option value="">请选择</option>
 			          <option value="净化工段">净化工段</option>
 			          <option value="维修工段">维修工段</option>
 			          <option value="HSE办公室">HSE办公室</option>
@@ -81,8 +82,8 @@
 			    <div class="layui-inline">
 			      <label class="text-font layui-form-label">问题区域</label>
 			      <div class="layui-input-inline">
-			        <select name="welName" lay-verify="area" lay-search >
-			          <option value="">请输入问题区域</option>
+			        <select name="welName" id="welName" lay-search >
+			          <option value="">请选择</option>
 			          <option value="主体装置一列">主体装置一列</option>
 			          <option value="主体装置二列">主体装置二列</option>
 			          <option value="主体装置三列" >主体装置三列</option>
@@ -113,12 +114,13 @@
 			    <div class="layui-inline">
 			      <label class="text-font layui-form-label">所属专业</label>
 			      <div id="test-select" class="layui-input-inline">
-			        <select name="profession">
+			        <select name="profession" id="profession">
+			           <option value="">请选择</option>
 				       <option value="管理">管理</option>
 				       <option value="工艺">工艺</option>
 				       <option value="机械">机械</option>
 				       <option value="电气">电气</option>
-				       <option selected value="仪表">仪表</option>
+				       <option value="仪表">仪表</option>
 				       <option value="环保">环保</option>
 				       <option value="化验">化验</option>
 				       <option value="物资">物资</option>
@@ -135,7 +137,7 @@
 			    <div class="layui-inline" style="vertical-align: middle;">
 			      <label class="text-font layui-form-label">设备位号</label>
 				  <div class="layui-input-inline" style="width: 120px;">
-				    <input name="rfid" class="layui-input" lay-verify="required" type="text" placeholder="请输入设备位号"/>
+				    <input name="rfid" class="layui-input" id="rfid" type="text" placeholder="请输入设备位号"/>
 				  </div>
 				  <button type="button" class="layui-btn layui-btn-sm" style="height: 38px;" onclick="return false;">定位设备</button>
 			    </div>
@@ -143,8 +145,9 @@
 			    <div class="layui-inline">
 			      <label class="text-font layui-form-label">问题类别</label>
 			      <div class="layui-input-inline">
-			        <select name="problemclass" lay-filter="question-type">
-				       <option selected value="分厂级检查">分厂级检查</option>
+			        <select name="problemclass" id="problemclass" lay-filter="question-type">
+				       <option value="">请选择</option>
+				       <option value="分厂级检查">分厂级检查</option>
 				       <option value="总厂级检查">总厂级检查</option>
 				       <option value="体系审核">体系审核</option>
 				       <option value="地方安全环保检查">地方安全环保检查</option>
@@ -179,7 +182,7 @@
 			  <div class="layui-form-item">
 			      <label class="text-font layui-form-label">问题描述</label>
 			      <div class="layui-input-block">
-			        <textarea name="problemdescribe" id="problemdescribe" rows="5" cols="70" lay-verify="required" placeholder="请输入问题描述"></textarea>
+			        <textarea name="problemdescribe" id="problemdescribe" rows="5" cols="70" placeholder="请输入问题描述"></textarea>
 			      </div>
 			      <div class="show_div"></div>
 			  </div>
@@ -224,6 +227,7 @@
     <script type="text/javascript" src="../js/url_param.js"></script>
 	<script type="text/javascript" src="../jsPackage/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="../js/autoFill.js"></script>
+	<script type="text/javascript" src="../jsPackage/js/Convert_Pinyin.js"></script>
     <script type="text/javascript" src="../js/report.js"></script>
   </body>
 </html>

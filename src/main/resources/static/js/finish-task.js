@@ -14,7 +14,17 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 	console.log("用户编号为:"+num);
 	
 	//点击完成按钮操作
-	form.on('submit(finish_task)', function(data){		  
+	form.on('submit(finish_task)', function(data){
+		  //验证表单是否为空
+		  if($("#comment_finish").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("处理说明不能为空", {icon: 7, offset: '100px'});
+			  return;
+		  }
+		  if($('#imgZmList').children().length == 0){
+			  layer.msg("现场施工图必须上传", {icon: 7, offset: '100px'});
+			  return;
+		  }
+		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
 			    async : false,
@@ -114,5 +124,8 @@ layui.use(['form', 'jquery','upload','layer'], function(){
     		}
     	}
     });
+    
+    
+    
 	
 });

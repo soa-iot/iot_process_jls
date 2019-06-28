@@ -186,6 +186,7 @@ public class ReportC {
 	public ResultJson<Void> saveUpload(
 			@RequestParam("file") MultipartFile file, 
 			@RequestParam("resavepeople") String resavepeople, 
+			@RequestParam("username") String username,
 			@RequestParam("piid") String piid,
 			@RequestParam("remark") String remark,
 			@RequestParam("tProblemRepId") String tProblemRepId, HttpServletRequest request){
@@ -194,6 +195,7 @@ public class ReportC {
 		
 		log.info("上传图片名为：{}", file.getOriginalFilename());
 		log.info("当前系统登录人为：{}", resavepeople);
+		log.info("用户拼音名为：{}"+username);
 		log.info("问题报告piid：{}", piid);
 		log.info("上报问题报告id：{}", tProblemRepId);
 		log.info("图片来源remark：{}", remark);
@@ -211,23 +213,22 @@ public class ReportC {
 		
 		//生成图片存储位置，数据库保存的是虚拟映射路径
 		Date date = new Date();
-		String usernum = userManagerS.getUsernumByName(resavepeople);
-		if(usernum == null || "".equals(usernum)) {
-			usernum = "DefaultUser";
+		if(username == null || "".equals(username)) {
+			username = "DefaultUser";
 		}
-		File imagePath = CommonUtil.imageSaved(usernum, rootPath, date);
+		File imagePath = CommonUtil.imageSaved(username, rootPath, date);
 		
 		try {
 			file.transferTo(new File(imagePath, phoName));
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
-			return new ResultJson<>(ResultJson.ERROR, "图片上传失败1");
+			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResultJson<>(ResultJson.ERROR, "图片上传失败2");
+			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		}
 		//request.getContextPath() 或  request.getServletPath()
-		String phoAddress =  new StringBuilder(request.getServletPath()+"/image/").append(usernum).append("/")
+		String phoAddress =  new StringBuilder(request.getServletPath()+"/image/").append(username).append("/")
 				.append(CommonUtil.dateFormat(date)).append("/").append(phoName).toString();
 		
 		//将上传图片信息封装实体类中
@@ -249,7 +250,7 @@ public class ReportC {
 		if(result) {
 			return new ResultJson<>(ResultJson.SUCCESS, "图片上传成功");
 		}else {
-			return new ResultJson<>(ResultJson.ERROR, "图片上传失败3");
+			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		}
 	}
 	
