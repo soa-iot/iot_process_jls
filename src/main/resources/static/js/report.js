@@ -9,6 +9,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
+	resavepeople = '马勇';
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	var piid = GetQueryString("piid");
@@ -17,7 +18,36 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	//0-表示暂存，1-表示上报
 	var type = 0;
 
-
+	//验证表单是否为空
+	function isempty(){
+		console.log(123);
+		if($("#problemdescribe").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("问题描述不能为空", {icon: 7, offset: ['150px', '220px']});
+			  return true;
+		}
+		if($("#problemtype").val() == ''){
+			  layer.msg("属地单位不能为空", {icon: 7, offset: ['150px', '220px']});
+			  return true;
+		}
+		if($("#profession").val() == ''){
+			  layer.msg("所属专业不能为空", {icon: 7, offset: ['150px', '220px']});
+			  return true;
+		}
+		if($("#problemclass").val() == ''){
+			  layer.msg("问题类别不能为空", {icon: 7, offset: ['150px', '220px']});
+			  return true;
+		}
+		if($("#rfid").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("设备位号不能为空", {icon: 7, offset: ['150px', '220px']});
+			  return true;
+		}
+		if($("#welName").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("问题区域不能为空", {icon: 7, offset: ['150px', '220px']});
+			  return true;
+		}
+		return false;
+	}
+	
 	//根据piid判断是否是回退到问题上报节点
 	if(piid != null && piid != ""){
 		$("#problem_back").css({"display":"block"});
@@ -203,6 +233,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	
 	  //监听暂存提交事件
 	  form.on('submit(saveBtn)', function(data){
+		  if(isempty()){
+			 return false;
+		  }
 		  //var jsonData = JSON.stringify(data.field);
 		  //保存主键
 		  if(tempRepId != undefined || tempRepId != null){
@@ -239,14 +272,14 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   				type = 0;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("问题暂存成功", {icon: 1, offset: '100px'});
+				   		layer.msg("问题暂存成功", {icon: 1, offset: ['150px', '220px']});
 		   			}else{
-		   				layer.msg("问题暂存失败", {icon: 2, offset: '100px'});
+		   				layer.msg("问题暂存失败", {icon: 2, offset: ['150px', '220px']});
 		   			}
 		   			
 		   		},
 		   		error: function(){
-			   		layer.msg("问题暂存失败", {icon: 2, offset: '100px'});
+			   		layer.msg("问题暂存失败", {icon: 2, offset: ['150px', '220px']});
 			   	}
 		  })
 	    return false;
@@ -258,13 +291,13 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
      		 $("#problem-img").css("display", "none");
      	 }
 	}  
-	  
-	  
+	    
 	//多图片上传功能
      var uploadList = upload.render({
           elem: '#addProblemImg'
           , url: '/iot_process/report/upload'
-          , data: {		resavepeople: function(){ return resavepeople;}, 
+          , data: {		resavepeople: function(){ return resavepeople}, 
+        	  			username: function(){ return toChar(resavepeople);},
         	  			piid: function(){console.log("piid: "+piid); return piid;},
         	  	   		tProblemRepId: function(){ console.log("tProblemRepId: "+tProblemRepId); return tProblemRepId;},
         	  			remark: "0"
@@ -319,6 +352,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
      
  	//监听流程上报提交事件
 	  form.on('submit(problem_report)', function(data){
+		 if(isempty()){
+			return false;
+		 }
 		 console.log("问题上报开始...");
 		  //保存当前登录人
 		  data.field.resavepeople = resavepeople;
@@ -360,12 +396,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			    	type = 1;
 		    		//上传问题图片
 			    	uploadList.upload();
-			    	layer.msg("问题上报成功",{icon: 1, offset: '100px'});
+			    	layer.msg("问题上报成功",{icon: 1, offset: ['150px', '220px']});
 			    	$("#problemdescribe").val("");
 			    	$('#imgZmList').empty();
 			    	imgCount();
 		    	}else{
-		    		layer.msg("问题上报失败",{icon: 2, offset: '100px'});
+		    		layer.msg("问题上报失败",{icon: 2, offset: ['150px', '220px']});
 		    	}
 		     }
 		     ,error:function(){}		       
@@ -377,6 +413,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	  
 	 //监听回退后问题上报提交事件
 	  form.on('submit(problem_report_again)', function(data){
+		 if(isempty()){
+			 return false;
+		 }
 		 console.log("回退_问题上报开始...");
 		 //保存主键
 		  data.field.tProblemRepId = tempRepId;
@@ -434,25 +473,31 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 				   			type = 1;
 				    		//上传问题图片
 					    	uploadList.upload();
-					    	layer.msg("问题上报成功",{icon: 1, offset: '100px'});
+					    	layer.msg("问题上报成功",{icon: 1, offset: ['150px', '220px']});
 					    	$("#problemdescribe").val("");
 					    	$('#imgZmList').empty();
 					    	imgCount();
 				   		}else{
-				   			layer.msg("问题上报失败", {icon: 2,offset: '100px'});
+				   			layer.msg("问题上报失败", {icon: 2,offset: ['150px', '220px']});
 				   		}
 		   			}else{
-		   				layer.msg("问题上报失败", {icon: 2, offset: '100px'});
+		   				layer.msg("问题上报失败", {icon: 2, offset: ['150px', '220px']});
 		   			}
 		   			
 		   	  },
 		   	  error: function(){
-		   		layer.msg("问题上报失败", {icon: 2, offset: '100px'});
+		   		layer.msg("问题上报失败", {icon: 2, offset: ['150px', '220px']});
 		   	  }
 		  })
 	    return false;
 		
 	  });
      
+	  /**
+	   * 汉字转成拼音的功能
+	   */
+	  function toChar(str){
+		 return pinyin.getFullChars(str);
+	  }
 })  
 	

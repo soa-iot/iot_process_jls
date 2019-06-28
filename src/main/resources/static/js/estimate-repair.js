@@ -10,6 +10,15 @@ layui.use(['tree', 'layer', 'form'], function() {
 	//属地单位
 	var area;
 	
+	//验证表单是否为空
+	function isempty(){
+		if($("#comment_repair").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("处理说明不能为空", {icon: 7, offset: '100px'});
+			  return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * 作业指派异步请求
 	 */
@@ -48,6 +57,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 校验表单是否为空, 为空则不弹出层
 	 */
 	form.on('submit(assignment)', function(data){
+		if(isempty()){
+			return false;
+		}
 		if($("#sele").val() == '指定日期' && !$("#sdate").val()){
 			layer.msg("指定日期不能为空",{icon: 5});
 			return false;
@@ -65,7 +77,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 			,btnAlign: 'c' //按钮居中
 			,yes: function(index, layero){
 				//确认按钮的回调函数
-				var comment = $("#comment").val();
+				var comment = $("#comment_repair").val();
 				var arrangor = assignUsers.join("，");
 				console.log(arrangor);
 				if(assignUsers.length < 1){
@@ -115,7 +127,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 闭环流程
 	 */
 	form.on('submit(complete)', function(data){
-		
+		if(isempty()){
+			return false;
+		}
 		$.ajax({
 			 async: false
 		     ,type: "PUT"
@@ -148,6 +162,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 回退到上一个节点
 	 */
 	form.on('submit(back_previous)', function(data){
+		if(isempty()){
+			return false;
+		}
 		console.log(data.field)
 		$.ajax({
 			 async:false
@@ -183,6 +200,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 */
 	var out_coordinate_tree;
 	form.on('submit(out_coordinate)', function(data){
+		if(isempty()){
+			return false;
+		}
 		assignUsers.length = 0;
 		ids.length = 0;
 		//弹出层
@@ -255,7 +275,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 					,"actId": "estimate"  //跳转节点id
 					,"estimators": assignUsers.join("，")  //下一步流程变量
 					,"userName": resavepeople  //当前节点任务执行人
-					,"comment": $("#comment").val()  //备注信息
+					,"comment": $("#comment_repair").val()  //备注信息
 			 }  
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"

@@ -10,6 +10,15 @@ layui.use(['tree', 'layer', 'form'], function() {
 	var resavepeople = getCookie1("name").replace(/"/g,'');
 	//从cookie中获取所在组
 	var dept = getCookie1("organ").replace(/"/g,'');
+	
+	//验证表单是否为空
+	function isempty(){
+		if($("#comment_assign").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("处理说明不能为空", {icon: 7, offset: '100px'});
+			  return true;
+		}
+		return false;
+	}
 
 	/**
 	 * 作业指派异步请求
@@ -29,15 +38,15 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
-		    		 layer.msg("作业安排成功",{icon:1, time: 2000}, function(){
+		    		 layer.msg("作业安排成功",{icon:1, time: 2000, offset: '100px'}, function(){
 //		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 		    		 })
 		    	 }else{
-		    		 layer.msg("作业安排失败",{icon:2, time: 2000});
+		    		 layer.msg("作业安排失败",{icon:2, time: 2000, offset: '100px'});
 		    	 }
 		     }
 		     ,error:function(){
-		    	 layer.msg("作业安排失败",{icon:2, time: 2000});
+		    	 layer.msg("作业安排失败",{icon:2, time: 2000, offset: '100px'});
 		     }		       
 		});
 		
@@ -48,7 +57,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 	 * 校验表单是否为空, 为空则不弹出层
 	 */
 	form.on('submit(arrange)', function(data){
-		
+		if(isempty()){
+			return false;
+		}
 		//弹出层
 		layer.open({
 			type: 1
@@ -60,7 +71,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 			,btnAlign: 'c' //按钮居中
 			,yes: function(index, layero){
 				//确认按钮的回调函数
-				var comment = $("#comment").val();
+				var comment = $("#comment_assign").val();
 				var receivor = assignUsers.join("，");
 				console.log(receivor);
 				workAssignment(comment, receivor, resavepeople);
