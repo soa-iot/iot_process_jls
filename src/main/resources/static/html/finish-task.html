@@ -23,7 +23,7 @@
 				<h2 class="layui-colla-title h2c" id="pro">问题处理</h2>
 				
 				<div class="hbtn h2c">
-					<button class="layui-btn layui-btn-normal layui-btn-sm btn" lay-submit lay-filter="finish_task">完成作业</button>
+					<button class="layui-btn layui-btn-normal layui-btn-sm btn" lay-submit lay-filter="finish_task"><span class="layui-icon">&#xe605;</span>&nbsp;完成作业</button>
 				</div>
 				<div class="layui-colla-content layui-show">
 	
@@ -36,7 +36,7 @@
 							</div>
 						</div>
 						<div class="layui-inline">
-							<input class="layui-input" disabled style="display:none" lay-verify="imgs"/>
+							<input class="layui-input" disabled style="display:none"/>
 						</div>
 					</div>
 					
@@ -79,8 +79,8 @@
 					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">处理说明</label>
 						<div class="layui-input-block right-marg">
-							<textarea name="comment"  id="input_localName" placeholder="请输入内容"
-								class="layui-textarea"  lay-verify="required"></textarea>
+							<textarea name="comment"  id="comment_finish" placeholder="请输入内容"
+								class="layui-textarea"></textarea>
 						</div>
 					</div>
 
