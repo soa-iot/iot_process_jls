@@ -76,7 +76,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		},
 		cols: [[{field:'id', title:'编号', width:70, sort:false, type:'numbers', fixed:'left', align:'center'},
 			{field:'applydate', title:'上报日期', width:124, sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
-			{field:'applypeople', title:'申请人', width:130, sort:true, align:'center'},
+			{field:'applypeople', title:'上报人', width:130, sort:true, align:'center'},
 			{field:'welName', title:'装置单元', width:120, sort:true, align:'center'},
 			{field:'problemclass', title:'问题类别', width:120, sort:true, align:'center'},
 			{field:'profession', title:'专业', width:90, sort:true, align:'center'},
@@ -240,7 +240,8 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    			'startTime': $("#startdate").val(),
 	    			'endTime': $("#enddate").val(),
 	    			'schedule': $("#schedule").val(),
-	    			'handler': $("#handler").val()
+	    			'handler': $("#handler").val(),
+	    			'applypeople': $("#applypeople").val()
 	    	   }
 	    	})
 	        break;

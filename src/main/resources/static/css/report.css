@@ -125,3 +125,38 @@
         cursor: pointer;
 }
 
+#base{
+	padding-left:0px;
+	margin-left:0px; 
+	min-width:900px; 
+	/* border: 1px solid red; */
+}
+
+#base>.layui-row{
+	border:1px solid rgb(230,230,230); 
+	background-color:#fafdfd;
+	margin-right: 10%;
+}
+
+.primary-btn{
+	background-color: #f1f5f7;
+	color: black;
+	border:1px solid rgb(230,230,230);
+	border-radius: 10px;
+}
+
+.layui-icon{
+	color: green;
+}
+
+.primary-btn:hover{
+	background-color: #3a95ca;
+	color: white;
+}
+/* .second-btn{
+	background-color: rgb(123,194,246);
+	border-radius: 10px;
+	color: black;
+	border:1px solid rgb(183,182,184);
+} */
+

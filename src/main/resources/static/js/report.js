@@ -22,27 +22,27 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	function isempty(){
 		console.log(123);
 		if($("#problemdescribe").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
-			  layer.msg("问题描述不能为空", {icon: 7, offset: ['150px', '220px']});
+			  layer.msg("问题描述不能为空", {icon: 7, offset: ['150px', '330px']});
 			  return true;
 		}
 		if($("#problemtype").val() == ''){
-			  layer.msg("属地单位不能为空", {icon: 7, offset: ['150px', '220px']});
+			  layer.msg("属地单位不能为空", {icon: 7, offset: ['150px', '330px']});
 			  return true;
 		}
 		if($("#profession").val() == ''){
-			  layer.msg("所属专业不能为空", {icon: 7, offset: ['150px', '220px']});
+			  layer.msg("所属专业不能为空", {icon: 7, offset: ['150px', '330px']});
 			  return true;
 		}
 		if($("#problemclass").val() == ''){
-			  layer.msg("问题类别不能为空", {icon: 7, offset: ['150px', '220px']});
+			  layer.msg("问题类别不能为空", {icon: 7, offset: ['150px', '330px']});
 			  return true;
 		}
 		if($("#rfid").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
-			  layer.msg("设备位号不能为空", {icon: 7, offset: ['150px', '220px']});
+			  layer.msg("设备位号不能为空", {icon: 7, offset: ['150px', '330px']});
 			  return true;
 		}
 		if($("#welName").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
-			  layer.msg("问题区域不能为空", {icon: 7, offset: ['150px', '220px']});
+			  layer.msg("问题区域不能为空", {icon: 7, offset: ['150px', '330px']});
 			  return true;
 		}
 		return false;
@@ -272,14 +272,14 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   				type = 0;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("问题暂存成功", {icon: 1, offset: ['150px', '220px']});
+				   		layer.msg("问题暂存成功", {icon: 1, offset: ['150px', '330px']});
 		   			}else{
-		   				layer.msg("问题暂存失败", {icon: 2, offset: ['150px', '220px']});
+		   				layer.msg("问题暂存失败", {icon: 2, offset: ['150px', '330px']});
 		   			}
 		   			
 		   		},
 		   		error: function(){
-			   		layer.msg("问题暂存失败", {icon: 2, offset: ['150px', '220px']});
+			   		layer.msg("问题暂存失败", {icon: 2, offset: ['150px', '330px']});
 			   	}
 		  })
 	    return false;
@@ -396,12 +396,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			    	type = 1;
 		    		//上传问题图片
 			    	uploadList.upload();
-			    	layer.msg("问题上报成功",{icon: 1, offset: ['150px', '220px']});
+			    	layer.msg("问题上报成功",{icon: 1, offset: ['150px', '330px']});
 			    	$("#problemdescribe").val("");
 			    	$('#imgZmList').empty();
 			    	imgCount();
 		    	}else{
-		    		layer.msg("问题上报失败",{icon: 2, offset: ['150px', '220px']});
+		    		layer.msg("问题上报失败",{icon: 2, offset: ['150px', '330px']});
 		    	}
 		     }
 		     ,error:function(){}		       
@@ -473,20 +473,20 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 				   			type = 1;
 				    		//上传问题图片
 					    	uploadList.upload();
-					    	layer.msg("问题上报成功",{icon: 1, offset: ['150px', '220px']});
+					    	layer.msg("问题上报成功",{icon: 1, offset: ['150px', '330px']});
 					    	$("#problemdescribe").val("");
 					    	$('#imgZmList').empty();
 					    	imgCount();
 				   		}else{
-				   			layer.msg("问题上报失败", {icon: 2,offset: ['150px', '220px']});
+				   			layer.msg("问题上报失败", {icon: 2,offset: ['150px', '330px']});
 				   		}
 		   			}else{
-		   				layer.msg("问题上报失败", {icon: 2, offset: ['150px', '220px']});
+		   				layer.msg("问题上报失败", {icon: 2, offset: ['150px', '330px']});
 		   			}
 		   			
 		   	  },
 		   	  error: function(){
-		   		layer.msg("问题上报失败", {icon: 2, offset: ['150px', '220px']});
+		   		layer.msg("问题上报失败", {icon: 2, offset: ['150px', '330px']});
 		   	  }
 		  })
 	    return false;
@@ -499,5 +499,16 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	  function toChar(str){
 		 return pinyin.getFullChars(str);
 	  }
+	  
+	  /**
+	   * 按钮鼠标移入/移除事件
+	   */
+	  $(".primary-btn").mouseover(function(){
+		  $(this).find("i").css({"color":"white"});
+	  })
+	   
+	  $(".primary-btn").mouseout(function(){
+		  $(this).find("i").css({"color":"green"});
+	  })
 })  
 	

@@ -63,7 +63,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		//弹出层
 		layer.open({
 			type: 1
-			,offset: 'auto'
+			,offset: 't'
 			,area: ['300px','400px;']
 			,id: 'work_arrange'+1 //防止重复弹出
 			,content: $("#task_tree")
