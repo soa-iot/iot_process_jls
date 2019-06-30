@@ -228,7 +228,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    	problemTable.reload({
 	    		url: '/iot_process/report/showproblembycondition'
 	    	   ,page: {
-	    		   page: 1 //重新从第 1 页开始
+	    		   curr: 1 //重新从第 1 页开始
 	    	   }
 	    	   ,where: {
 	    			'welName': $("#welName").val(),

@@ -85,7 +85,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 				}else{
 					workAssignment(comment, arrangor, resavepeople, data);
 				}
-				//layer.closeAll();
+				layer.close(index);
 		    }
 		,success:function(){	
 			//单选框
@@ -243,7 +243,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 					out_coordinate();
 					updateEstimated(data);
 				}
-				//layer.closeAll();
+				layer.close(index);
 		    }
 		,success:function(){	
 			//单选框

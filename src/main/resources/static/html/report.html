@@ -74,10 +74,10 @@
 			          <option value="主体装置七列">主体装置七列</option>
 			          <option value="2100单元">2100单元</option>
 			          <option value="2300单元">2300单元</option>
+			          <option value="2400单元">2400单元</option>
 			          <option value="3100单元">3100单元</option>
 			          <option value="3200单元">3200单元</option>
 			          <option value="3300单元">3300单元</option>
-			          <option value="2400单元">2400单元</option>
 			          <option value="3500单元">3500单元</option>
 			          <option value="食堂">食堂</option>
 			          <option value="办公楼">办公楼</option>
@@ -116,10 +116,11 @@
 			  <div class="layui-form-item">
 			    <div class="layui-inline layui-col-xs6 layui-col-md6" style="vertical-align: middle;">
 			      <label class="text-font layui-form-label">设备位号</label>
-				  <div class="layui-input-inline" style="width: 120px;">
-				    <input name="rfid" class="layui-input" id="rfid" type="text" placeholder="请输入设备位号"/>
+				  <div class="layui-input-inline" style="width: 110px;">
+				    <input name="rfid" class="layui-input" id="rfid" type="text" disabled="disabled"/>
 				  </div>
-				  <div style="padding-top: 4px;"><button type="button" class="layui-btn layui-btn-sm layui-btn-normal" onclick="return false;">定位设备</button></div>
+				  <div style="padding-top: 4px;"><button id="rfid-btn" type="button" class="layui-btn layui-btn-sm primary-btn">
+				  		<i class="layui-icon">&#xe715;</i>定位设备</button></div>
 			    </div>
 			    <div class="layui-inline  layui-col-xs5 layui-col-md5">
 			      <label class="text-font layui-form-label">问题类别</label>
@@ -172,7 +173,8 @@
 	                    <label class="text-font layui-form-label">问题图片</label>
 	                    <!-- 多图片上传 -->
 	                    <div class="layui-input-inline" id="addProblemImg">
-	                         <button type="button" class="layui-btn layui-btn-sm layui-btn-normal second-btn">选择图片</button> 
+	                         <button type="button" class="layui-btn layui-btn-sm layui-btn-normal primary-btn">
+	                         <i class="layui-icon">&#xe681;</i>选择图片</button> 
 	                    </div>
 	                </div>
 					<div id="problem-img" style="display: none;">
@@ -201,6 +203,7 @@
 		   </form>
 	  	</div>
 	 </div>
+	 
 	<script src="../jsPackage/js/jquery-1.9.1.min.js"></script>
 	<script src="../jsPackage/own/universal.js"></script>
 
