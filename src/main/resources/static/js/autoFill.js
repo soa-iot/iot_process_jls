@@ -13,7 +13,7 @@ $("#problemdescribe").autocomplete({
 });
 
 /*鼠标点击其他地方，补全的div消失  */
-$("body").mouseup(function(){
+$(document).mouseup(function(){
 	$(".show_div").hide();
 });
 
