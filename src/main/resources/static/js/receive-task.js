@@ -67,7 +67,7 @@ layui.use(['form', 'jquery','layer'], function(){
   $.ajax({
 	  type: "GET",
 	  url: "/iot_process/estimates/estim",
-	  data:{"piid": piid},
+	  data:{"piid": '121211ac112'},
 	  dataType: "json",
 	  success: function(json){
 		  if(json.state == 0){
@@ -75,7 +75,7 @@ layui.use(['form', 'jquery','layer'], function(){
 			//表单初始赋值
 			form.val('receive-task', {
 			  "incident_sign": ((json.data.ticketNo == 1)?"事故事件":((json.data.ticketNo == 2)?"隐患事件":"普通事件"))    //事件/隐患标记
-			  ,"remark": json.data.remark            //整改日期
+			  ,"remark1": json.data.remark            //整改日期
 			  ,"sdate": function(){
 				  if(json.data.rectificationperiod != null){
 					 return json.data.rectificationperiod.match(/\d+-\d+-\d+/)

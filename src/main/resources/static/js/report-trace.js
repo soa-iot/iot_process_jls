@@ -47,7 +47,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		method: 'post',
 		url: '/iot_process/report/showproblembycondition',
 		toolbar: '#toolbarBtn',
-		defaultToolbar: ['filter'],
+		defaultToolbar: [''],
 		cellMinWidth:70,
 		totalRow: true,
 		page: true,   //开启分页
@@ -81,7 +81,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			{field:'problemclass', title:'问题类别', width:120, sort:true, align:'center'},
 			{field:'profession', title:'专业', width:90, sort:true, align:'center'},
 			{field:'problemtype', title:'部门', width:90, sort:true, align:'center'},
-			{field:'problemdescribe', title:'描述', width:209, sort:true, align:'center'},
+			{field:'problemdescribe', title:'描述', width:234, sort:true, align:'center'},
 			{field:'problemstate', title:'问题状态', width:100, sort:true, align:'center'},
 			{fixed:'right',  title:'处理过程', width:105, align:'center', toolbar:'#barBtn'} ]]  
 	});
