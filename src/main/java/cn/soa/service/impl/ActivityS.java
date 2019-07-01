@@ -1150,6 +1150,24 @@ public class ActivityS implements ActivitySI{
 				return false;
 			}
 			logger.debug( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
+			
+			
+			/*
+			 * 回退设置前一个的属地变量area
+			 */
+			String beforeTsid = beforeNode.getTaskId();
+			logger.debug( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
+			if( StringUtils.isBlank( beforeTsid ) ) {
+				Object beforeArea = taskService.getVariableLocal( beforeTsid, "area" );
+				String areaValue = "";
+				if( beforeArea != null ) {
+					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
+					areaValue = beforeArea.toString();
+					taskService.setVariable( tsid, "area", areaValue );
+				}else {
+					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
+				}			
+			}
 
     		/*
     		 * 增加备注信息
