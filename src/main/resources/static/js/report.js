@@ -17,7 +17,36 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	//0-表示暂存，1-表示上报
 	var type = 0;
 
-
+	//验证表单是否为空
+	function isempty(){
+		console.log(123);
+		if($("#problemdescribe").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("问题描述不能为空", {icon: 7, offset: ['150px', '330px']});
+			  return true;
+		}
+		if($("#problemtype").val() == ''){
+			  layer.msg("属地单位不能为空", {icon: 7, offset: ['150px', '330px']});
+			  return true;
+		}
+		if($("#profession").val() == ''){
+			  layer.msg("所属专业不能为空", {icon: 7, offset: ['150px', '330px']});
+			  return true;
+		}
+		if($("#problemclass").val() == ''){
+			  layer.msg("问题类别不能为空", {icon: 7, offset: ['150px', '330px']});
+			  return true;
+		}
+		if($("#rfid").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("设备位号不能为空", {icon: 7, offset: ['150px', '330px']});
+			  return true;
+		}
+		if($("#welName").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("问题区域不能为空", {icon: 7, offset: ['150px', '330px']});
+			  return true;
+		}
+		return false;
+	}
+	
 	//根据piid判断是否是回退到问题上报节点
 	if(piid != null && piid != ""){
 		$("#problem_back").css({"display":"block"});
@@ -203,6 +232,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	
 	  //监听暂存提交事件
 	  form.on('submit(saveBtn)', function(data){
+		  if(isempty()){
+			 return false;
+		  }
 		  //var jsonData = JSON.stringify(data.field);
 		  //保存主键
 		  if(tempRepId != undefined || tempRepId != null){
@@ -239,14 +271,14 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		   				type = 0;
 			   			//上传问题图片
 				   		uploadList.upload();
-				   		layer.msg("问题暂存成功", {icon: 1, offset: '100px'});
+				   		layer.msg("问题暂存成功", {icon: 1, offset: ['150px', '330px']});
 		   			}else{
-		   				layer.msg("问题暂存失败", {icon: 2, offset: '100px'});
+		   				layer.msg("问题暂存失败", {icon: 2, offset: ['150px', '330px']});
 		   			}
 		   			
 		   		},
 		   		error: function(){
-			   		layer.msg("问题暂存失败", {icon: 2, offset: '100px'});
+			   		layer.msg("问题暂存失败", {icon: 2, offset: ['150px', '330px']});
 			   	}
 		  })
 	    return false;
@@ -258,13 +290,13 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
      		 $("#problem-img").css("display", "none");
      	 }
 	}  
-	  
-	  
+	    
 	//多图片上传功能
      var uploadList = upload.render({
           elem: '#addProblemImg'
           , url: '/iot_process/report/upload'
-          , data: {		resavepeople: function(){ return resavepeople;}, 
+          , data: {		resavepeople: function(){ return resavepeople}, 
+        	  			username: function(){ return toChar(resavepeople);},
         	  			piid: function(){console.log("piid: "+piid); return piid;},
         	  	   		tProblemRepId: function(){ console.log("tProblemRepId: "+tProblemRepId); return tProblemRepId;},
         	  			remark: "0"
@@ -319,6 +351,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
      
  	//监听流程上报提交事件
 	  form.on('submit(problem_report)', function(data){
+		 if(isempty()){
+			return false;
+		 }
 		 console.log("问题上报开始...");
 		  //保存当前登录人
 		  data.field.resavepeople = resavepeople;
@@ -360,12 +395,12 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			    	type = 1;
 		    		//上传问题图片
 			    	uploadList.upload();
-			    	layer.msg("问题上报成功",{icon: 1, offset: '100px'});
+			    	layer.msg("问题上报成功",{icon: 1, offset: ['150px', '330px']});
 			    	$("#problemdescribe").val("");
 			    	$('#imgZmList').empty();
 			    	imgCount();
 		    	}else{
-		    		layer.msg("问题上报失败",{icon: 2, offset: '100px'});
+		    		layer.msg("问题上报失败",{icon: 2, offset: ['150px', '330px']});
 		    	}
 		     }
 		     ,error:function(){}		       
@@ -377,6 +412,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	  
 	 //监听回退后问题上报提交事件
 	  form.on('submit(problem_report_again)', function(data){
+		 if(isempty()){
+			 return false;
+		 }
 		 console.log("回退_问题上报开始...");
 		 //保存主键
 		  data.field.tProblemRepId = tempRepId;
@@ -434,25 +472,104 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 				   			type = 1;
 				    		//上传问题图片
 					    	uploadList.upload();
-					    	layer.msg("问题上报成功",{icon: 1, offset: '100px'});
+					    	layer.msg("问题上报成功",{icon: 1, offset: ['150px', '330px']});
 					    	$("#problemdescribe").val("");
 					    	$('#imgZmList').empty();
 					    	imgCount();
 				   		}else{
-				   			layer.msg("问题上报失败", {icon: 2,offset: '100px'});
+				   			layer.msg("问题上报失败", {icon: 2,offset: ['150px', '330px']});
 				   		}
 		   			}else{
-		   				layer.msg("问题上报失败", {icon: 2, offset: '100px'});
+		   				layer.msg("问题上报失败", {icon: 2, offset: ['150px', '330px']});
 		   			}
 		   			
 		   	  },
 		   	  error: function(){
-		   		layer.msg("问题上报失败", {icon: 2, offset: '100px'});
+		   		layer.msg("问题上报失败", {icon: 2, offset: ['150px', '330px']});
 		   	  }
 		  })
 	    return false;
 		
 	  });
      
+	  /**
+	   * 汉字转成拼音的功能
+	   */
+	  function toChar(str){
+		 return pinyin.getFullChars(str);
+	  }
+	  
+	  /**
+	   * 按钮鼠标移入/移除事件
+	   */
+	  $(".primary-btn").mouseover(function(){
+		  $(this).find("i").css({"color":"white"});
+	  })
+	   
+	  $(".primary-btn").mouseout(function(){
+		  $(this).find("i").css({"color":"green"});
+	  })
+	  
+	  /**
+	   * 定位设备弹窗
+	   */
+	  $("#rfid-btn").click(function(){
+		  console.log("rfid");
+		  layer.open({
+		    	title: '设备定位',
+		    	type: 2,
+		    	id: 'equipmentInfo',
+		    	btn: ['确&nbsp;&nbsp;认','取&nbsp;&nbsp;消','其他设备'],
+		    	offset: ['50px','100px'],
+		    	area: ['73%','80%'],
+		        content: './equipment-location.html',
+		        yes: function(index, layero){
+		        	//获取iframe窗口的body对象
+		        	var body = layer.getChildFrame('body', index);
+		        	//找到body对象下被选中的设备位号值
+		        	var value = body.find(".layui-table-click td[data-field='equPositionNum']").find("div").text();
+		        	$("#rfid").val(value);
+		        	layer.close(index); //如果设定了yes回调，需进行手工关闭
+		        },
+		  		btn3: function(index, layero){
+		  			$("#rfid").val("其他设备");
+		  			layer.close(index);
+		  		},
+		  		success: function(){
+		  		  /**
+		  		   * 按钮css样式
+		  		   */
+		  		  $(".layui-layer-btn0").css({
+		  			  "background-color":"#f1f5f7",
+		  			  "color":"black",
+		  			  "border":"1px solid rgb(230,230,230)"
+		  		  });
+		  		  $(".layui-layer-btn0").prepend("<i class='layui-icon'>&#x1005;</i>&nbsp;");
+		  		  $(".layui-layer-btn1").prepend("<i class='layui-icon'>&#x1007;</i>&nbsp;");
+		  		 
+		  		 $(".layui-layer-btn0").mouseover(function(){
+		  			$(".layui-layer-btn0").css({
+		  				"color":"white",
+		  				"background-color":"#3a95ca"
+		  			})
+		  		 })
+		  		 $(".layui-layer-btn0").mouseout(function(){
+		  			$(".layui-layer-btn0").css({
+		  				"background-color":"#f1f5f7",
+			  			"color":"black",
+		  			})
+		  		 })
+		  		 $(".layui-layer-btn0,.layui-layer-btn1,.layui-layer-btn2").mouseover(function(){
+		  			  $(this).find("i").css({"color":"white"});
+		  		  })
+		  		   
+		  		  $(".layui-layer-btn0,.layui-layer-btn1,.layui-layer-btn2").mouseout(function(){
+		  			  $(this).find("i").css({"color":"green"});
+		  		  })
+		  		}
+		  });
+	  });
+	  
+	  
 })  
 	

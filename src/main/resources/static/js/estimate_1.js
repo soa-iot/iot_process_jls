@@ -437,7 +437,7 @@ function outhelper_data(outhelperData){
 					url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
 					type : "get",
 					//$.cookie("organ")$.cookie("name")
-					data : {organ:outhelper[key],username:$.cookie("name").replace(/"/g,"")},
+					data : {organ:outhelper[key],username:($.cookie("name")==null?'':$.cookie("name").replace(/"/g,""))},
 					dataType : "json",  
 					async:false,
 					success: function(json) {

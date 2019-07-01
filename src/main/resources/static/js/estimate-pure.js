@@ -198,7 +198,7 @@ function workPlan(obj,usernames){
 		,data: {
 			
 			//"area": ""  //属地单位
-			,"actId": "receive"  //跳转节点id
+			"actId": "receive"  //跳转节点id
 			,"receivor": usernames  //下一步流程变量
 			,"userName": $.cookie("name").replace(/"/g,"")  //当前节点任务执行人
 			,"comment": $("#comment").val()   //备注信息\

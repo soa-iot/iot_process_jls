@@ -152,6 +152,11 @@ layui.use(['form', 'jquery','layer'], function(){
     var userName = getCookie1("name").replace(/"/g,'')
 	//点击下一步按钮操作
 	form.on('submit(next_step)', function(data){
+		//验证表单是否为空
+		 if($("#comment_receive").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("处理说明不能为空", {icon: 7, offset: '100px'});
+			  return;
+		  }	
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
 			    async : false,
