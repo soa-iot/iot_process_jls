@@ -228,7 +228,7 @@ public class ReportC {
 			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		}
 		//request.getContextPath() 或  request.getServletPath()
-		String phoAddress =  new StringBuilder(request.getServletPath()+"/image/").append(username).append("/")
+		String phoAddress =  new StringBuilder(request.getContextPath()+"/image/").append(username).append("/")
 				.append(CommonUtil.dateFormat(date)).append("/").append(phoName).toString();
 		
 		//将上传图片信息封装实体类中

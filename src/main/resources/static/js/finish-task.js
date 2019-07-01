@@ -8,10 +8,6 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 	var resavepeople = getCookie1("name").replace(/"/g,'');
 	//var resavepeople = "孙超";
 	console.log("当前登录人为:"+resavepeople);
-	//用户编号
-	var num = getCookie1("num").replace(/"/g,'');
-	//num =123;
-	console.log("用户编号为:"+num);
 	
 	//点击完成按钮操作
 	form.on('submit(finish_task)', function(data){
@@ -61,6 +57,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
          elem: '#addFinishImg'
          , url: '/iot_process/report/upload'
          , data: {		resavepeople: function(){ return resavepeople;}, 
+        	 			username: function(){ return toChar(resavepeople);},
 			  			piid: function(){console.log("piid: "+piid); return piid;},
 			  	   		tProblemRepId: function(){ console.log("tProblemRepId: "+tProblemRepId); return tProblemRepId;},
 			  			remark: "1"
@@ -125,7 +122,21 @@ layui.use(['form', 'jquery','upload','layer'], function(){
     	}
     });
     
+      /**
+	   * 汉字转成拼音的功能
+	   */
+	  function toChar(str){
+		 return pinyin.getFullChars(str);
+	  }
     
-    
-	
+	  /**
+	   * 按钮鼠标移入/移除事件
+	   */
+	  $(".primary-btn").mouseover(function(){
+		  $(this).find("i").css({"color":"white"});
+	  })
+	   
+	  $(".primary-btn").mouseout(function(){
+		  $(this).find("i").css({"color":"green"});
+	  })
 });
