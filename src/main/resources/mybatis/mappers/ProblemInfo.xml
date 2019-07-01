@@ -1566,9 +1566,11 @@
 		SELECT 
 			DISTINCT problemdescribe 
 		FROM 
-			CZ_TASK_PROBLEM_REPORT_NEW
+			CZ_TASK_PROBLEM_REPORT_NEW 
 		WHERE 
 			problemdescribe LIKE CONCAT(#{problemdescribe},'%')
+ 
+        and rownum <![CDATA[<=]]> 5
 	</select>
 	
 	<delete id="deleteByPiid" parameterType="string">
