@@ -169,32 +169,31 @@
 
 	<script type="text/html" id="toolbarBtn">
   	   <div class="layui-row">
-		<div class="layui-col-xs4 layui-col-sm3  layui-col-md3" >
-			<div class="layui-col-xs6 layui-col-md6">
-				<button type="button" disabled="disabled" class="layui-btn layui-btn-radius layui-btn-danger layui-btn-sm">
+		<div>
+			<div class="layui-col-xs6" id="layui-div-finish">
+				<button type="button" class="layui-btn layui-btn-radius layui-btn-danger layui-btn-sm" lay-event="unfinish">
 					<i class="layui-icon" id="uncount">0</i>
 				</button> 
 				项未整改
 				</div>
-			<div class="layui-col-xs6 layui-col-md6">
-				<button type="button" disabled="disabled" class="layui-btn layui-btn-radius  layui-btn-normal layui-btn-sm">
+			<div class="layui-col-xs6" id="layui-div-finish">
+				<button type="button" class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm" lay-event="finish">
 					<i class="layui-icon" id="count">0</i>
 				</button> 
 				项已整改
 			</div>
 		</div>
-		<div class="layui-col-xs8 layui-col-sm8 layui-col-md5 layui-col-md-offset4" >
-			<div class="layui-col-md-offset2" style="min-width:350px;">
-			<button type="button" class="layui-btn layui-btn-sm" id="export" lay-event="export">
+		<div id="div-btn-toolbar" >
+			<button type="button" class="layui-btn layui-btn-sm" style="margin-left:10px" id="export" lay-event="export">
 				<i class="layui-icon">&#xe621;</i>导出
-			</button>
-			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="delete" lay-event="delete">
-				<i class="layui-icon">&#xe640;</i>删除
 			</button> 
+			<!-- <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="delete" lay-event="delete">
+				<i class="layui-icon">&#xe640;</i>删除
+			</button> -->
 			<button type="button" class="layui-btn layui-btn-sm layui-btn-normal" data-type="reload" lay-event="querydata">
 				<i class="layui-icon">&#xe615;</i>查询
 			</button>  
-			<button type="button" class="layui-btn layui-btn-sm layui-btn-warm" id="open-advance" lay-event="open-advance">
+			<button type="button" class="layui-btn layui-btn-sm layui-btn-danger" id="open-advance" lay-event="open-advance">
 				<i class="layui-icon">&#xe608;</i><span id="advance-search">打开高级搜索</span>
 			</button>
 			</div>

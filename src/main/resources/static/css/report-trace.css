@@ -54,3 +54,11 @@ body,.layui-table-body tr{
 .layui-form-hidden{
 	display: none;
 }
+
+#layui-div-finish{
+	width: 145px;
+}
+
+#div-btn-toolbar button{
+	float: right;
+}

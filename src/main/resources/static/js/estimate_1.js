@@ -51,7 +51,7 @@ $.ajax({
 			$("#prob").val(problem.problemclass);
 			$("#applypeople").val(problem.applypeople);
 			$("#problemtype").val(problem.problemtype);
-
+			$("#sele").val(problem.remark);
 			if (problem.problemclass=="不安全行为/状态") {
 				$("#remark1").val(problem.remarkfive);
 				$("#remark2").val(problem.remarksix);

@@ -57,7 +57,7 @@ public class ReportC {
 	@Autowired
 	private UserManagerSI userManagerS;
 	@Autowired
-	private  ProblemInfoS  problemInfoS;
+	private ProblemInfoS  problemInfoS;
 	/**
 	 * @Title: statisticalTaskProblempro   
 	 * @Description: 问题统计功能 
