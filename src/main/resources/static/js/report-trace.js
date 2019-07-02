@@ -35,9 +35,9 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	,$ = layui.$ //使用jQuery
 	var excel = layui.excel;
 	
-	//问题未整改和已整改
+	//问题未整改数量和已整改数量
 	var uncount = 0, count = 0;
-	var piid;
+	var piid, isreload = false;
 	
 	/**
 	 * 问题上报信息展示表
@@ -59,14 +59,17 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			var data = res.data     
 	    	if(data != null || data != ''){
 	    		 for(var i=0;i<data.length;i++){
-	    			 data[i].applydate = data[i].applydate.replace(/T/, ' ').replace(/\..*/, '');
+	    			 data[i].applydate = (data[i].applydate == '' || data[i].applydate == null)?data[i].applydate : data[i].applydate.replace(/T/, ' ').replace(/\..*/, '');
 	    			 data[i].problemstate = (data[i].problemstate == 'FINISHED')?'已整改':'未整改';
-	    			 count = res.msg;
-	    			 uncount = res.count - count;
+	    			 if(!isreload){
+	    				count = res.msg;
+		    		    uncount = res.count - count; 
+	    			 }
 	    		 }
 	    	}
 			$("#count").text(count);
 			$("#uncount").text(uncount);
+			isreload = false;
 		    return {
 		      "code": res.code, //解析接口状态
 		      "msg": res.msg, //解析提示文本
@@ -74,16 +77,16 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		      "data": data      //解析数据列表
 		    };
 		},
-		cols: [[{field:'id', title:'编号', width:70, sort:false, type:'numbers', fixed:'left', align:'center'},
-			{field:'applydate', title:'上报日期', width:124, sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
-			{field:'applypeople', title:'上报人', width:130, sort:true, align:'center'},
-			{field:'welName', title:'装置单元', width:120, sort:true, align:'center'},
-			{field:'problemclass', title:'问题类别', width:120, sort:true, align:'center'},
-			{field:'profession', title:'专业', width:90, sort:true, align:'center'},
-			{field:'problemtype', title:'部门', width:90, sort:true, align:'center'},
-			{field:'problemdescribe', title:'描述', width:234, sort:true, align:'center'},
-			{field:'problemstate', title:'问题状态', width:100, sort:true, align:'center'},
-			{fixed:'right',  title:'处理过程', width:105, align:'center', toolbar:'#barBtn'} ]]  
+		cols: [[{field:'id', title:'编号', width:'5%', sort:false, type:'numbers', fixed:'left', align:'center'},
+			{field:'applydate', title:'上报日期', width:'10%', sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
+			{field:'applypeople', title:'上报人', width:'10%', sort:true, align:'center'},
+			{field:'welName', title:'装置单元', width:'10%', sort:true, align:'center'},
+			{field:'problemclass', title:'问题类别', width:'10%', sort:true, align:'center'},
+			{field:'profession', title:'专业', width:'8%', sort:true, align:'center'},
+			{field:'problemtype', title:'部门', width:'10%', sort:true, align:'center'},
+			{field:'problemdescribe', title:'描述', width:'16%', sort:true, align:'center'},
+			{field:'problemstate', title:'问题状态', width:'9%', sort:true, align:'center'},
+			{fixed:'right',  title:'处理过程', minWidth:105, width:'12%', align:'center', toolbar:'#barBtn'} ]]  
 	});
 	
 	/**
@@ -217,6 +220,31 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	}
 	
 	/**
+	 * 重新加载表
+	 */
+	function reloadTable(){
+		problemTable.reload({
+    		url: '/iot_process/report/showproblembycondition'
+    	   ,page: {
+    		   curr: 1 //重新从第 1 页开始
+    	   }
+    	   ,where: {
+    			'welName': $("#welName").val(),
+    			'problemclass': $("#problemclass").val(),
+    			'profession': $("#profession").val(),
+    			'problemtype': $("#problemtype").val(),
+    			'problemdescribe': $("#problemdescribe").val(),
+    			'problemstate': $("#problemstate").val(),
+    			'startTime': $("#startdate").val(),
+    			'endTime': $("#enddate").val(),
+    			'schedule': $("#schedule").val(),
+    			'handler': $("#handler").val(),
+    			'applypeople': $("#applypeople").val()
+    	   }
+    	})
+	}
+	
+	/**
 	 * 监听头工具栏事件 
 	 */ 
 	  table.on('toolbar(reportTrace)', function(obj){
@@ -225,26 +253,34 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		 switch(obj.event){
 	      case 'querydata':
 	    	console.log('querydata');
-	    	problemTable.reload({
-	    		url: '/iot_process/report/showproblembycondition'
-	    	   ,page: {
-	    		   curr: 1 //重新从第 1 页开始
-	    	   }
-	    	   ,where: {
-	    			'welName': $("#welName").val(),
-	    			'problemclass': $("#problemclass").val(),
-	    			'profession': $("#profession").val(),
-	    			'problemtype': $("#problemtype").val(),
-	    			'problemdescribe': $("#problemdescribe").val(),
-	    			'problemstate': $("#problemstate").val(),
-	    			'startTime': $("#startdate").val(),
-	    			'endTime': $("#enddate").val(),
-	    			'schedule': $("#schedule").val(),
-	    			'handler': $("#handler").val(),
-	    			'applypeople': $("#applypeople").val()
-	    	   }
-	    	})
+	    	reloadTable();
 	        break;
+	      case 'finish':
+	    	  console.log('finish');
+	    	  isreload = true;
+	    	  problemTable.reload({
+	      		url: '/iot_process/report/showproblembycondition'
+	      	   ,page: {
+	      		   curr: 1 //重新从第 1 页开始
+	      	   }
+	      	   ,where: {
+	      			'problemstate': 'FINISHED',
+	      	   }
+	      	})
+	        break;
+	      case 'unfinish':
+	    	  console.log('unfinish');
+	    	  isreload = true;
+	    	  problemTable.reload({
+		      		url: '/iot_process/report/showproblembycondition'
+		      	   ,page: {
+		      		   curr: 1 //重新从第 1 页开始
+		      	   }
+		      	   ,where: {
+		      			'problemstate': 'UNFINISHED',
+		      	   }
+		      })
+		      break;
 	      case 'open-advance':
 	    	  console.log('open-advance');
 	    	  opneAdvanceQuery();
