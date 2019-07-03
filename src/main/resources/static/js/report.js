@@ -9,7 +9,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	var num = getCookie1("num").replace(/"/g,'');
+	var num = getCookie1("name").replace(/"/g,'');
 	//上报部门
 	var dept = getCookie1("organ").replace(/"/g,'');
 	var piid = GetQueryString("piid");
@@ -331,7 +331,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
-		     ,url: '/iot_process/process/processPure2:13:170004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+		     ,url: '/iot_process/process/processPure2:1:4'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
