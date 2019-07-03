@@ -78,7 +78,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 			,yes: function(index, layero){
 				//确认按钮的回调函数
 				var comment = $("#comment_repair").val();
-				var arrangor = assignUsers.join("，");
+				var arrangor = assignUsers.join(",");
 				console.log(arrangor);
 				if(assignUsers.length < 1){
 					layer.msg("至少选择一名人员", {icon:7, offset: '100px'});

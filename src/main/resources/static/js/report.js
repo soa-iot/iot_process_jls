@@ -520,8 +520,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		    	type: 2,
 		    	id: 'equipmentInfo',
 		    	btn: ['确&nbsp;&nbsp;认','取&nbsp;&nbsp;消','其他设备'],
-		    	offset: ['50px','100px'],
-		    	area: ['73%','80%'],
+		    	offset: ['45px','50px'],
+		    	area: ['90%','80%'],
 		        content: './equipment-location.html',
 		        yes: function(index, layero){
 		        	//获取iframe窗口的body对象

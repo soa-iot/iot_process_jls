@@ -72,12 +72,13 @@ layui.use(['tree', 'layer', 'form'], function() {
 			,yes: function(index, layero){
 				//确认按钮的回调函数
 				var comment = $("#comment_assign").val();
-				var receivor = assignUsers.join("，");
+				var receivor = assignUsers.join(",");
 				console.log(receivor);
 				workAssignment(comment, receivor, resavepeople);
 				//layer.closeAll();
 		    }
-		,success:function(){	
+		,success:function(){
+			assignUsers = [];
 			//单选框
 			tree.render({
 				elem: '#task_tree'

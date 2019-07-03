@@ -18,7 +18,7 @@ layui.use('laydate', function(){
 	laydate.render({
 		elem: '#sdate'
 		,min:0
-		//,format:'yyyy/MM/dd'
+		,format:'yyyy-MM-dd'
 	});
 
 });
