@@ -27,12 +27,12 @@ public class FindCheckor  implements ExecutionListener{
 	
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
-		logger.debug( "---------确定作业验收的执行人-----------" );
+		logger.info( "---------确定作业验收的执行人-----------" );
 		
 		try {
 			String piid = execution.getProcessInstanceId();
 			
-			logger.debug( "---------piid-----------" + piid );
+			logger.info( "---------piid-----------" + piid );
 			ActivitySI activityS = SpringUtils.getObject(ActivitySI.class);
 			List<HistoricTaskInstance> hisTasks = activityS.getHisTaskNodesByPiid(piid);
 			
@@ -42,27 +42,41 @@ public class FindCheckor  implements ExecutionListener{
 			nodesName.add( "维修分配" );
 			
 			if( hisTasks != null && hisTasks.size() > 0 ) {
+				String executor = "";
 				for( int i = hisTasks.size() -1 ; i >= 0; i-- ) {
 					HistoricTaskInstance t = hisTasks.get(i);
 					if( t != null && t.getName() != null && nodesName.contains( t.getName().toString().trim() ) ) {
-						String executor = t.getAssignee();
-						logger.debug( "---------executor-----------" + executor );
+						executor = "";
+						String currentNodeName = t.getName().trim();
+						switch ( currentNodeName ) {
+							case "问题评估":
+								executor = (String) execution.getVariable( "estimators" );
+								break;
+							case "净化分配":
+								executor = (String) execution.getVariable( "puror" );
+								break;
+							case "维修分配":
+								executor = (String) execution.getVariable( "repairor" );
+								break;
+						}
+						
+						logger.info( "---------executor-----------" + executor );
 						if( StringUtils.isNotBlank(executor) ) {
 							execution.setVariable( "checkor", executor);
-							logger.debug( "---------确定作业验收的执行人成功-----------" );
-							break;
-						}else {
-							logger.debug( "---------确定作业验收的执行人失败-----------" );
+							logger.info( "---------确定作业验收的执行人成功-----------" );
 							break;
 						}					
 					}				
 				}
+				if( StringUtils.isBlank( executor) ) {
+					logger.info( "---------确定作业验收的执行人失败-----------" );
+				}
 			}else {
-				logger.debug( "---------确定作业验收的执行人失败-----------" );
+				logger.info( "---------确定作业验收的执行人失败-----------" );
 			}					
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.debug( "---------确定作业验收的执行人失败-----------" );
+			logger.info( "---------确定作业验收的执行人失败-----------" );
 		}
 		
 	}

@@ -12,21 +12,27 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
@@ -35,6 +41,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskInfo;
 import org.apache.commons.io.FileUtils;
@@ -74,6 +81,9 @@ public class ActivityS implements ActivitySI{
     @Autowired
     private TaskService taskService;
     
+    @Autowired
+    private IdentityService identityService;
+    
 //    @Autowired
 //    private BussinessSA bussinessSA;
     
@@ -96,7 +106,7 @@ public class ActivityS implements ActivitySI{
    				 .addClasspathResource( xmlUrl )
    				 .addClasspathResource( pngUrl )
    				 .deploy();
-    		logger.debug( deployment.toString() );
+    		logger.info( deployment.toString() );
     		return deployment;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -170,16 +180,16 @@ public class ActivityS implements ActivitySI{
     @Override
     public String getTsidByPiid( String piid ) {
     	if( StringUtils.isBlank( piid )) {
-    		logger.debug( "------piid为null--------" );
+    		logger.info( "------piid为null--------" );
     		return null;
     	}
     	try {
     		List<Task> tasks = taskService.createTaskQuery().processInstanceId(piid).list();
     		if( tasks.size() > 0 ) {
-    			logger.debug( tasks.toString() );
+    			logger.info( tasks.toString() );
     			return tasks.get(0).getId();
     		}
-    		logger.debug( "------未正确找到task对象-------" );
+    		logger.info( "------未正确找到task对象-------" );
     		return null;    		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -195,16 +205,17 @@ public class ActivityS implements ActivitySI{
     @Override
     public String getPiidByTsid( String tsid ) {
     	if( StringUtils.isBlank( tsid )) {
-    		logger.debug( "------tsid为null--------" );
+    		logger.info( "------tsid为null--------" );
     		return null;
     	}
+    	
     	try {
     		Task task = taskService.createTaskQuery().taskId(tsid).singleResult();
     		if( task != null ) {
-    			logger.debug( task.toString() );
+    			logger.info( task.toString() );
     			return task.getProcessInstanceId();
     		}
-    		logger.debug( "------未正确找到task对象-------" );
+    		logger.info( "------未正确找到task对象-------" );
     		return null;    		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -221,12 +232,12 @@ public class ActivityS implements ActivitySI{
     @Override
     public boolean saveCommentByTsid( String tsid, String comment ) {
     	if( StringUtils.isBlank( tsid )) {
-    		logger.debug( "------tsid为null--------" );
+    		logger.info( "------tsid为null--------" );
     		return false;
     	}
     	String piid = getPiidByTsid( tsid );
     	if( StringUtils.isBlank( piid )) {
-    		logger.debug( "------piid为null--------" );
+    		logger.info( "------piid为null--------" );
     		return false;
     	}
     	try {   		
@@ -246,12 +257,12 @@ public class ActivityS implements ActivitySI{
     @Override
     public boolean saveCommentByPiid( String piid, String comment ) {
     	if( StringUtils.isBlank( piid )) {
-    		logger.debug( "------piid为null--------" );
+    		logger.info( "------piid为null--------" );
     		return false;
     	}
     	String tsid = getTsidByPiid( piid );
     	if( StringUtils.isBlank( tsid )) {
-    		logger.debug( "------tsid为null--------" );
+    		logger.info( "------tsid为null--------" );
     		return false;
     	}
     	try {   		
@@ -293,7 +304,7 @@ public class ActivityS implements ActivitySI{
 	    		fileInfos.put( "path", f.getPath() );
 	    	}
 	    	files.add( fileInfos );
-	    	logger.debug( files.toString() );
+	    	logger.info( files.toString() );
 	    	return files;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -359,8 +370,8 @@ public class ActivityS implements ActivitySI{
     public boolean nextNodeByPIID( String piid, Map<String,Object> map ) { 
     	//检查
     	if( map.get("userName") == null ) {
-    		logger.debug( "-------执行流转下一个节点 (根据任务piid)--------" );
-    		logger.debug( "-------userName参数不存在--------" );
+    		logger.info( "-------执行流转下一个节点 (根据任务piid)--------" );
+    		logger.info( "-------userName参数不存在--------" );
     		return false;
     	}
     	
@@ -371,11 +382,11 @@ public class ActivityS implements ActivitySI{
     	
     	Object commentObj = map.get( "comment" );
     	if( commentObj == null ) {
-    		logger.debug( "-------执行流转下一个节点 (根据任务piid)--------" );
-    		logger.debug( "-------comment参数不存在--------" );
+    		logger.info( "-------执行流转下一个节点 (根据任务piid)--------" );
+    		logger.info( "-------comment参数不存在--------" );
     	}
     	String comment = map.get( "comment" ).toString();
-    	logger.debug( "-------流程节点备注信息--------" + comment );
+    	logger.info( "-------流程节点备注信息--------" + comment );
 	
     	try {     
     		//拾取任务
@@ -386,9 +397,9 @@ public class ActivityS implements ActivitySI{
     		 */
     		boolean b = saveCommentByPiid( piid, comment );
     		if( b ) {
-    			logger.debug( "---执行流转下一个节点，保存备注信息成功---------" );
+    			logger.info( "---执行流转下一个节点，保存备注信息成功---------" );
     		}else {
-    			logger.debug( "---执行流转下一个节点，保存备注信息失败---------" );
+    			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
     		map.remove( "comment" );
     		
@@ -398,7 +409,7 @@ public class ActivityS implements ActivitySI{
     		HashMap<String, Object> vars = new HashMap<String,Object>();
     		for( Entry<String, Object> e : map.entrySet() ) {
     			if(StringUtils.isBlank( e.getKey() ) ) {
-    				logger.debug( "---key---------" + e.getKey() );
+    				logger.info( "---key---------" + e.getKey() );
     			}
     			taskService.setVariable(tsid, e.getKey(), e.getValue());
     		}
@@ -422,9 +433,9 @@ public class ActivityS implements ActivitySI{
     @Override
     @Transactional
     public boolean nextNodeByPIID1( String piid, Map<String,Object> map ) { 
-    	logger.debug( "-------执行流转下一个节点 (根据任务piid)- 非组任务--------" );
+    	logger.info( "-------执行流转下一个节点 (根据任务piid)- 非组任务--------" );
     	if( StringUtils.isBlank(piid) ) {
-    		logger.debug( "-------piid为空或者null--------" );
+    		logger.info( "-------piid为空或者null--------" );
     	}
     	
     	/*
@@ -434,10 +445,10 @@ public class ActivityS implements ActivitySI{
     	
     	Object commentObj = map.get( "comment" );
     	if( commentObj == null ) {
-    		logger.debug( "-------comment参数不存在--------" );
+    		logger.info( "-------comment参数不存在--------" );
     	}
     	String comment = map.get( "comment" ).toString();
-    	logger.debug( "-------流程节点备注信息--------" + comment );
+    	logger.info( "-------流程节点备注信息--------" + comment );
 	
     	try {     	
     		
@@ -446,9 +457,9 @@ public class ActivityS implements ActivitySI{
     		 */
     		boolean b = saveCommentByPiid( piid, comment );
     		if( b ) {
-    			logger.debug( "---执行流转下一个节点，保存备注信息成功---------" );
+    			logger.info( "---执行流转下一个节点，保存备注信息成功---------" );
     		}else {
-    			logger.debug( "---执行流转下一个节点，保存备注信息失败---------" );
+    			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
     		map.remove( "comment" );
     		
@@ -458,7 +469,7 @@ public class ActivityS implements ActivitySI{
     		HashMap<String, Object> vars = new HashMap<String,Object>();
     		for( Entry<String, Object> e : map.entrySet() ) {
     			if(StringUtils.isBlank( e.getKey() ) ) {
-    				logger.debug( "---key---------" + e.getKey() );
+    				logger.info( "---key---------" + e.getKey() );
     				continue;
     			}
     			taskService.setVariable(tsid, e.getKey(), e.getValue());
@@ -483,7 +494,7 @@ public class ActivityS implements ActivitySI{
     @Override
     public Task findTaskById( String tsid ) {
 		if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "findTaskById方法传入参数为空" );
+			logger.info( "findTaskById方法传入参数为空" );
 			return null;
 		}	
 		
@@ -492,7 +503,7 @@ public class ActivityS implements ActivitySI{
 				.singleResult();
 		
 		if( taskService == null) {
-			logger.debug( "findTaskById查询Task任务不存在" );
+			logger.info( "findTaskById查询Task任务不存在" );
 			return null;
 		}
 		return task;
@@ -507,18 +518,18 @@ public class ActivityS implements ActivitySI{
     public ActivityImpl getEndNode( String tsid ) {
 		Task task = taskService.createTaskQuery().taskId( tsid ).singleResult();
 		if( task == null ) {
-			logger.debug( "--S---------获取流程的最后节点失败---tsid为null" );
+			logger.info( "--S---------获取流程的最后节点失败---tsid为null" );
 		}
 		ProcessDefinitionEntity processDefEntity = ( ProcessDefinitionEntity )
 				repositoryService.createProcessDefinitionQuery()
 				.processDefinitionId( task.getProcessDefinitionId() )
 				.singleResult();
-		logger.debug( "--S---------流程所有节点---" + processDefEntity.toString() );
-		logger.debug( "--S---------流程所有节点---" + processDefEntity.getActivities().toString() );
+		logger.info( "--S---------流程所有节点---" + processDefEntity.toString() );
+		logger.info( "--S---------流程所有节点---" + processDefEntity.getActivities().toString() );
 		for (ActivityImpl activityImpl : processDefEntity.getActivities() ) {  
 			List<PvmTransition> pvmTransitionList = activityImpl  
 				.getOutgoingTransitions();  
-			logger.debug( "--S---------循环---" + activityImpl.toString() );
+			logger.info( "--S---------循环---" + activityImpl.toString() );
 			if ( pvmTransitionList.isEmpty() ) {  
 				return activityImpl;  
 			}  
@@ -571,12 +582,12 @@ public class ActivityS implements ActivitySI{
     @Override
     public ActivityImpl findActivityImplByTaskId( String tsid ) {
     	if( StringUtils.isBlank(tsid) ) {
-			logger.debug( "--S---------任务tsid为null或空---------" );
+			logger.info( "--S---------任务tsid为null或空---------" );
 			return null;
 		}
 		Task task = taskService.createTaskQuery().taskId( tsid ).singleResult();
 		if( task == null ) {
-			logger.debug( "--S---------根据任务tsid查询任务节点不存在---------" );
+			logger.info( "--S---------根据任务tsid查询任务节点不存在---------" );
 			return null;
 		}
 		//获取流程定义id、实例id
@@ -611,13 +622,13 @@ public class ActivityS implements ActivitySI{
     @Override
     public ProcessDefinitionEntity findProcessDefinitionEntityByTaskId( String tsid ) {
 		if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null-------------" );
+			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
 		}	
 		
 		Task task = findTaskById( tsid );
 		if( task == null ) {
-			logger.debug( "--S---------根据任务tsid查询任务节点不存在---------" );
+			logger.info( "--S---------根据任务tsid查询任务节点不存在---------" );
 			return null;
 		}
 		String pdid = task.getProcessDefinitionId();
@@ -625,7 +636,7 @@ public class ActivityS implements ActivitySI{
 				repositoryService.getProcessDefinition( pdid );
 		
 		if( processDefinitionEntity == null) {
-			logger.debug( "findProcessDefinitionByTaskId查询ProcessDefinition不存在" );
+			logger.info( "findProcessDefinitionByTaskId查询ProcessDefinition不存在" );
 			return null;
 		}		
 		return processDefinitionEntity;
@@ -639,13 +650,13 @@ public class ActivityS implements ActivitySI{
     @Override
     public ActivityImpl findActivityImplByTaskActId( String tsid, String activityId ) {
     	if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null-------------" );
+			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
 		}	
 		ProcessDefinitionEntity processDefinition = 
 				findProcessDefinitionEntityByTaskId( tsid );
 		if( processDefinition == null ) {
-			logger.debug( "---S--------根据任务tsid查询流程定义对象为null-------------" );
+			logger.info( "---S--------根据任务tsid查询流程定义对象为null-------------" );
 			return null;
 		}	
 		
@@ -677,21 +688,21 @@ public class ActivityS implements ActivitySI{
     @Override
     public boolean transferProcessByPiid( String piid, Map<String, Object> vars ) {
 
-    	logger.debug( "---S-------流程跳转(提供流程变量) - piid  ------------" );
+    	logger.info( "---S-------流程跳转(提供流程变量) - piid  ------------" );
 
     	if( vars == null ) {
-    		logger.debug( "---S--------流程变量map-vars 为null或空------------" );
+    		logger.info( "---S--------流程变量map-vars 为null或空------------" );
 			return false;
     	}
     	
     	if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------流程piid为null-------------" );
+			logger.info( "---S--------流程piid为null-------------" );
 			return false;
 		}	
     	
     	String tsid = getTsidByPiid( piid );
     	if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null或空-------------" );
+			logger.info( "---S--------任务tsid为null或空-------------" );
 			return false;
 		}	
     	   	
@@ -702,16 +713,16 @@ public class ActivityS implements ActivitySI{
 		Object commentObj = vars.get( "comment" );  		
 		if(  commentObj != null ) {
 			comment = commentObj.toString();
-			logger.debug( "---流程跳转，备注信息---------" + comment );
+			logger.info( "---流程跳转，备注信息---------" + comment );
 			boolean b = saveCommentByTsid( tsid, comment );
 	    	if( b ) {
-	    		logger.debug( "---执行回退上一个节点，保存备注信息成功---------" );
+	    		logger.info( "---执行回退上一个节点，保存备注信息成功---------" );
 	    	}else {
-	    		logger.debug( "---执行回退上一个节点，保存备注信息失败---------" );
+	    		logger.info( "---执行回退上一个节点，保存备注信息失败---------" );
 	    	}
 	    	vars.remove( "comment" );
 		}else {
-			logger.debug( "---流程跳转，备注信息不存在---------" );
+			logger.info( "---流程跳转，备注信息不存在---------" );
 		}
 		
 
@@ -721,9 +732,9 @@ public class ActivityS implements ActivitySI{
 		Object areaValue = taskService.getVariable( tsid, "area" );
 		if( areaValue != null  && !areaValue.toString().trim().isEmpty()) {
 			taskService.setVariableLocal( tsid , "area", areaValue);
-			logger.debug( "---S--------全局流程变量area设置为局部流程变量成功-------------" + areaValue );
+			logger.info( "---S--------全局流程变量area设置为局部流程变量成功-------------" + areaValue );
 		}else {
-			logger.debug( "---S--------全局流程变量area为空-------------" );
+			logger.info( "---S--------全局流程变量area为空-------------" );
 		}
 		
     	
@@ -734,16 +745,16 @@ public class ActivityS implements ActivitySI{
     	Object actIdObj = vars.get( "actId" );
     	if( actIdObj !=null ) {
     		actId = actIdObj.toString();
-    		logger.debug( "---流程跳转，目标节点actId--------" + actId );
+    		logger.info( "---流程跳转，目标节点actId--------" + actId );
     		String actId1 = new String();
     		actId1 = actId;
     		vars.remove( "actId" );   		
-    		logger.debug( "---流程跳转，目标节点actId1--------" + actId1 );
-    		logger.debug( "---流程跳转，vars-------" + vars );
+    		logger.info( "---流程跳转，目标节点actId1--------" + actId1 );
+    		logger.info( "---流程跳转，vars-------" + vars );
     		transferProcessInVarsAndGroup( tsid, actId, vars );
     		return true;
     	}else {
-    		logger.debug( "---流程跳转，流程变量vars不包含actId：-------" + actIdObj );
+    		logger.info( "---流程跳转，流程变量vars不包含actId：-------" + actIdObj );
     		return false;
     	}
     	
@@ -798,9 +809,9 @@ public class ActivityS implements ActivitySI{
     	String userName = "";
     	if( userNameObj != null  ) {
     		userName = userNameObj.toString();
-			logger.debug( "---S--------流程执行人userName-------------" + userName );
+			logger.info( "---S--------流程执行人userName-------------" + userName );
 		}else {
-			logger.debug( "---S--------流程变量map不包含userName-------------" );
+			logger.info( "---S--------流程变量map不包含userName-------------" );
 		}
     	
 		/*
@@ -847,8 +858,8 @@ public class ActivityS implements ActivitySI{
 		 */
 		ActivityImpl startAct = findActivityImplByTaskId( tsid );
 		ActivityImpl targetAct = findActivityImplByTaskActId( tsid, actId );
-		logger.debug( "---S--------当前节点为-------------" + startAct );
-		logger.debug( "---S--------目标节点为-------------" + targetAct );
+		logger.info( "---S--------当前节点为-------------" + startAct );
+		logger.info( "---S--------目标节点为-------------" + targetAct );
 		
 		/*
 		 * 重建流向
@@ -882,23 +893,23 @@ public class ActivityS implements ActivitySI{
     @Override
     public String endProcessByPiidInComment( String piid, String comment ) {
     	if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------任务piid为null或空-------------" );
+			logger.info( "---S--------任务piid为null或空-------------" );
 			return null;
 		}	
     	
     	String tsid = getTsidByPiid( piid );
     	if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null或空-------------" );
+			logger.info( "---S--------任务tsid为null或空-------------" );
 			return null;
 		}	
     	
     	String endProcessByTsid = endProcessByTsidInComment( tsid, comment  );
-    	logger.debug( "---S--------任务piid为null或空-------------" );
+    	logger.info( "---S--------任务piid为null或空-------------" );
     	if( StringUtils.isBlank( endProcessByTsid ) ) {
-			logger.debug( "---S--------闭环流程失败-------------" );
+			logger.info( "---S--------闭环流程失败-------------" );
 			return null;
 		}else {
-			logger.debug( "---S--------闭环流程成功-------------" );
+			logger.info( "---S--------闭环流程成功-------------" );
 			return endProcessByTsid;
 		}
     }
@@ -911,7 +922,7 @@ public class ActivityS implements ActivitySI{
     @Override
     public String endProcessByTsid( String tsid ) {
     	if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null-------------" );
+			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
 		}	
     	
@@ -921,12 +932,12 @@ public class ActivityS implements ActivitySI{
     	ActivityImpl actiImpl;
     	try {
 			actiImpl = getEndNode( tsid );
-			logger.debug( "---S--------end节点为-------------" + actiImpl );
+			logger.info( "---S--------end节点为-------------" + actiImpl );
 			if( actiImpl == null ) {
 				return null;
 			}
     	} catch (Exception e) {
-			logger.debug( "--S---------获取流程的end节点失败----" );
+			logger.info( "--S---------获取流程的end节点失败----" );
 			return null;
 		}
 		
@@ -936,7 +947,7 @@ public class ActivityS implements ActivitySI{
 		try {
 			transferProcessNoVars( tsid, actiImpl.getId() );
 		} catch (Exception e) {
-			logger.debug( "--S---------流程转向失败----" );
+			logger.info( "--S---------流程转向失败----" );
 			return null;
 		}
 				
@@ -955,7 +966,7 @@ public class ActivityS implements ActivitySI{
     @Override
     public String endProcessByTsidInComment( String tsid, String comment ) {
     	if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null-------------" );
+			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
 		}	
     	
@@ -965,12 +976,12 @@ public class ActivityS implements ActivitySI{
     	ActivityImpl actiImpl;
     	try {
 			actiImpl = getEndNode( tsid );
-			logger.debug( "---S--------end节点为-------------" + actiImpl );
+			logger.info( "---S--------end节点为-------------" + actiImpl );
 			if( actiImpl == null ) {
 //				return null;
 			}
     	} catch (Exception e) {
-			logger.debug( "--S---------获取流程的end节点失败----" );
+			logger.info( "--S---------获取流程的end节点失败----" );
 //			return null;
 		}
     	
@@ -979,9 +990,9 @@ public class ActivityS implements ActivitySI{
     	 */
     	boolean b = saveCommentByTsid( tsid, comment );
     	if( b ) {
-    		logger.debug( "---执行回退上一个节点，保存备注信息成功---------" );
+    		logger.info( "---执行回退上一个节点，保存备注信息成功---------" );
     	}else {
-    		logger.debug( "---执行回退上一个节点，保存备注信息失败---------" );
+    		logger.info( "---执行回退上一个节点，保存备注信息失败---------" );
     	}
 		
 		/*
@@ -991,7 +1002,7 @@ public class ActivityS implements ActivitySI{
 //			transferProcessNoVars( tsid, actiImpl.getId() );
 			transferProcessNoVars( tsid, "end" );
 		} catch (Exception e) {
-			logger.debug( "--S---------流程转向失败----" );
+			logger.info( "--S---------流程转向失败----" );
 			return null;
 		}
 				
@@ -1010,7 +1021,7 @@ public class ActivityS implements ActivitySI{
     @Override
     public List<HistoricActivityInstance> getHistoryNodesByPiid( String piid ){
     	if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------任务piid为null-------------" );
+			logger.info( "---S--------任务piid为null-------------" );
 			return null;
 		}	
     	try {
@@ -1019,7 +1030,7 @@ public class ActivityS implements ActivitySI{
     				.processInstanceId( piid )
     				.finished()
     				.list();
-    		logger.debug( lists.toString() );
+    		logger.info( lists.toString() );
     		return lists;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1035,7 +1046,7 @@ public class ActivityS implements ActivitySI{
     @Override
     public List<HistoricActivityInstance> getHistoryNodesByTsid( String tsid ){
     	if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务piid为null-------------" );
+			logger.info( "---S--------任务piid为null-------------" );
 			return null;
 		}	
     	try {
@@ -1062,7 +1073,7 @@ public class ActivityS implements ActivitySI{
     @Override
 	public HistoricActivityInstance getBeforeNodesByTsid ( String tsid ){
     	if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null-------------" );
+			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
 		}	
     	/*
@@ -1070,7 +1081,7 @@ public class ActivityS implements ActivitySI{
     	 */
     	try {
     		List<HistoricActivityInstance> historyNodes = getHistoryNodesByTsid( tsid );
-    		logger.debug( "---S--------任务tsid的全部历史节点-------------" + historyNodes.toString() );
+    		logger.info( "---S--------任务tsid的全部历史节点-------------" + historyNodes.toString() );
     		if( historyNodes.size() > 0 ) {
     			return historyNodes.get( historyNodes.size() - 2 );    			
     		}else {
@@ -1090,7 +1101,7 @@ public class ActivityS implements ActivitySI{
     @Override
 	public HistoricActivityInstance getBeforeNodesByPiid ( String piid ){
     	if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------任务piid为null-------------" );
+			logger.info( "---S--------任务piid为null-------------" );
 			return null;
 		}	
     
@@ -1117,25 +1128,25 @@ public class ActivityS implements ActivitySI{
 	 */  
 	public boolean backToBeforeNodeByPiidInGroup(String piid, Map<String,Object> map ) {
 		if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------任务piid为null或空-------------" );
+			logger.info( "---S--------任务piid为null或空-------------" );
 			return false;
 		}	
 		
 		
 		String tsid = getTsidByPiid( piid );
 		if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null或空-------------" );
+			logger.info( "---S--------任务tsid为null或空-------------" );
 			return false;
 		}
-		logger.debug( "---S--------任务tsid为-------------" + tsid );
+		logger.info( "---S--------任务tsid为-------------" + tsid );
 		
 		
 		Object commentObj = map.get( "comment" );
     	if( commentObj == null ) {
-    		logger.debug( "-------comment参数不存在--------" );
+    		logger.info( "-------comment参数不存在--------" );
     	}
     	String comment = map.get( "comment" ).toString();
-    	logger.debug( "-------流程回退节点备注信息--------" + comment );
+    	logger.info( "-------流程回退节点备注信息--------" + comment );
 	 	
     		
 		try {			
@@ -1144,37 +1155,37 @@ public class ActivityS implements ActivitySI{
 			 * 查询上一个节点
 			 */
 			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
-			logger.debug( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
+			logger.info( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
 			String beforeNodeActid = beforeNode.getActivityId();
 			if( StringUtils.isBlank( beforeNodeActid ) ) {
-				logger.debug( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
+				logger.info( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
 				return false;
 			}
-			logger.debug( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
+			logger.info( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
 			
 			
 			/*
 			 * 回退设置当前的属地变量area
 			 */
 			String beforeTsid = beforeNode.getTaskId();
-			logger.debug( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
+			logger.info( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
 			if( !StringUtils.isBlank( beforeTsid ) ) {
 				HistoricVariableInstance varibleInstance = historyService
 						.createHistoricVariableInstanceQuery()
 						.variableName("area")
 						.taskId(beforeTsid)
 						.singleResult();
-				logger.debug( "---S--------上一个任务节点varibleInstance的流程变量varibleInstance为-------------" + varibleInstance );
+				logger.info( "---S--------上一个任务节点varibleInstance的流程变量varibleInstance为-------------" + varibleInstance );
 				String areaValue = "";
 				Object beforeArea = varibleInstance.getValue();
 				String name = varibleInstance.getVariableName();
-				logger.debug( "---S--------上一个任务节点name的流程变量name为-------------" + name );
+				logger.info( "---S--------上一个任务节点name的流程变量name为-------------" + name );
 				if( beforeArea != null ) {
-					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
+					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
 					areaValue = beforeArea.toString();
 					taskService.setVariable( tsid, "area", areaValue );
 				}else {
-					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
+					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
 				}			
 			}
 
@@ -1183,9 +1194,9 @@ public class ActivityS implements ActivitySI{
     		 */
     		boolean b = saveCommentByPiid( piid, comment );
     		if( b ) {
-    			logger.debug( "---执行流转下一个节点，保存备注信息成功---------" );
+    			logger.info( "---执行流转下一个节点，保存备注信息成功---------" );
     		}else {
-    			logger.debug( "---执行流转下一个节点，保存备注信息失败---------" );
+    			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
     		map.remove( "comment" );
 			
@@ -1208,17 +1219,17 @@ public class ActivityS implements ActivitySI{
     @Override
     public boolean backToBeforeNodeByPiid( String piid, String comment ) {
 		if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------任务piid为null或空-------------" );
+			logger.info( "---S--------任务piid为null或空-------------" );
 			return false;
 		}	
 		
 		
 		String tsid = getTsidByPiid( piid );
 		if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null或空-------------" );
+			logger.info( "---S--------任务tsid为null或空-------------" );
 			return false;
 		}
-		logger.debug( "---S--------任务tsid为-------------" + tsid );
+		logger.info( "---S--------任务tsid为-------------" + tsid );
 		
 		try {			
 			
@@ -1226,41 +1237,41 @@ public class ActivityS implements ActivitySI{
 			 * 查询上一个节点
 			 */
 			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
-			logger.debug( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
+			logger.info( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
 			String beforeNodeActid = beforeNode.getActivityId();
 			
 			/*
 			 * 回退设置前一个的属地变量area
 			 */
 			String beforeTsid = beforeNode.getTaskId();
-			logger.debug( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
+			logger.info( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
 			if( StringUtils.isBlank( beforeTsid ) ) {
 				Object beforeArea = taskService.getVariableLocal( beforeTsid, "area" );
 				String areaValue = "";
 				if( beforeArea != null ) {
-					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
+					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
 					areaValue = beforeArea.toString();
 					taskService.setVariable( tsid, "area", areaValue );
 				}else {
-					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
+					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
 				}			
 			}
 			
 			
 			if( StringUtils.isBlank( beforeNodeActid ) ) {
-				logger.debug( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
+				logger.info( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
 				return false;
 			}
-			logger.debug( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
+			logger.info( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
 			
 			/*
     		 * 增加备注信息
     		 */
     		boolean b = saveCommentByPiid( piid, comment );
     		if( b ) {
-    			logger.debug( "---执行回退上一个节点，保存备注信息成功---------" );
+    			logger.info( "---执行回退上一个节点，保存备注信息成功---------" );
     		}else {
-    			logger.debug( "---执行回退上一个节点，保存备注信息失败---------" );
+    			logger.info( "---执行回退上一个节点，保存备注信息失败---------" );
     		}
 			
 			/*
@@ -1282,7 +1293,7 @@ public class ActivityS implements ActivitySI{
     @Override
 	public boolean backToBeforeNodeByTsid( String tsid ) {
 		if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null-------------" );
+			logger.info( "---S--------任务tsid为null-------------" );
 			return false;
 		}	
 		
@@ -1312,7 +1323,7 @@ public class ActivityS implements ActivitySI{
 	public List<Map<String,Object>> getHisInfosByTsid( String tsid ){
 		ArrayList<Map<String, Object>> allHistoryInfos = new ArrayList<Map<String,Object>>();
 		if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------任务tsid为null-------------" );
+			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
 		}
 		/*
@@ -1354,16 +1365,16 @@ public class ActivityS implements ActivitySI{
 	 */ 
     @Override
 	public List<Map<String,Object>> getHisActNodesByPiid( String piid ){
-    	logger.debug( "---S--------根据流程piid，获取当前流程的历史节点信息-------------" );
+    	logger.info( "---S--------根据流程piid，获取当前流程的历史节点信息-------------" );
 		ArrayList<Map<String, Object>> allHistoryInfos = new ArrayList<Map<String,Object>>();
 		if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------piid为null-------------" );
+			logger.info( "---S--------piid为null-------------" );
 			return null;
 		}
 		
 		String tsid = getTsidByPiid( piid ); 
 		if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------tsid为null-------------" );
+			logger.info( "---S--------tsid为null-------------" );
 			return null;
 		}
 		/*
@@ -1371,7 +1382,7 @@ public class ActivityS implements ActivitySI{
 		 */
 		try {
 			List<HistoricActivityInstance> historyNodes = getHistoryNodesByPiid( piid );
-			logger.debug(historyNodes.toString());
+			logger.info(historyNodes.toString());
 			for( HistoricActivityInstance h : historyNodes ) {
 				HashMap<String, Object> tempMap = new HashMap<String, Object>();
 				String historyActid = h.getTaskId();
@@ -1408,16 +1419,16 @@ public class ActivityS implements ActivitySI{
      */  
     @Override
     public List<Map<String,Object>> getHisTaskNodeInfosByPiid( String piid ){
-    	logger.debug( "---S--------根据流程piid，获取当前流程的任务节点信息-------------" );
+    	logger.info( "---S--------根据流程piid，获取当前流程的任务节点信息-------------" );
 		ArrayList<Map<String, Object>> allHistoryInfos = new ArrayList<Map<String,Object>>();
 		if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------piid为null-------------" );
+			logger.info( "---S--------piid为null-------------" );
 			return null;
 		}
 		
 		String tsid = getTsidByPiid( piid ); 
 		if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------tsid为null-------------" );
+			logger.info( "---S--------tsid为null-------------" );
 			return null;
 		}
 		/*
@@ -1425,7 +1436,7 @@ public class ActivityS implements ActivitySI{
 		 */
 		try {
 			List<HistoricTaskInstance> historyNodes = getHisTaskNodesByPiid( piid );
-			logger.debug(historyNodes.toString());
+			logger.info(historyNodes.toString());
 			for( HistoricTaskInstance h : historyNodes ) {
 				HashMap<String, Object> tempMap = new HashMap<String, Object>();
 				String taskid = h.getId();
@@ -1514,9 +1525,9 @@ public class ActivityS implements ActivitySI{
 					.orderByTaskCreateTime()
 					.desc()
 					.list();	
-			logger.debug( "-------personalTasks--------" + personalTasks );
+			logger.info( "-------personalTasks--------" + personalTasks );
 			if( personalTasks != null && personalTasks.size() > 0 ) {
-				logger.debug( personalTasks.toString() );
+				logger.info( personalTasks.toString() );
 				allTasks.addAll( personalTasks );
 			}
 			
@@ -1525,13 +1536,13 @@ public class ActivityS implements ActivitySI{
 					.orderByTaskCreateTime()
 					.desc()
 					.list();
-			logger.debug( "-------candidatetasks--------" + personalTasks );
+			logger.info( "-------candidatetasks--------" + personalTasks );
 			if( candidatetasks != null && candidatetasks.size() > 0 ) {
-				logger.debug( candidatetasks.toString() );
+				logger.info( candidatetasks.toString() );
 				allTasks.addAll( candidatetasks );
 			}	
 			if( allTasks != null && allTasks.size() > 0 ) {
-				logger.debug( allTasks.toString() );
+				logger.info( allTasks.toString() );
 				for( Task t : allTasks ) {
 					TodoTask todoTask = new TodoTask();					
 					todoTask.setTsid( t.getId() );
@@ -1545,45 +1556,45 @@ public class ActivityS implements ActivitySI{
 					if(  hisTasks != null &&  hisTasks.size() > 0 &&hisTasks.get(0) != null ) {
 						//上报信息
 						String firstTsid = hisTasks.get(0).getId().toString() ;
-						logger.debug( "---------问题上报节点id：------------" + firstTsid );
+						logger.info( "---------问题上报节点id：------------" + firstTsid );
 						List<Comment> taskComments = taskService.getTaskComments( firstTsid );
-						logger.debug( "---------问题上报信息：------------" + taskComments );
+						logger.info( "---------问题上报信息：------------" + taskComments );
 						if( taskComments != null && taskComments.size() > 0 ) {
 							Comment c = taskComments.get(0);
 							if( c != null && StringUtils.isNotBlank( c.getFullMessage() )) {
 								todoTask.setDescrible( c.getFullMessage() );
-								logger.debug( "---------获取备注信息成功------------" + c.getFullMessage() );
+								logger.info( "---------获取备注信息成功------------" + c.getFullMessage() );
 							}else {
-								logger.debug( "---------获取备注信息失败------------" + c.getFullMessage() );
+								logger.info( "---------获取备注信息失败------------" + c.getFullMessage() );
 							}
 						}
 						
 						//上报人
 						HistoricTaskInstance firstTisTaskNode = historyService.createHistoricTaskInstanceQuery().taskId(firstTsid).singleResult();
-						logger.debug( "---------问题上报节点firstTisTaskNode ：------------" + firstTisTaskNode );
+						logger.info( "---------问题上报节点firstTisTaskNode ：------------" + firstTisTaskNode );
 						if( firstTisTaskNode != null ) {
 							String reportor = firstTisTaskNode.getAssignee();
 							todoTask.setReportperson( reportor );
-							logger.debug( "---------问题上报人 ：------------" + reportor );
+							logger.info( "---------问题上报人 ：------------" + reportor );
 							
 							//上报时间
 							Object reportTimeObj = firstTisTaskNode.getCreateTime();
-							logger.debug( "---------问题上报时间 ：------------" + reportTimeObj );
+							logger.info( "---------问题上报时间 ：------------" + reportTimeObj );
 							if( reportTimeObj != null ) {
 								String reportTime = reportTimeObj.toString();
 								todoTask.setReporttime( reportTime );
-								logger.debug( "---------问题上报时间 获取成功：------------" + reportTime );
+								logger.info( "---------问题上报时间 获取成功：------------" + reportTime );
 							}	
 						}else {
-							logger.debug( "---------问题上报节点Task为null------------" );
+							logger.info( "---------问题上报节点Task为null------------" );
 						}
 										
 					}
-								
+				
 					//添加属地变量
 					Object areaVar = taskService.getVariable( t.getId(), "area" );
 					if( areaVar != null  ) {
-						logger.debug( "---------属地单位：------------" + areaVar.toString() );
+						logger.info( "---------属地单位：------------" + areaVar.toString() );
 						todoTask.setArea( areaVar.toString() );
 					}
 					
@@ -1595,13 +1606,13 @@ public class ActivityS implements ActivitySI{
 				    LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
 				    LocalDate createDay = localDateTime.toLocalDate();
 					long p2 = ChronoUnit.DAYS.between(createDay, today);
-					logger.debug( "---------待办任务的时间间隔，检验超期------------" + p2 );
+					logger.info( "---------待办任务的时间间隔，检验超期------------" + p2 );
 					todoTask.setTip( p2 > 2 ? "超期" : "未超期" );
 
 					
 					todoTasks.add( todoTask );					
 				}
-				logger.debug( todoTasks.toString() );
+				logger.info( todoTasks.toString() );
 				return todoTasks;
 			}else {
 				return null;
@@ -1620,7 +1631,7 @@ public class ActivityS implements ActivitySI{
     @Override
     public List<HistoricTaskInstance> getHisTaskNodesByPiid( String piid ){
     	if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "---S--------任务piid为null-------------" );
+			logger.info( "---S--------任务piid为null-------------" );
 			return null;
 		}	
     	try {
@@ -1632,9 +1643,9 @@ public class ActivityS implements ActivitySI{
     				.asc()
     				.list();
     		if( lists != null && lists.size()>0 ) {
-    			logger.debug( lists.toString() );
+    			logger.info( lists.toString() );
     		}else {
-    			logger.debug( "---------根据流程piid，查询该流程的历史任务节点  为null或空-------------" );
+    			logger.info( "---------根据流程piid，查询该流程的历史任务节点  为null或空-------------" );
     		}
     		
     		return lists;
@@ -1652,12 +1663,12 @@ public class ActivityS implements ActivitySI{
     @Override
     public List<HistoricTaskInstance> getHisTaskNodesByTsid( String tsid ){
     	if( StringUtils.isBlank( tsid ) ) {
-			logger.debug( "---S--------tsid为null-------------" );
+			logger.info( "---S--------tsid为null-------------" );
 			return null;
 		}	
     	String piid = getPiidByTsid( tsid );
     	if( StringUtils.isBlank( piid )) {
-    		logger.debug( "---S--------piid为null-------------" );
+    		logger.info( "---S--------piid为null-------------" );
 			return null;
     	}
     	
@@ -1670,9 +1681,9 @@ public class ActivityS implements ActivitySI{
     				.asc()
     				.list();
     		if( lists != null && lists.size()>0 ) {
-    			logger.debug( lists.toString() );
+    			logger.info( lists.toString() );
     		}else {
-    			logger.debug( "---------根据流程tsid，查询该流程的历史任务节点  为null或空-------------" );
+    			logger.info( "---------根据流程tsid，查询该流程的历史任务节点  为null或空-------------" );
     		}
     		return lists;
 		} catch (Exception e) {
@@ -1680,5 +1691,63 @@ public class ActivityS implements ActivitySI{
 			return null;
 		}   	
     }
+    
+    /**   
+     * @Title: getTaskCandidate   
+     * @Description: 根据当前任务id，查询当前任务潜在的所有执行人  
+     * @return: Set<User>        
+     */  
+    public Set<User> getTaskCandidateByPiid( String piid ) {
+    	logger.info( "---------根据当前任务id，查询当前任务潜在的所有执行人  -------------" );
+    	if( StringUtils.isBlank( piid ) ) {
+			logger.info( "---S--------piid为null-------------" );
+			return null;
+		}	
+    	String tsid = getTsidByPiid( piid );
+    	if( StringUtils.isBlank( tsid )) {
+    		logger.info( "---S--------tsid为null-------------" );
+			return null;
+    	}
+    	
+		Set<User> users = new HashSet<User>();
+		List<IdentityLink> identityLinkList = taskService.getIdentityLinksForTask( tsid );
+		if (identityLinkList != null && identityLinkList.size() > 0) {
+			for (Iterator<IdentityLink> iterator = identityLinkList.iterator(); iterator
+					.hasNext();) {
+				IdentityLink identityLink = (IdentityLink) iterator.next();
+				if ( identityLink.getUserId() != null ) {
+					String userName = identityLink.getUserId();	
+					if (userName != null) {
+						User user = new UserEntity();
+						user.setId( userName );
+						users.add( user );						
+					}else {
+						logger.info( "---S--------非组任务的潜在执行人不存在-------------" );
+					}
+				}	
+				if( users != null && users.size() > 0 ) {
+					users.forEach( s->logger.info( "---------非组任务的潜在执行人  -------------" + s.getId() ) );
+				}				
+				
+				if ( identityLink.getGroupId() != null ) {
+					// 根据组获得对应人员
+					List<User> userList = identityService.createUserQuery()
+							.memberOfGroup(identityLink.getGroupId()).list();
+					
+					if (userList != null && userList.size() > 0)
+						users.addAll(userList);
+				}else {
+					users.forEach( s->logger.info( "---------组任务的潜在执行人 不存在 -------------" ) );
+				}
+				if( users != null && users.size() > 0 ) {
+					users.forEach( s->logger.info( "---------组任务的潜在执行人  -------------" + s.getId() ) );
+				}
+			}
+ 
+		}else {
+			logger.info( "---------IdentityLink对象为null或空  -------------" );
+		}
+		return users;
+	}
 
 }

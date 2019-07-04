@@ -36,19 +36,19 @@ public class FindUsersByRoleId implements ExecutionListener{
 	public void notify(DelegateExecution execution) throws Exception {		
 		String impVarvalue  = impVar.getValue(execution).toString();
 		String expVarvalue  = expVar.getValue(execution).toString();
-		logger.debug( impVarvalue );
-		logger.debug( expVarvalue );
+		logger.info( impVarvalue );
+		logger.info( expVarvalue );
 		if( StringUtils.isBlank(impVarvalue)) {
-			logger.debug( "变量参数值为空，执行失败" );
+			logger.info( "变量参数值为空，执行失败" );
 		}else if( StringUtils.isBlank(expVarvalue) ){
-			logger.debug( "输出变量参数值为空，执行失败" );
+			logger.info( "输出变量参数值为空，执行失败" );
 		}else {
 			List<String> users = userManagerS.findUsersByRoleId(impVarvalue);
-			logger.debug( "----------users-----------" );
-			logger.debug( users.toString() );
+			logger.info( "----------users-----------" );
+			logger.info( users.toString() );
 			execution.setVariable(expVarvalue, Arrays.asList(users));
 		}
-		logger.debug( "--------ExecFindUsersByRoleId执行完毕-------------" );	
+		logger.info( "--------ExecFindUsersByRoleId执行完毕-------------" );	
 	}
 
 }

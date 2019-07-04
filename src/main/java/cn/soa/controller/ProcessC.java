@@ -71,14 +71,14 @@ public class ProcessC {
 			@RequestParam("name") String name,
 			@RequestParam("xmlUrl") @NotBlank String xmlUrl,
 			@RequestParam("pngUrl") @NotBlank String pngUrl ) {
-		logger.debug( "--C----------部署流程---------------" );
-		logger.debug( name );
-		logger.debug( xmlUrl );
-		logger.debug( pngUrl );
+		logger.info( "--C----------部署流程---------------" );
+		logger.info( name );
+		logger.info( xmlUrl );
+		logger.info( pngUrl );
 		if( name !=null ) {			
 			Deployment deployment = activityS.deployProcess( name, xmlUrl, pngUrl );			
 			if( deployment != null ) {
-				logger.debug( deployment.toString() );
+				logger.info( deployment.toString() );
 				return new ResultJson<Boolean>( 0, "部署成功", true );
 			}else {
 				return new ResultJson<Boolean>( 1, "部署失败", false );
@@ -103,10 +103,10 @@ public class ProcessC {
 			@RequestParam("name") String name,
 			@RequestParam("xmlUrl") @NotBlank String xmlUrl,
 			@RequestParam("pngUrl") @NotBlank String pngUrl ) {
-		logger.debug( "--C----------部署流程---------------" );
-		logger.debug( name );
-		logger.debug( xmlUrl );
-		logger.debug( pngUrl );
+		logger.info( "--C----------部署流程---------------" );
+		logger.info( name );
+		logger.info( xmlUrl );
+		logger.info( pngUrl );
 		if( name !=null ) {			
 			Deployment deployment = activityS.deployProcess( name, xmlUrl, pngUrl );
 			if( deployment != null ) {
@@ -131,7 +131,7 @@ public class ProcessC {
 	 */  
 	@GetMapping("/configfiles")
 	public ResultJson<List<Map<String,Object>>> getConfigFileBPMN() {
-		logger.debug( "--C----------获取activity流程配置文件格式为bpmn的全部文件（已指定目录/process）---------------" );
+		logger.info( "--C----------获取activity流程配置文件格式为bpmn的全部文件（已指定目录/process）---------------" );
 		List<Map<String, Object>> files = activityS.getconfigFileBPMN();
 		if( files != null ) {
 			return new ResultJson<List<Map<String,Object>>>( 0, "获取文件成功", files );
@@ -148,9 +148,9 @@ public class ProcessC {
 	public ResultJson<String> startProcess(
 			@PathVariable("dfid") @NotBlank String dfid,
 			ProblemInfo problemInfo ){
-		logger.debug( "--C--------启动流程（同时业务处理）  -------------" );
-		logger.debug( dfid );
-		logger.debug( problemInfo.toString() );
+		logger.info( "--C--------启动流程（同时业务处理）  -------------" );
+		logger.info( dfid );
+		logger.info( problemInfo.toString() );
 				
 		/*
 		 * 执行业务处理（具体业务处理需要实现以下接口）
@@ -159,20 +159,20 @@ public class ProcessC {
 		if( bsid == null ) {
 			return new ResultJson<String>( 1, "业务处理失败，流程未启动", "业务处理失败，流程未启动" );
 		}
-		logger.debug( "--C--------bsid  -------------" + bsid);
+		logger.info( "--C--------bsid  -------------" + bsid);
 		
 		try {
 			/*
 			 * 处理数据库配置流程变量
 			 */
 			Map<String, Object> basicVars = configS.setVarsAtStart();
-			logger.debug( "--C--------basicVars  -------------" + basicVars);
+			logger.info( "--C--------basicVars  -------------" + basicVars);
 			
 			/*
 			 * 处理临时流程变量
 			 */
 			Map<String, Object> tempVars = processVariableS.addVarsStartProcess( problemInfo );
-			logger.debug( "--C--------tempVars  -------------" + tempVars);
+			logger.info( "--C--------tempVars  -------------" + tempVars);
 					
 			/*
 			 * 流程启动
@@ -180,33 +180,33 @@ public class ProcessC {
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.putAll(basicVars);
 			vars.putAll(tempVars);
-			logger.debug( "--C--------vars  -------------" + vars);
+			logger.info( "--C--------vars  -------------" + vars);
 			
 			/*
 			 * 流程启动前的流程其他业务处理
 			 */
 			boolean beforeHandler = processStartHandler.before( bsid, problemInfo);
-			if( beforeHandler ) logger.debug( "--C--------流程启动前的流程其他业务处理  -------------" + beforeHandler);
+			if( beforeHandler ) logger.info( "--C--------流程启动前的流程其他业务处理  -------------" + beforeHandler);
 			
 			//流程启动
 			String piid = activityS.startProcess( dfid, bsid, vars );
-			logger.debug( "--C--------piid  -------------" + piid);
+			logger.info( "--C--------piid  -------------" + piid);
 			
 			/*
 			 * 流程启动后的流程其他业务处理 - 修改为观察者模式
 			 */
 			boolean afterHandler =processStartHandler.after( bsid, piid, problemInfo );
-			if( beforeHandler ) logger.debug( "--C--------流程启动后的流程其他业务处理  -------------" + beforeHandler);
+			if( beforeHandler ) logger.info( "--C--------流程启动后的流程其他业务处理  -------------" + beforeHandler);
 			
 			return new ResultJson<String>( 0, "流程启动成功", piid + "," + bsid);
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
 				int i = problemInfoS.deleteByBsid( bsid );
-				logger.debug( "--C--------流程启动失败后，删除新增的业务记录成功  -------------" + bsid);
+				logger.info( "--C--------流程启动失败后，删除新增的业务记录成功  -------------" + bsid);
 			} catch (Exception e2) {
 				e.printStackTrace();		
-				logger.debug( "--C--------流程启动失败后，删除新增的业务记录失败  -------------" + bsid);
+				logger.info( "--C--------流程启动失败后，删除新增的业务记录失败  -------------" + bsid);
 			}			
 			return new ResultJson<String>( 1, "流程启动失败", null);
 		}		
@@ -221,9 +221,9 @@ public class ProcessC {
 	public ResultJson<Boolean> nextGroupNodeByPIID( 
 			@PathVariable("piid") String piid,
 			@RequestParam Map<String,Object> map){
-		logger.debug( "--C-------- 执行流程的下一步     -------------" );
-		logger.debug( piid );
-		logger.debug( map.toString() );
+		logger.info( "--C-------- 执行流程的下一步     -------------" );
+		logger.info( piid );
+		logger.info( map.toString() );
 				
 		boolean b = activityS.nextNodeByPIID( piid, map );
 		if( b ) {
@@ -241,9 +241,9 @@ public class ProcessC {
 	public ResultJson<Boolean> nextNodeByPIID( 
 			@PathVariable("piid") String piid,
 			@RequestParam Map<String,Object> map){
-		logger.debug( "--C-------- 执行流程的下一步     -------------" );
-		logger.debug( piid );
-		logger.debug( map.toString() );
+		logger.info( "--C-------- 执行流程的下一步     -------------" );
+		logger.info( piid );
+		logger.info( map.toString() );
 				
 		boolean b = activityS.nextNodeByPIID1( piid, map );
 		if( b ) {
@@ -264,11 +264,11 @@ public class ProcessC {
 			@RequestParam(value="varValue",required=false) String varValue,
 			@RequestParam("comment") String comment,
 			@RequestParam("nodeid") String nodeid){
-		logger.debug( "--C-------- 执行流程的下一步     -------------" );
-		logger.debug( tsid );
-		logger.debug( var );
-		logger.debug( comment );
-		logger.debug( varValue );
+		logger.info( "--C-------- 执行流程的下一步     -------------" );
+		logger.info( tsid );
+		logger.info( var );
+		logger.info( comment );
+		logger.info( varValue );
 		Boolean b = activityS.nextNodeByTSID(tsid, var, varValue, comment);
 		if( b ) {
 			return new ResultJson<Boolean>( 0, "流程流转下一个节点任务成功", true );
@@ -285,9 +285,9 @@ public class ProcessC {
 	public ResultJson<String> endProcessIngroup(
 			@PathVariable("piid") @NotBlank String piid,
 			@RequestParam String comment ){
-		logger.debug( "--C-------- 终止流程     -------------" );
-		logger.debug( piid );
-		logger.debug( comment );
+		logger.info( "--C-------- 终止流程     -------------" );
+		logger.info( piid );
+		logger.info( comment );
 		String s = activityS.endProcessByPiidInComment(piid, comment);
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
@@ -304,9 +304,9 @@ public class ProcessC {
 	public ResultJson<String> endProcess(
 			@PathVariable("piid") @NotBlank String piid,
 			@RequestParam String comment ){
-		logger.debug( "--C-------- 终止流程     -------------" );
-		logger.debug( piid );
-		logger.debug( comment );
+		logger.info( "--C-------- 终止流程     -------------" );
+		logger.info( piid );
+		logger.info( comment );
 		String s = activityS.endProcessByPiidInComment(piid, comment);
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
@@ -322,8 +322,8 @@ public class ProcessC {
 	@GetMapping("/nodes/historyAct/tsid/{tsid}")
 	public ResultJson<List<Map<String,Object>>> getHisActInfosByTsid(
 			@PathVariable("tsid") @NotBlank String tsid ){
-		logger.debug( "--C-------- 根据任务tsid，获取流程所有的历史节点      -------------" );
-		logger.debug( tsid );
+		logger.info( "--C-------- 根据任务tsid，获取流程所有的历史节点      -------------" );
+		logger.info( tsid );
 		List<Map<String, Object>> historyNodesInfo = activityS.getHisInfosByTsid( tsid );
 		if( historyNodesInfo != null && historyNodesInfo.size() > 0  ) {
 			return new ResultJson<List<Map<String,Object>>>( 0, "获取流程所有的历史节点成功", historyNodesInfo );
@@ -340,14 +340,13 @@ public class ProcessC {
 	@GetMapping("/nodes/historyAct/piid/{piid}")
 	public ResultJson<List<Map<String,Object>>> getHisActInfosByPiid(
 			@PathVariable("piid") @NotBlank String piid ){
-		logger.debug( "--C-------- 根据任务piid，获取流程所有的历史节点      -------------" );
-		logger.debug( piid );
+		logger.info( "--C-------- 根据任务piid，获取流程所有的历史节点      -------------" );
+		logger.info( piid );
 		List<Map<String, Object>> historyNodesInfo = activityS.getHisActNodesByPiid( piid );
 		if( historyNodesInfo != null && historyNodesInfo.size() > 0  ) {
 			return new ResultJson<List<Map<String,Object>>>( 0, "获取流程所有的历史节点成功", historyNodesInfo );
 		}
 		return new ResultJson<List<Map<String,Object>>>( 0, "获取流程所有的历史节点失败", null );
-
 	}
 	
 	/**   
@@ -358,8 +357,8 @@ public class ProcessC {
 	@GetMapping("/nodes/historyTask/piid/{piid}")
 	public ResultJson<List<Map<String,Object>>> getHisTaskNodeInfosByPiid(
 			@PathVariable("piid") @NotBlank String piid ){
-		logger.debug( "--C-------- 根据流程piid，获取当前流程的任务节点信息      -------------" );
-		logger.debug( piid );
+		logger.info( "--C-------- 根据流程piid，获取当前流程的任务节点信息      -------------" );
+		logger.info( piid );
 		List<Map<String, Object>> historyNodesInfo = activityS.getHisTaskNodeInfosByPiid( piid );
 		if( historyNodesInfo != null && historyNodesInfo.size() > 0  ) {
 			return new ResultJson<List<Map<String,Object>>>( 0, "获取流程实例已完成的任务节点成功", historyNodesInfo );
@@ -377,9 +376,9 @@ public class ProcessC {
 	public ResultJson<Boolean> backToBeforeNodesByPiid(
 			@PathVariable("piid") @NotBlank String piid,
 			@RequestParam("comment") String comment ){
-		logger.debug( "--C-------- 根据任务piid，流程返回到上一个节点     -------------" );
-		logger.debug( piid );
-		logger.debug( comment );
+		logger.info( "--C-------- 根据任务piid，流程返回到上一个节点     -------------" );
+		logger.info( piid );
+		logger.info( comment );
 		boolean b = activityS.backToBeforeNodeByPiid( piid, comment );
 		if( b ) {
 			return new ResultJson<Boolean>( 0, "流程返回到上一个节点成功", true );
@@ -397,10 +396,10 @@ public class ProcessC {
 	public ResultJson<Boolean> backToBeforeNodesByPiidInGroup(
 			@PathVariable("piid") @NotBlank String piid,
 			@RequestParam Map<String,Object> map){
-		logger.debug( "--C-------- 根据任务piid，流程返回到上一个节点     -------------" );
-		logger.debug( piid );
+		logger.info( "--C-------- 根据任务piid，流程返回到上一个节点     -------------" );
+		logger.info( piid );
 		if( map != null && map.size() > 0) {
-			logger.debug( map.toString() );
+			logger.info( map.toString() );
 		}
 		boolean b = activityS.backToBeforeNodeByPiidInGroup( piid, map );
 		if( b ) {
@@ -417,8 +416,8 @@ public class ProcessC {
 	@GetMapping("/tasks")
 	public ResultJson<List<TodoTask>> getAllTasksByUsernameC(
 			@RequestParam("userName") @NotBlank String userName ){
-		logger.debug( "--C-------- 根据用户姓名，查询用户的所有待办任务（个人任务+组任务）     -------------" );
-		logger.debug( userName );
+		logger.info( "--C-------- 根据用户姓名，查询用户的所有待办任务（个人任务+组任务）     -------------" );
+		logger.info( userName );
 		List<TodoTask> tasks = activityS.getAllTasksByUsername( userName );
 		if( tasks != null ) {
 			return new ResultJson<List<TodoTask>>( 0, "流程返回到上一个节点成功", tasks );
@@ -434,8 +433,8 @@ public class ProcessC {
 	@GetMapping("/tasks/layui")
 	public ResultJsonForTable<List<TodoTask>> getAllTasksByUsername1C(
 			@RequestParam("userName") @NotBlank String userName ){
-		logger.debug( "--C-------- 根据用户姓名，查询用户的所有待办任务（个人任务+组任务）     -------------" );
-		logger.debug( userName );
+		logger.info( "--C-------- 根据用户姓名，查询用户的所有待办任务（个人任务+组任务）     -------------" );
+		logger.info( userName );
 		List<TodoTask> tasks = activityS.getAllTasksByUsername( userName );
 		if( tasks != null ) {
 			return new ResultJsonForTable<List<TodoTask>>( 0, "代办任务查询成功", tasks.size(), tasks );
@@ -453,12 +452,12 @@ public class ProcessC {
 	public ResultJson<Boolean> jumpNodesByPiidInGroup(
 			@PathVariable("piid") String piid,
 			@RequestParam Map<String,Object> map ){
-		logger.debug( "--C-------- 流程节点跳转 - 组任务      -------------" );
-		logger.debug( piid );
+		logger.info( "--C-------- 流程节点跳转 - 组任务      -------------" );
+		logger.info( piid );
 		if( map != null && map.size() > 0 ) {
-			logger.debug( map.toString() );
+			logger.info( map.toString() );
 		}else {
-			logger.debug( "-------变量map为null--------" );
+			logger.info( "-------变量map为null--------" );
 		}
 		
 		boolean b = activityS.transferProcessByPiid(piid, map);
