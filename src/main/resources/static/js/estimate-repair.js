@@ -2,7 +2,6 @@ layui.use(['tree', 'layer', 'form'], function() {
 	var tree = layui.tree, layer = layui.layer, $ = layui.$;
 	var layer = layui.layer, form = layui.form;
 	
-	$("#sdate").val("");
 	var treeResult, assignUsers = new Array(), ids = new Array();
 	
 	//从cookie中获取当前登录用户
@@ -39,7 +38,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		    	 if(jsonData.data){
 		    		 updateEstimated(data);
 		    		 layer.msg("作业指派成功",{icon:1, time: 2000, offset: '100px'}, function(){
-		    			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    			top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
 		    	 }else{
 		    		 layer.msg("作业指派失败",{icon:2, time: 2000, offset: '100px'});
@@ -144,7 +143,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		    	 if(jsonData){
 		    		 updateEstimated(data);
 		    		 layer.msg("闭环处理成功",{icon:1, time: 2000, offset: '100px'}, function(){
-		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
 		    	 }else{
 		    		 layer.msg("闭环处理失败",{icon:2, offset: '100px'});
@@ -180,7 +179,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
 		    		 layer.msg("回退成功",{icon:1, time: 2000, offset: '100px'}, function(){
-		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
 		    	 }else{
 		    		 layer.msg("回退失败",{icon:2, offset: '100px'});
@@ -283,7 +282,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
 		    		 layer.msg("外部协调成功,问题流转到:"+assignUsers.join("，"),{icon:1, time: 2000, offset: '100px'}, function(){
-		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
 		    	 }else{
 		    		 layer.msg("外部协调失败",{icon:2, offset: '100px'});

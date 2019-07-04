@@ -91,7 +91,7 @@ $.ajax({
 								,title:false
 								//,shadeClose:true
 								//,cancel:false
-								,offset:'auto'
+								,offset:'50px'
 								
 								});
 							}
@@ -121,7 +121,8 @@ $("#complete1").click(function(){
 	}else{
 
 		$.ajax({
-			type: "PUT"
+			 async:false
+			,type: "PUT"
 			,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 			,data: {
 
@@ -136,7 +137,7 @@ $("#complete1").click(function(){
 				
 				if (jsonData.data) {
 					layer.msg("闭环处理成功！",{time: 3000,icon:1,offset:"100px"},function() {
-						location.href = getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
+						top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 					});
 				}else{
 					layer.msg("闭环处理失败！！",{icon:2,offset:"100px"});

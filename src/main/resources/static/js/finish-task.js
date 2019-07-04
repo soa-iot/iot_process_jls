@@ -38,7 +38,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        		//上传问题图片
 				   		uploadList.upload();
 				   		layer.msg("完成作业提交成功",{icon: 1, time:2000, offset: '100px'}, function(){
-				   			//window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+				   			top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 				   		});
 		        	}else{
 		        		layer.msg("完成作业提交失败",{icon: 2, offset: '100px'});

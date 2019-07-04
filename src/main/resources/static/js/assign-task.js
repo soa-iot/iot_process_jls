@@ -39,7 +39,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
 		    		 layer.msg("作业安排成功",{icon:1, time: 2000, offset: '100px'}, function(){
-//		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
 		    	 }else{
 		    		 layer.msg("作业安排失败",{icon:2, time: 2000, offset: '100px'});

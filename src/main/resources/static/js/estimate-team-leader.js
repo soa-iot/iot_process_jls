@@ -217,6 +217,7 @@ $.ajax({
  */
 function workPlan(obj,usernames){
 	$.ajax({
+		async:false,
 		type: "PUT"
 		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 		,data: {
@@ -272,6 +273,7 @@ function estimate_next(obj,usernames){
 	
 	
 	$.ajax({
+		async:false,
 		type: "PUT"
 		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 		,data: estimate_next_data

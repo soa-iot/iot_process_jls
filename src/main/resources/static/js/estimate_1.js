@@ -249,6 +249,7 @@ function modifyEstimated(msge) {
 	
 
 		$.ajax({  
+			async:false,
 			url : "/iot_process/estimates/modifyestimated",  
 			type : "post",
 			data : dateEstimated,
@@ -260,7 +261,7 @@ function modifyEstimated(msge) {
 					$("#comment").val("");
 						layer.msg(msge , {time: 3000,icon:1,offset:"100px"},function() {
 							
-							//window.location.href = "http://"+getUrlIp()+"/iot_usermanager/html/userCenter/test.html";
+							top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 						});
 //					}else{
 //						layer.msg("提交成功！",{time: 3000,icon:1});
@@ -348,6 +349,7 @@ $("#rollback").click(function(){
 				
 				console.log($("#sele").val());
 				$.ajax({
+					async:false,
 				     type: "PUT"
 				     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp    //piid为流程实例id
 				     ,data: {
@@ -491,6 +493,7 @@ $("#complete").click(function(){
 		//	if (yesCompare()){
 
 				$.ajax({
+					async:false,
 					type: "PUT"
 					,url: '/iot_process/process/nodes/end/group/piid/'+piidp    //piid为流程实例id
 					,data: {
@@ -662,6 +665,7 @@ function outhelperm(obj,dept,usernames){
 	}
 	
 	$.ajax({
+		async:false,
 		type: "PUT"
 		,url: '/iot_process/process/nodes/jump/group/piid/'+piidp    //piid为流程实例id
 		,data:data_out    //问题上报表单的内容
@@ -690,6 +694,7 @@ function outhelperm(obj,dept,usernames){
  */
 function outhelper_pure(obj,usernames){
 $.ajax({
+	async:false,
     type: "PUT"
     ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
     ,data: {

@@ -1,5 +1,5 @@
 //轮播图
-layui.use(['carousel', 'form'], function(){
+/*layui.use(['carousel', 'form'], function(){
 	var carousel = layui.carousel
 	,form = layui.form;
 
@@ -13,7 +13,7 @@ layui.use(['carousel', 'form'], function(){
 		,height: '150px'
 	});
 
-});  
+}); */ 
 
 //折叠
 layui.use([ 'element', 'layer' ], function() {
@@ -28,7 +28,6 @@ layui.use([ 'element', 'layer' ], function() {
  */
 //从cookie中获得piid
 var piid = GetQueryString("piid");
-
 layui.use('table', function(){
 	  var table = layui.table;
 	  
@@ -121,8 +120,9 @@ layui.use(['form', 'jquery','layer'], function(){
  		if (json.state == 0) {
  			var imgs = json.data;
  			if (imgs.length==0) {
-				$("#imag").html("无图");
+				$("#div-img").hide();
 			}else{
+			$("#div-img").show();
  			var mode = imgs.length%3;
  			var img_id = 0;
  			for (var j = 0; j < Math.ceil(imgs.length/3); j++) {
@@ -142,7 +142,20 @@ layui.use(['form', 'jquery','layer'], function(){
  				}
  				$("#imag").append($img_div);
  			}
-			}
+ 			//轮播图
+			layui.use(['carousel', 'form'], function(){
+				var carousel = layui.carousel
+				,form = layui.form;
+
+				//常规轮播
+				carousel.render({
+					elem: '#div-img'
+					,arrow: 'always'
+					,height: '150px'
+					,interval: 5000
+				});
+			}); 
+		  }
  		}
 
  	}  
@@ -172,7 +185,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
 		        		layer.msg("接收作业成功", {icon: 1, time: 2000, offset: '100px'}, function(){
-		        			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		        			top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		        		});
 		        	}else{
 		        		layer.msg("接收作业失败",{icon: 2, offset: '100px'});
@@ -190,18 +203,17 @@ layui.use(['form', 'jquery','layer'], function(){
 	var active = {
 			offset: function(othis){
 				
-			var imgHtml= "<img src='"+$(this).attr("src")+"'width='750px'  height='500px'/>";
+			var imgHtml= "<img src='"+$(this).attr("src")+"'width='600px'  height='500px'/>";
 				//var type = othis.data('type')
 				layer.open({
 				type: 1
 				//,offset: type 
-				,area: ['800px','500px']
+				,area: ['600px','500px']
 				,content: imgHtml
 				,title:false
 				//,shadeClose:true
 				//,cancel:false
 				,offset:'auto'
-				
 				});
 			}
 	};
