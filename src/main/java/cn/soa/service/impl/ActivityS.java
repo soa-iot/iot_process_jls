@@ -24,6 +24,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -1153,13 +1154,21 @@ public class ActivityS implements ActivitySI{
 			
 			
 			/*
-			 * 回退设置前一个的属地变量area
+			 * 回退设置当前的属地变量area
 			 */
 			String beforeTsid = beforeNode.getTaskId();
 			logger.debug( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
-			if( StringUtils.isBlank( beforeTsid ) ) {
-				Object beforeArea = taskService.getVariableLocal( beforeTsid, "area" );
+			if( !StringUtils.isBlank( beforeTsid ) ) {
+				HistoricVariableInstance varibleInstance = historyService
+						.createHistoricVariableInstanceQuery()
+						.variableName("area")
+						.taskId(beforeTsid)
+						.singleResult();
+				logger.debug( "---S--------上一个任务节点varibleInstance的流程变量varibleInstance为-------------" + varibleInstance );
 				String areaValue = "";
+				Object beforeArea = varibleInstance.getValue();
+				String name = varibleInstance.getVariableName();
+				logger.debug( "---S--------上一个任务节点name的流程变量name为-------------" + name );
 				if( beforeArea != null ) {
 					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
 					areaValue = beforeArea.toString();

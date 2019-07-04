@@ -366,7 +366,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 $.ajax({
 			  async:false
 		     ,type: "POST"
-		     ,url: '/iot_process/process/processPure2:13:170004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+		     ,url: '/iot_process/process'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
