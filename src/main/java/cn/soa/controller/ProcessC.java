@@ -25,6 +25,7 @@ import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ResultJson;
 import cn.soa.entity.ResultJsonForTable;
 import cn.soa.entity.TodoTask;
+import cn.soa.service.inter.AcitivityHistorySI;
 import cn.soa.service.inter.ActivitySI;
 import cn.soa.service.inter.BussinessSI;
 import cn.soa.service.inter.ConfigSI;
@@ -54,6 +55,9 @@ public class ProcessC {
 	
 	@Autowired
 	private ProcessVariableSI processVariableS;
+	
+	@Autowired
+	private AcitivityHistorySI acitivityHistoryS;
 	
 	@Autowired
 	private ProcessStartHandler processStartHandler;
@@ -145,7 +149,7 @@ public class ProcessC {
 	 * @return: ResultJson<String>        
 	 */ 
 	@PostMapping("/{dfid}")
-	public ResultJson<String> startProcess(
+	public ResultJson<String> startProcessByDfid(
 			@PathVariable("dfid") @NotBlank String dfid,
 			ProblemInfo problemInfo ){
 		logger.info( "--C--------启动流程（同时业务处理）  -------------" );
@@ -189,7 +193,78 @@ public class ProcessC {
 			if( beforeHandler ) logger.info( "--C--------流程启动前的流程其他业务处理  -------------" + beforeHandler);
 			
 			//流程启动
-			String piid = activityS.startProcess( dfid, bsid, vars );
+			String piid = activityS.startProcessByDfid( dfid, bsid, vars );
+			logger.info( "--C--------piid  -------------" + piid);
+			
+			/*
+			 * 流程启动后的流程其他业务处理 - 修改为观察者模式
+			 */
+			boolean afterHandler =processStartHandler.after( bsid, piid, problemInfo );
+			if( beforeHandler ) logger.info( "--C--------流程启动后的流程其他业务处理  -------------" + beforeHandler);
+			
+			return new ResultJson<String>( 0, "流程启动成功", piid + "," + bsid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				int i = problemInfoS.deleteByBsid( bsid );
+				logger.info( "--C--------流程启动失败后，删除新增的业务记录成功  -------------" + bsid);
+			} catch (Exception e2) {
+				e.printStackTrace();		
+				logger.info( "--C--------流程启动失败后，删除新增的业务记录失败  -------------" + bsid);
+			}			
+			return new ResultJson<String>( 1, "流程启动失败", null);
+		}		
+	}
+	
+	/**   
+	 * @Title: startProcess   
+	 * @Description: 启动流程（同时业务处理）  
+	 * @return: ResultJson<String>        
+	 */ 
+	@PostMapping("")
+	public ResultJson<String> startProcess(
+			ProblemInfo problemInfo ){
+		logger.info( "--C--------启动流程（同时业务处理）  -------------" );
+		logger.info( problemInfo.toString() );
+				
+		/*
+		 * 执行业务处理（具体业务处理需要实现以下接口）
+		 */
+		String bsid = bussinessS.dealProblemReport( problemInfo );
+		if( bsid == null ) {
+			return new ResultJson<String>( 1, "业务处理失败，流程未启动", "业务处理失败，流程未启动" );
+		}
+		logger.info( "--C--------bsid  -------------" + bsid);
+		
+		try {
+			/*
+			 * 处理数据库配置流程变量
+			 */
+			Map<String, Object> basicVars = configS.setVarsAtStart();
+			logger.info( "--C--------basicVars  -------------" + basicVars);
+			
+			/*
+			 * 处理临时流程变量
+			 */
+			Map<String, Object> tempVars = processVariableS.addVarsStartProcess( problemInfo );
+			logger.info( "--C--------tempVars  -------------" + tempVars);
+					
+			/*
+			 * 流程启动
+			 */
+			Map<String, Object> vars = new HashMap<String, Object>();
+			vars.putAll(basicVars);
+			vars.putAll(tempVars);
+			logger.info( "--C--------vars  -------------" + vars);
+			
+			/*
+			 * 流程启动前的流程其他业务处理
+			 */
+			boolean beforeHandler = processStartHandler.before( bsid, problemInfo);
+			if( beforeHandler ) logger.info( "--C--------流程启动前的流程其他业务处理  -------------" + beforeHandler);
+			
+			//流程启动
+			String piid = activityS.startProcess( bsid, vars );
 			logger.info( "--C--------piid  -------------" + piid);
 			
 			/*
@@ -360,6 +435,24 @@ public class ProcessC {
 		logger.info( "--C-------- 根据流程piid，获取当前流程的任务节点信息      -------------" );
 		logger.info( piid );
 		List<Map<String, Object>> historyNodesInfo = activityS.getHisTaskNodeInfosByPiid( piid );
+		if( historyNodesInfo != null && historyNodesInfo.size() > 0  ) {
+			return new ResultJson<List<Map<String,Object>>>( 0, "获取流程实例已完成的任务节点成功", historyNodesInfo );
+		}
+		return new ResultJson<List<Map<String,Object>>>( 0, "获取流程实例已完成的任务节点失败", null );
+
+	}
+	
+	/**   
+	 * @Title: getHisTaskNodeInfosByPiid   
+	 * @Description: 根据流程piid，获取当前流程的任务节点信息  
+	 * @return: ResultJson<List<Map<String,Object>>>        
+	 */  
+	@GetMapping("/tasks/history/all/piid/{piid}")
+	public ResultJson<List<Map<String,Object>>> getAllHisTaskNodeInfosByPiid(
+			@PathVariable("piid") @NotBlank String piid ){
+		logger.info( "--C-------- 根据流程piid，获取当前流程的任务节点信息      -------------" );
+		logger.info( piid );
+		List<Map<String, Object>> historyNodesInfo = acitivityHistoryS.getHisTaskNodesInfoByPiid( piid );
 		if( historyNodesInfo != null && historyNodesInfo.size() > 0  ) {
 			return new ResultJson<List<Map<String,Object>>>( 0, "获取流程实例已完成的任务节点成功", historyNodesInfo );
 		}

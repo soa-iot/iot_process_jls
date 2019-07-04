@@ -148,14 +148,26 @@ public class ActivityS implements ActivitySI{
     
     /**   
      * @Title: startProcess   
+     * @Description: 根据流程定义dfid，启动流程  
+     * @return: void        
+     */  
+    @Override
+    public String startProcessByDfid( String dfid, 
+    		String bsid, Map<String,Object> vars ) {
+		ProcessInstance processInstance = runtimeService
+				.startProcessInstanceById( dfid, bsid, vars );
+		return processInstance.getId();
+    }
+    
+    /**   
+     * @Title: startProcess   
      * @Description: 启动流程  
      * @return: void        
      */  
     @Override
-    public String startProcess( String dfid, 
-    		String bsid, Map<String,Object> vars ) {
-		ProcessInstance processInstance = runtimeService
-				.startProcessInstanceById( dfid, bsid, vars );
+    public String startProcess( String bsid, Map<String,Object> vars ) {
+		ProcessInstance processInstance = 
+				runtimeService.startProcessInstanceByKey("processPure2", bsid, vars);
 		return processInstance.getId();
     }
     
@@ -501,7 +513,7 @@ public class ActivityS implements ActivitySI{
 		Task task= taskService.createTaskQuery()
 				.taskId( tsid )
 				.singleResult();
-		
+	
 		if( taskService == null) {
 			logger.info( "findTaskById查询Task任务不存在" );
 			return null;
@@ -732,6 +744,7 @@ public class ActivityS implements ActivitySI{
 		Object areaValue = taskService.getVariable( tsid, "area" );
 		if( areaValue != null  && !areaValue.toString().trim().isEmpty()) {
 			taskService.setVariableLocal( tsid , "area", areaValue);
+			taskService.setVariable( tsid , "area", areaValue);
 			logger.info( "---S--------全局流程变量area设置为局部流程变量成功-------------" + areaValue );
 		}else {
 			logger.info( "---S--------全局流程变量area为空-------------" );

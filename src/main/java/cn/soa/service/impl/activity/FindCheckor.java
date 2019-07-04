@@ -65,14 +65,14 @@ public class FindCheckor  implements ExecutionListener{
 							execution.setVariable( "checkor", executor);
 							logger.info( "---------确定作业验收的执行人成功-----------" );
 							break;
+						}else {
+							logger.info( "---------确定作业验收的执行人失败-----------" );
+							break;
 						}					
 					}				
-				}
-				if( StringUtils.isBlank( executor) ) {
-					logger.info( "---------确定作业验收的执行人失败-----------" );
-				}
+				}				
 			}else {
-				logger.info( "---------确定作业验收的执行人失败-----------" );
+				logger.info( "---------历史查询为空，确定作业验收的执行人失败-----------" );
 			}					
 		} catch (Exception e) {
 			e.printStackTrace();
