@@ -29,12 +29,12 @@ public class FindEstimatorByArea implements ExecutionListener{
 	public void notify(DelegateExecution execution) throws Exception {
 		UserManagerSI userManagerS= SpringUtils.getObject(UserManagerSI.class);
 		String area  = (String) execution.getVariable("area");
-		logger.debug( "------流程变量属地单位-11111111-----" );
-		logger.debug( "------流程变量属地单位------" + area );
-		logger.debug( "------流程变量属地单位---userManagerS---" + userManagerS );
+		logger.info( "------流程变量属地单位-11111111-----" );
+		logger.info( "------流程变量属地单位------" + area );
+		logger.info( "------流程变量属地单位---userManagerS---" + userManagerS );
 
 		List<UserOrganization> users = userManagerS.findUserByArea( area );
-		logger.debug( "------问题评估变量执行人------" + users.toString() );
+		logger.info( "------问题评估变量执行人------" + users.toString() );
 		
 		String userStr = "";
 		ObjectMapper mapper = new ObjectMapper();
@@ -43,7 +43,7 @@ public class FindEstimatorByArea implements ExecutionListener{
 			userStr = resource.getName().trim() + ","  + userStr;
 		}
 		userStr = userStr.substring( 0, userStr.length() - 1 );
-		logger.debug( "------问题评估变量执行人------" + userStr);
+		logger.info( "------问题评估变量执行人------" + userStr);
 		execution.setVariable( "estimators", userStr );
 	}
 

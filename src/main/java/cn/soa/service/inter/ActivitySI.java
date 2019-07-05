@@ -52,8 +52,15 @@ public interface ActivitySI {
 	 * @Description: 启动流程    
 	 * @return: void        
 	 */  
-	String startProcess( String dfid, String bsid, Map<String, Object> vars);
+	String startProcessByDfid( String dfid, String bsid, Map<String, Object> vars);
 
+	/**   
+	 * @Title: startProcess   
+	 * @Description: 启动流程   
+	 * @return: String        
+	 */  
+	String startProcess(String bsid, Map<String, Object> vars);
+	
 	/**   
 	 * @Title: startProcessNobsid   
 	 * @Description: 启动流程(无业务主键id)    
@@ -312,6 +319,8 @@ public interface ActivitySI {
 	 * @return: boolean        
 	 */  
 	boolean transferProcessByPiid(String piid, Map<String, Object> vars);
+
+	
 
 	
 }
