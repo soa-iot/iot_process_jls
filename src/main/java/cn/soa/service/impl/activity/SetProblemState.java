@@ -21,14 +21,14 @@ public class SetProblemState implements ExecutionListener{
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
 		
-		logger.debug( "---------流程闭环状态---------" );	
+		logger.info( "---------流程闭环状态---------" );	
 		ProblemInfoSI problemInfoS= SpringUtils.getObject(ProblemInfoSI.class);
 		String piid = execution.getProcessInstanceId();
 		
-		logger.debug( "---------获取流程piid："+piid );	
+		logger.info( "---------获取流程piid："+piid );	
 		
 		if( piid == null ) {
-			logger.debug( "---------获取流程piid为空或null------------" );			
+			logger.info( "---------获取流程piid为空或null------------" );			
 		}else {
 			
 			ProblemInfo problemInfo = new ProblemInfo();
@@ -36,11 +36,11 @@ public class SetProblemState implements ExecutionListener{
 			problemInfo.setProblemstate("FINISHED");
 			Integer row = problemInfoS.changeProblemDescribeByPiid(problemInfo);
 			
-			logger.debug( "---------闭环更新行数------------" + row );
+			logger.info( "---------闭环更新行数------------" + row );
 			if (row == 1) {
-				logger.debug( "---------流程闭环成功------------" );
+				logger.info( "---------流程闭环成功------------" );
 			}else {
-				logger.debug( "---------流程闭环失败------------Problemstate修改行数：" + row);
+				logger.info( "---------流程闭环失败------------Problemstate修改行数：" + row);
 			}
 		}	
 	}

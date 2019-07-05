@@ -35,19 +35,19 @@ public class FindUserPostByNum implements ExecutionListener{
 	public void notify(DelegateExecution execution) throws Exception {
 		String impVarvalue  = impVar.getValue(execution).toString();
 		String expVarvalue  = expVar.getValue(execution).toString();
-		logger.debug( impVarvalue );
-		logger.debug( expVarvalue );
+		logger.info( impVarvalue );
+		logger.info( expVarvalue );
 		if( StringUtils.isBlank(impVarvalue)) {
-			logger.debug( "变量参数值为空，执行失败" );
+			logger.info( "变量参数值为空，执行失败" );
 		}else if( StringUtils.isBlank(expVarvalue) ){
-			logger.debug( "输出变量参数值为空，执行失败" );
+			logger.info( "输出变量参数值为空，执行失败" );
 		}else {
 			String post = userManagerS.findUserPostByNum(impVarvalue);
-			logger.debug( "----------post-----------" );
-			logger.debug( post.toString() );
+			logger.info( "----------post-----------" );
+			logger.info( post.toString() );
 			execution.setVariable(expVarvalue, post);
 		}
-		logger.debug( "--------FindUserPostByNum执行完毕-------------" );	
+		logger.info( "--------FindUserPostByNum执行完毕-------------" );	
 		
 	}
 

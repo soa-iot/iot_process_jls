@@ -19,16 +19,16 @@ public class AddPiidToBussTable implements ExecutionListener{
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
 		String bsid = execution.getProcessBusinessKey();
-		logger.debug( "------------业务主键2------------" + bsid );
+		logger.info( "------------业务主键2------------" + bsid );
 		String piid = execution.getProcessInstanceId();
-		logger.debug( "------------流程实例id------------" + piid );
+		logger.info( "------------流程实例id------------" + piid );
 		
 		if( StringUtils.isBlank( bsid ) ) {
-			logger.debug( "------------业务主键bsid为空或null------------" );
+			logger.info( "------------业务主键bsid为空或null------------" );
 		}
 		
 		if( StringUtils.isBlank( piid ) ) {
-			logger.debug( "------------业务主键piid为空或null------------" );
+			logger.info( "------------业务主键piid为空或null------------" );
 		}
 		
 		try {
@@ -39,7 +39,7 @@ public class AddPiidToBussTable implements ExecutionListener{
 					
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.debug( "------------业务表加入piid失败------------" );
+			logger.info( "------------业务表加入piid失败------------" );
 		}
 		
 	}

@@ -38,7 +38,7 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 	@Override
 	public boolean after( String bsid, String piid, ProblemInfo problemInfo ) {
 		if( StringUtils.isBlank(piid) ) {
-			logger.debug("---------piid为null或空-----------");
+			logger.info("---------piid为null或空-----------");
 			return false;
 		}
 		
@@ -48,33 +48,36 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 			String comment = problemInfo.getProblemdescribe();
 			String tsid = task.getId();
 			if( StringUtils.isBlank( tsid )  ) {
-				logger.debug("---------tsid为null或空------------" );
+				logger.info("---------tsid为null或空------------" );
 			}
-			logger.debug("---------tsid-----------" + tsid );
+			logger.info("---------tsid-----------" + tsid );
 			if( StringUtils.isBlank(comment) ) {
-				logger.debug("---------comment为null或空-----------");
+				logger.info("---------comment为null或空-----------");
 			}else {
 				try {
 					Comment addComment = taskService.addComment( tsid, piid, comment );
-					logger.debug("---------问题上报增加备注信息成功：-----------" + addComment );
+					logger.info("---------问题上报增加备注信息成功：-----------" + addComment );
 				} catch (Exception e) {
 					e.printStackTrace();
-					logger.debug("---------问题上报增加备注信息失败-----------");
+					logger.info("---------问题上报增加备注信息失败-----------");
 				}				
 			}
 			
 			//增加流程变量-业务主键\属地单位
 			Object bsidVar = taskService.getVariable( tsid , "bsid");
 			Object areaVar = taskService.getVariable( tsid , "area");
+			
 			if( bsidVar == null ) {
-				logger.debug("---------业务主键为null-----------"); 
+				logger.info("---------业务主键为null-----------"); 
 				return false;
 			}	
+			logger.info("---------业务主键为-----------" + bsidVar.toString() ); 
+			
 			if( areaVar == null ) {
-				logger.debug("---------属地单位为null-----------"); 
+				logger.info("---------属地单位为null-----------"); 
 				return false;
 			}
-			
+			logger.info("---------业务主键为-----------" + areaVar.toString() ); 
 			HashMap<String, Object> var = new HashMap<String,Object>();
 			var.put( "bsid", bsidVar.toString() );
 			var.put( "area", areaVar.toString() );
@@ -82,7 +85,7 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 			
 			return true;
 		}
-		logger.debug("---------task为null-----------");
+		logger.info("---------task为null-----------");
 		return false;
 	}
 
