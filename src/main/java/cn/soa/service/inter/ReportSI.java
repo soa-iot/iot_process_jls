@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoVO;
+import cn.soa.entity.ProblemTypeArea;
 
 public interface ReportSI {
 	
@@ -44,4 +45,10 @@ public interface ReportSI {
 	 */
 	public Map<String, Object> ProblemCount(ProblemInfo problemInfo, String startTime, String endTime);
 	
+	/**
+	 * 查找问题属地对应区域
+	 * @param  无
+	 * @return List<ProblemTypeArea> 问题属地对应区域列表
+	 */
+	List<ProblemTypeArea> findProblemTypeArea();
 }

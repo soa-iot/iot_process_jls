@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.soa.dao.ProblemInfoMapper;
 import cn.soa.dao.ProblemReportphoMapper;
+import cn.soa.dao.ProblemTypeAreaMapper;
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoVO;
 import cn.soa.entity.ProblemReportpho;
+import cn.soa.entity.ProblemTypeArea;
 import cn.soa.service.inter.ReportSI;
 
 
@@ -26,6 +28,8 @@ public class ReportS implements ReportSI {
 	private ProblemInfoMapper reportMapper;
 	@Autowired
 	private ProblemReportphoMapper phoMapper;
+	@Autowired
+	private ProblemTypeAreaMapper problemTypeAreaMapper;
 	
 	/**   
 	 * @Title: addOne   
@@ -140,6 +144,19 @@ public class ReportS implements ReportSI {
 		
 		return reportMapper.PorblemCount(problemInfo, startTime, endTime);
 	}
+	
+	
+	/**
+	 * 查找问题属地对应区域
+	 * @param  无
+	 * @return List<ProblemTypeArea> 问题属地对应区域列表
+	 */
+	@Override
+	public List<ProblemTypeArea> findProblemTypeArea() {
+		
+		return problemTypeAreaMapper.findAll();
+	}
+
 	
 }
 

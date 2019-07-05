@@ -113,15 +113,35 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		//更新不安全select渲染
 	    form.render('select','notsafe-select');
 	  }); 
+	  
+	//异步请求，从数据库中读取问题属地对应区域
+	  var problemTypeList;
+	  $.ajax({  
+        type: 'get',  
+        async: false,
+        url: '/iot_process/report/problemtype/area', // ajax请求路径   
+        success: function(data){ 
+          if(data.state == 0 && data.data != null){
+        	problemTypeList = data.data;
+          	for( x in problemTypeList){
+          		var $option1 = $("<option></option>");
+          		$option1.val(problemTypeList[x].problemName);
+          		$option1.text(problemTypeList[x].problemName);
+          		$("#problemtype").append($option1);  
+          	}
+      		form.render();
+          }
+        }
+    });
 	
-	  //异步请求，从数据库中读取不安全数据列表
+	  //同步请求，从数据库中读取不安全数据列表
 	  var unsafeList;
 	  $.ajax({  
         type: 'get',  
         async: false,
         url: '/iot_process/report/unsafe/showlist', // ajax请求路径   
         success: function(data){ 
-          if(data.state == 0){
+          if(data.state == 0 && data.data != null){
           	unsafeList = data.data;
           	for( x in unsafeList){
           		var $option1 = $("<option></option>");
@@ -142,6 +162,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           }
         }
     });
+	  
+	  
 	  
 	//异步请求，从数据库中读取当前登录用户的暂存问题报告数据
 	 var imgList = new Array(); 
@@ -210,7 +232,29 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           }
         }
     }); 
-	  
+	
+    //监听问题区域级联
+	form.on('select(problem-area)', function(data){
+	   var value = data.value;
+	   console.log(value);
+	   $("#welName").empty();  //清空子选项
+	   $("#welName").append("<option value=''>请选择</option>");
+	   for( x in problemTypeList){
+	      if(value == problemTypeList[x].problemName){
+	    	var areaList = problemTypeList[x].problemAreas;
+            for( y in areaList){
+            	var $option2 = $("<option></option>");
+	            $option2.val(areaList[y].problemName);
+	            $option2.text(areaList[y].problemName);
+	            $("#welName").append($option2);
+            }
+            $("#welName").append("<option value='其他'>其他</option>");
+	      }
+	    }
+	     //更新select渲染
+		 form.render();
+	});
+    
 	//监听不安全行为级联
 	form.on('select(notsafe)', function(data){
 	   var value = data.value;
