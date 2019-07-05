@@ -65,6 +65,17 @@
 		WHERE  ORGID = #{orgID, jdbcType=VARCHAR}
 	</select>
 	
+	<!-- 1.4、根据用户名查找用户编号	-->
+	<!-- String findUsernumByName(String name) -->
+	<select id="findUsernumByName" resultType="string">
+		SELECT 
+			USERNUM
+		FROM
+			IOT_USER_ORGANIZATION
+		WHERE
+			name = #{name, jdbcType=VARCHAR}
+	</select>
+	
 	<!-- ===========================2、新增===============================  -->
 	<!-- 2.1、添加一条问题报告数据 	-->
 	<!-- public Integer insertOne(ProblemReportpho pho) -->

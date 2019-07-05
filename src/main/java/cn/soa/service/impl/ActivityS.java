@@ -24,6 +24,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -336,7 +337,7 @@ public class ActivityS implements ActivitySI{
         	if( StringUtils.isNotBlank( var ) ) {
         		HashMap<String, Object> vars = new HashMap<String,Object>();
         		vars.put(var, varValue);
-        		taskService.complete( tsid, vars );
+        		taskService.complete( tsid, vars);
         	}else {
         		taskService.complete( tsid );
         	}
@@ -712,6 +713,19 @@ public class ActivityS implements ActivitySI{
 		}else {
 			logger.debug( "---流程跳转，备注信息不存在---------" );
 		}
+		
+
+		/*
+		 * 设置流程实例全局流程变量到本节点任务的局部流程变量
+		 */
+		Object areaValue = taskService.getVariable( tsid, "area" );
+		if( areaValue != null  && !areaValue.toString().trim().isEmpty()) {
+			taskService.setVariableLocal( tsid , "area", areaValue);
+			logger.debug( "---S--------全局流程变量area设置为局部流程变量成功-------------" + areaValue );
+		}else {
+			logger.debug( "---S--------全局流程变量area为空-------------" );
+		}
+		
     	
     	/*
     	 * 流程跳转
@@ -762,7 +776,7 @@ public class ActivityS implements ActivitySI{
 		/*
 		 * 完成转向
 		 */
-		 taskService.complete( tsid, vars );  
+		 taskService.complete( tsid, vars);  
 		
 		/*
 		 * 还原流向
@@ -1137,6 +1151,32 @@ public class ActivityS implements ActivitySI{
 				return false;
 			}
 			logger.debug( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
+			
+			
+			/*
+			 * 回退设置当前的属地变量area
+			 */
+			String beforeTsid = beforeNode.getTaskId();
+			logger.debug( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
+			if( !StringUtils.isBlank( beforeTsid ) ) {
+				HistoricVariableInstance varibleInstance = historyService
+						.createHistoricVariableInstanceQuery()
+						.variableName("area")
+						.taskId(beforeTsid)
+						.singleResult();
+				logger.debug( "---S--------上一个任务节点varibleInstance的流程变量varibleInstance为-------------" + varibleInstance );
+				String areaValue = "";
+				Object beforeArea = varibleInstance.getValue();
+				String name = varibleInstance.getVariableName();
+				logger.debug( "---S--------上一个任务节点name的流程变量name为-------------" + name );
+				if( beforeArea != null ) {
+					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
+					areaValue = beforeArea.toString();
+					taskService.setVariable( tsid, "area", areaValue );
+				}else {
+					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
+				}			
+			}
 
     		/*
     		 * 增加备注信息
@@ -1188,6 +1228,25 @@ public class ActivityS implements ActivitySI{
 			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
 			logger.debug( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
 			String beforeNodeActid = beforeNode.getActivityId();
+			
+			/*
+			 * 回退设置前一个的属地变量area
+			 */
+			String beforeTsid = beforeNode.getTaskId();
+			logger.debug( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
+			if( StringUtils.isBlank( beforeTsid ) ) {
+				Object beforeArea = taskService.getVariableLocal( beforeTsid, "area" );
+				String areaValue = "";
+				if( beforeArea != null ) {
+					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
+					areaValue = beforeArea.toString();
+					taskService.setVariable( tsid, "area", areaValue );
+				}else {
+					logger.debug( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
+				}			
+			}
+			
+			
 			if( StringUtils.isBlank( beforeNodeActid ) ) {
 				logger.debug( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
 				return false;

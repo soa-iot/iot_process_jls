@@ -15,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.soa.entity.ProblemInfo;
+import cn.soa.entity.ProblemInfoQuery;
 import cn.soa.entity.ProblemInfoVO;
 import cn.soa.entity.ProblemReportpho;
 import cn.soa.entity.ResultJson;
@@ -30,6 +32,7 @@ import cn.soa.service.impl.ProblemInfoS;
 import cn.soa.service.impl.ReportPhoS;
 import cn.soa.service.inter.ReportSI;
 import cn.soa.service.inter.UnsafeSI;
+import cn.soa.service.inter.UserManagerSI;
 import cn.soa.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import oracle.jdbc.proxy.annotation.Post;
@@ -52,7 +55,9 @@ public class ReportC {
 	@Autowired
 	private ReportPhoS reportPhoS;
 	@Autowired
-	private  ProblemInfoS  problemInfoS;
+	private UserManagerSI userManagerS;
+	@Autowired
+	private ProblemInfoS  problemInfoS;
 	/**
 	 * @Title: statisticalTaskProblempro   
 	 * @Description: 问题统计功能 
@@ -91,27 +96,25 @@ public class ReportC {
 	}
 	
 	/**   
-	 * @Title: showProblemInfo   
-	 * @Description: 显示当前登录用户暂存的问题报告数据
-	 * @return: ResultJson<ProblemInfo> 返回成功响应数据 
+	 * @Title: showProblemInfoByCondition   
+	 * @Description: 按条件分页查询问题上报数据
+	 * @return: ResultJsonForTable<List<ProblemInfo>> 返回成功响应数据 
 	 */
-	@PostMapping("/showproblem")
-	public ResultJsonForTable<List<ProblemInfo>> showProblemInfo(
-			@RequestParam(name = "info",required=false) ProblemInfo info,
-			@RequestParam(name = "page",required=false) Integer page,
-			@RequestParam(name = "limit",required=false) Integer limit,
-			@RequestParam(name = "startTime",required=false) String startTime,
-			@RequestParam(name = "endTime",required=false) String endTime) {
+	@PostMapping("/showproblembycondition")
+	public ResultJsonForTable<List<ProblemInfo>> showProblemInfoByCondition(ProblemInfoQuery problemInfoQuery) {
+	
+		log.debug("------查询条件：{}", problemInfoQuery);
 		
-		log.debug("------查询条件：{}", info);
-		log.debug("------第几页：{}", page);
-		log.debug("------每页数量：{}", limit);
-		log.debug("------查询开始时间：{}", startTime);
-		log.debug("------查询结束时间：{}", endTime);
-		
-		List<ProblemInfo> result = reportS.getProblemInfoByPage(info, page, limit, startTime, endTime);
+		Integer page = problemInfoQuery.getPage();
+		Integer limit = problemInfoQuery.getLimit();
+		String startTime = problemInfoQuery.getStartTime();
+		String endTime = problemInfoQuery.getEndTime();
+		String schedule = problemInfoQuery.getSchedule();
+		String handler = problemInfoQuery.getHandler();
+
+		List<ProblemInfo> result = reportS.getProblemInfoByPage(problemInfoQuery, page, limit, startTime, endTime);
 		if(result != null) {
-			Map<String, Object> map = reportS.ProblemCount(info, startTime, endTime);
+			Map<String, Object> map = reportS.ProblemCount(problemInfoQuery, startTime, endTime);
 			System.err.println(map);
 			//查询出的数据量
 			Integer count = Integer.valueOf(map.get("TOTAL").toString());
@@ -121,26 +124,6 @@ public class ReportC {
 		}
 		
 		return new ResultJsonForTable<>(0,"查询失败", 0, null);
-	}
-	
-	/**   
-	 * @Title: exportproblem   
-	 * @Description: 显示当前登录用户暂存的问题报告数据
-	 * @return: ResultJson<ProblemInfo> 返回成功响应数据 
-	 */
-	@PostMapping("/exportproblem")
-	public ResultJson<List<ProblemInfo>> exportProblemInfo(
-			@RequestParam(name = "info",required=false) ProblemInfo info,
-			@RequestParam(name = "startTime",required=false) String startTime,
-			@RequestParam(name = "endTime",required=false) String endTime) {
-		
-		log.debug("------查询条件：{}", info);
-		log.debug("------查询开始时间：{}", startTime);
-		log.debug("------查询结束时间：{}", endTime);
-		
-		List<ProblemInfo> result = reportS.getProblemInfo(info, startTime, endTime);
-		
-		return new ResultJson<List<ProblemInfo>>(0,"导出成功", result);
 	}
 	
 	/**   
@@ -203,8 +186,8 @@ public class ReportC {
 	public ResultJson<Void> saveUpload(
 			@RequestParam("file") MultipartFile file, 
 			@RequestParam("resavepeople") String resavepeople, 
+			@RequestParam("username") String username,
 			@RequestParam("piid") String piid,
-			@RequestParam("num") String num,
 			@RequestParam("remark") String remark,
 			@RequestParam("tProblemRepId") String tProblemRepId, HttpServletRequest request){
 		
@@ -212,12 +195,12 @@ public class ReportC {
 		
 		log.info("上传图片名为：{}", file.getOriginalFilename());
 		log.info("当前系统登录人为：{}", resavepeople);
-		log.info("用户编号：{}", num);
+		log.info("用户拼音名为：{}"+username);
 		log.info("问题报告piid：{}", piid);
 		log.info("上报问题报告id：{}", tProblemRepId);
 		log.info("图片来源remark：{}", remark);
 		
-		if("".equals(resavepeople) || "".equals(tProblemRepId) || "".equals(num)) {
+		if("".equals(resavepeople) || "".equals(tProblemRepId)) {
 			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		}
 		
@@ -230,7 +213,10 @@ public class ReportC {
 		
 		//生成图片存储位置，数据库保存的是虚拟映射路径
 		Date date = new Date();
-		File imagePath = CommonUtil.imageSaved(num, rootPath, date);
+		if(username == null || "".equals(username)) {
+			username = "DefaultUser";
+		}
+		File imagePath = CommonUtil.imageSaved(username, rootPath, date);
 		
 		try {
 			file.transferTo(new File(imagePath, phoName));
@@ -242,7 +228,7 @@ public class ReportC {
 			return new ResultJson<>(ResultJson.ERROR, "图片上传失败");
 		}
 		//request.getContextPath() 或  request.getServletPath()
-		String phoAddress =  new StringBuilder(request.getServletPath()+"/image/").append(num).append("/")
+		String phoAddress =  new StringBuilder(request.getContextPath()+"/image/").append(username).append("/")
 				.append(CommonUtil.dateFormat(date)).append("/").append(phoName).toString();
 		
 		//将上传图片信息封装实体类中

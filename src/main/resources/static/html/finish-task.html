@@ -15,7 +15,7 @@
 <body>
 
 	<!-- 完成作业 -->
-	<div class="pro-div  layui-form"  lay-filter="receive-task">
+	<div class="pro-div layui-form"  lay-filter="receive-task">
 
 		<!-- 问题处理 -->
 		<div class="layui-collapse" lay-accordion="">
@@ -23,7 +23,7 @@
 				<h2 class="layui-colla-title h2c" id="pro">问题处理</h2>
 				
 				<div class="hbtn h2c">
-					<button class="layui-btn layui-btn-normal layui-btn-sm btn" lay-submit lay-filter="finish_task">完成作业</button>
+					<button class="layui-btn layui-btn-normal layui-btn-sm btn" lay-submit lay-filter="finish_task"><span class="layui-icon">&#xe605;</span>&nbsp;完成作业</button>
 				</div>
 				<div class="layui-colla-content layui-show">
 	
@@ -32,11 +32,12 @@
 							<label class="layui-form-label labelr">现场施工图</label>
 							<div class="layui-input-inline layui-input-top">
 								<!-- 多图片上传 -->
-			                    <button type="button" class="layui-btn layui-btn-sm" id="addFinishImg">选择上传图片</button> 
+			                    <button type="button" class="layui-btn layui-btn-sm primary-btn" id="addFinishImg">
+			                    	<i class="layui-icon">&#xe681;</i> 选择图片</button> 
 							</div>
 						</div>
 						<div class="layui-inline">
-							<input class="layui-input" disabled style="display:none" lay-verify="imgs"/>
+							<input class="layui-input" disabled style="display:none"/>
 						</div>
 					</div>
 					
@@ -64,7 +65,7 @@
 							<label class="layui-form-label labelr">整改日期</label>
 							<div class="layui-input-inline layui-input-top">
 								<input name="remark" type="text"
-									class="layui-input layui-input-one"   disabled="disabled">
+									class="layui-input layui-input-one" disabled="disabled">
 							</div>
 						</div>
 						<div class="layui-inline" id="sdate-div" style="display: none;">
@@ -79,8 +80,8 @@
 					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">处理说明</label>
 						<div class="layui-input-block right-marg">
-							<textarea name="comment"  id="input_localName" placeholder="请输入内容"
-								class="layui-textarea"  lay-verify="required"></textarea>
+							<textarea name="comment"  id="comment_finish" placeholder="请输入内容"
+								class="layui-textarea"></textarea>
 						</div>
 					</div>
 
@@ -204,10 +205,12 @@
 
 	</div>
 	<script type="text/javascript" src="../jsPackage/js/jquery-1.9.1.min.js"></script>
-	<script src="../jsPackage/layui-v2.4.2/layui.js" charset="utf-8"></script>
+	<script type="text/javascript" src="../jsPackage/js/jquery.cookie.js"></script>
 	<script src="../jsPackage/own/universal.js"></script>
 	<script type="text/javascript" src="../js/url_param.js"></script>
+	<script src="../jsPackage/layui-v2.4.2/layui.js" charset="utf-8"></script>
 	<script type="text/javascript" src="../js/receive-task.js"></script>
+	<script type="text/javascript" src="../jsPackage/js/Convert_Pinyin.js"></script>
 	<script type="text/javascript" src="../js/finish-task.js"></script>
 </body>
 </html>

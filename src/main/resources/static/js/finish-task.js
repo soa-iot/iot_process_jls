@@ -8,17 +8,23 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 	var resavepeople = getCookie1("name").replace(/"/g,'');
 	//var resavepeople = "孙超";
 	console.log("当前登录人为:"+resavepeople);
-	//用户编号
-	var num = getCookie1("num").replace(/"/g,'');
-	//num =123;
-	console.log("用户编号为:"+num);
 	
 	//点击完成按钮操作
-	form.on('submit(finish_task)', function(data){		  
+	form.on('submit(finish_task)', function(data){
+		  //验证表单是否为空
+		  if($("#comment_finish").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("处理说明不能为空", {icon: 7, offset: '100px'});
+			  return;
+		  }
+		  if($('#imgZmList').children().length == 0){
+			  layer.msg("现场施工图必须上传", {icon: 7, offset: '100px'});
+			  return;
+		  }
+		  
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		  $.ajax({  
 			    async : false,
-		    	url : "/iot_process/process/nodes/next/piid/"+piid,   ///iot_process/estimates/problemdescribe
+		    	url : "/iot_process/process/nodes/next/group/piid/"+piid,   ///iot_process/estimates/problemdescribe
 		        type : "put",
 		        data : {
 	        		"comment": data.field.comment,
@@ -32,7 +38,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        		//上传问题图片
 				   		uploadList.upload();
 				   		layer.msg("完成作业提交成功",{icon: 1, time:2000, offset: '100px'}, function(){
-				   			window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+				   			//window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
 				   		});
 		        	}else{
 		        		layer.msg("完成作业提交失败",{icon: 2, offset: '100px'});
@@ -51,9 +57,9 @@ layui.use(['form', 'jquery','upload','layer'], function(){
          elem: '#addFinishImg'
          , url: '/iot_process/report/upload'
          , data: {		resavepeople: function(){ return resavepeople;}, 
+        	 			username: function(){ return toChar(resavepeople);},
 			  			piid: function(){console.log("piid: "+piid); return piid;},
 			  	   		tProblemRepId: function(){ console.log("tProblemRepId: "+tProblemRepId); return tProblemRepId;},
-			  			num: function(){ console.log("num: "+num); return num; },
 			  			remark: "1"
          			}
          , accept: 'images'
@@ -102,7 +108,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
          ,error: function(index, upload){
        	 // layer.closeAll('loading'); //关闭loading
        	 // upload();   //重新上传
-        	 layer.msg("图片上传失败",{icon: 2, offset: '100px'});
+        	 layer.msg("图片上传失败",{icon: 2, offset:'100px'});
          }
      });
     
@@ -110,9 +116,27 @@ layui.use(['form', 'jquery','upload','layer'], function(){
     form.verify({
     	imgs: function(value, item){  //value：表单的值、item：表单的DOM对象
     		if($('#imgZmList').children("li").length < 1){
-    			return '必须上传现场施工图';
+    			layer.msg("必须上传现场施工图",{icon: 2, offset:'100px'});
+    			return "1";
     		}
     	}
     });
-	
+    
+      /**
+	   * 汉字转成拼音的功能
+	   */
+	  function toChar(str){
+		 return pinyin.getFullChars(str);
+	  }
+    
+	  /**
+	   * 按钮鼠标移入/移除事件
+	   */
+	  $(".primary-btn").mouseover(function(){
+		  $(this).find("i").css({"color":"white"});
+	  })
+	   
+	  $(".primary-btn").mouseout(function(){
+		  $(this).find("i").css({"color":"green"});
+	  })
 });

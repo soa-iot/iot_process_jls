@@ -44,10 +44,4 @@ public interface ReportSI {
 	 */
 	public Map<String, Object> ProblemCount(ProblemInfo problemInfo, String startTime, String endTime);
 	
-	/**   
-	 * @Title: getProblemInfo   
-	 * @Description: 根据条件查询出问题上报信息列表
-	 * @return: ProblemInfo  查到的问题报告数据列表 
-	 */
-	public List<ProblemInfo> getProblemInfo(ProblemInfo problemInfo, String startTime, String endTime);
 }

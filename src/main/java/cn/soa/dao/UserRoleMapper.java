@@ -30,8 +30,16 @@ public interface UserRoleMapper {
 	
 	/**
 	 * 根据组织编号查找该组织名称
-	 * @param  orgID  组织编号
+	 * @param  dept  部门名称
 	 * @return 组织名称
 	 */
-	String findOrgNameByOrgid(String orgID);
+	String findOrgNameByOrgid(String dept);
+	
+	/**
+	 * 根据用户名查找用户编号
+	 * @param  name 用户名
+	 * @return 用户编号
+	 */
+	String findUsernumByName(String name);
+	
 }

@@ -66,10 +66,4 @@ public class ProblemInfoMapperTest {
 
 	}
 	
-	@Test
-	public void findProblemInfo() {
-		List<ProblemInfo> reslut = problemInfoMapper.findPorblemInfo(null, null, null);
-		System.err.println(reslut);
-		System.err.println(reslut.size());
-	}
 }

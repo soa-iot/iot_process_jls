@@ -13,7 +13,7 @@ $("#problemdescribe").autocomplete({
 });
 
 /*鼠标点击其他地方，补全的div消失  */
-$("body").mouseup(function(){
+$(document).mouseup(function(){
 	$(".show_div").hide();
 });
 
@@ -26,7 +26,7 @@ function getAutoFill() {
 		$.ajax({  
 			url : "/iot_process/estimates/autoFill",  
 			type : "get",
-			data : {problemdescribe : $("#problemdescribe").val()},
+			data : {problemdescribe : $("#problemdescribe").val().trim()},
 			dataType : "json",  
 			success: function( json) {
 				if (json.state == 0) {

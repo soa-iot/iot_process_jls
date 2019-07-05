@@ -17,6 +17,7 @@ layui.use('laydate', function(){
 	//常规用法
 	laydate.render({
 		elem: '#sdate'
+		,min:0
 		//,format:'yyyy/MM/dd'
 	});
 
@@ -50,7 +51,7 @@ $.ajax({
 			$("#prob").val(problem.problemclass);
 			$("#applypeople").val(problem.applypeople);
 			$("#problemtype").val(problem.problemtype);
-
+			$("#sele").val(problem.remark);
 			if (problem.problemclass=="不安全行为/状态") {
 				$("#remark1").val(problem.remarkfive);
 				$("#remark2").val(problem.remarksix);
@@ -168,8 +169,6 @@ $.ajax({
 					});
 
 				});
-
-				
 				/* //轮播图
 				layui.use(['carousel', 'form'], function(){
 					var carousel = layui.carousel
@@ -191,6 +190,7 @@ $.ajax({
 
 	}  
 });
+
 
 /**
  * 处理过程表格
@@ -437,7 +437,7 @@ function outhelper_data(outhelperData){
 					url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
 					type : "get",
 					//$.cookie("organ")$.cookie("name")
-					data : {organ:outhelper[key],username:$.cookie("name").replace(/"/g,"")},
+					data : {organ:outhelper[key],username:($.cookie("name")==null?'':$.cookie("name").replace(/"/g,""))},
 					dataType : "json",  
 					async:false,
 					success: function(json) {

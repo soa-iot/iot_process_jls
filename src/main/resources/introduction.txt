@@ -72,7 +72,7 @@
 6、部署流程
 	$.ajax({
 	     type: "POST"
-	     ,url: '/iot_process/process/deployment'    //dfid为流程定义id
+	     ,url: '/iot_process/process/deployment'  
 	     ,data: {
 			"name": "",
 	     	"xmlUrl": "",
@@ -90,7 +90,7 @@
 7、部署流程(测试专用)
 	$.ajax({
 	     type: "GET"
-	     ,url: '/iot_process/process/deployment'    //dfid为流程定义id
+	     ,url: '/iot_process/process/deployment'   
 	     ,data: {
 	     	"name": "",
 	     	"xmlUrl": "",
@@ -256,9 +256,9 @@
 	$.ajax({
 	     type: "PUT"
 	     ,url: '/iot_process/process/nodes/jump/group/piid/{piid}'    //piid为流程实例id
-	     ,data: data{
+	     , data{
 	     	"area": ""  //属地单位
-			,"actId": ""  //跳转节点id
+			,"actId": "receive"  //跳转节点id
 			,"": ""  //下一步流程变量
 			,"userName": ""  //当前节点任务执行人
 			,"comment": ""   //备注信息
@@ -358,4 +358,4 @@
 	
 	
 2、
-
+select WEL_NAME,WEL_UNIT,EQU_MODEL,EQU_POSITION_NUM,EQU_MEMO_ONE from CZ_EQUIPMENT_INFO

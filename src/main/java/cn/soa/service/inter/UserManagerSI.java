@@ -55,8 +55,15 @@ public interface UserManagerSI {
 	
 	/**
 	 * 查找所在组下的用户列表
-	 * @param orgID  组织标号
+	 * @param Dept  部门
 	 * @return 用户列表树形结构
 	 */
-	List<LayuiTree> findUserByOrgid(String orgID);
+	List<LayuiTree> findUserByDept(String Dept);
+	
+	/**
+	 * 根据用户名查找用户编号
+	 * @param  name 用户名
+	 * @return 用户编号
+	 */
+	String getUsernumByName(String name);
 }
