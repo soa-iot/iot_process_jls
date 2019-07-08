@@ -49,7 +49,9 @@ public interface ProblemInfoMapper {
 			@Param("page") Integer page,
 			@Param("limit") Integer limit, 
 			@Param("startTime") String startTime,
-			@Param("endTime") String endTime);
+			@Param("endTime") String endTime,
+			@Param("sortField") String sortField,
+			@Param("sortType") String sortType);
 
 	Map<String, Object> PorblemCount(
 			@Param("record") ProblemInfo problemInfo,
@@ -139,6 +141,13 @@ public interface ProblemInfoMapper {
 	 * @return: int        
 	 */  
 	public int deleteByBsid( @Param("bsid") String bsid ); 
+	
+	/**   
+	 * @Title: deleteByRepid  
+	 * @Description: 根据问题上报主键id删除问题上报记录  
+	 * @return: int        
+	 */  
+	public Integer deleteByRepid( @Param("repid") String repid ); 
 	
 	/**   
 	 * @Title: updatePiidByBsid   
