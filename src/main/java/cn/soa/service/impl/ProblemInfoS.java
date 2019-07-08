@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.soa.dao.ProblemInfoMapper;
+import cn.soa.dao.ProblemTypeAreaMapper;
 import cn.soa.entity.ProblemInfo;
+import cn.soa.entity.ProblemTypeArea;
 import cn.soa.entity.UserOrganization;
 import cn.soa.service.inter.ProblemInfoSI;
 import javassist.expr.NewArray;
@@ -24,6 +26,7 @@ public class ProblemInfoS implements ProblemInfoSI {
 
 	@Autowired
 	private ProblemInfoMapper problemInfoMapper;
+	
 	/**
 	 * lixuefeng:新增接口用于问题查询，多个维度，可分页
 	 * @param piid 流程标识字段

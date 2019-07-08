@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.activiti.validation.validator.Problems;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoQuery;
 import cn.soa.entity.ProblemInfoVO;
 import cn.soa.entity.ProblemReportpho;
+import cn.soa.entity.ProblemTypeArea;
 import cn.soa.entity.ResultJson;
 import cn.soa.entity.ResultJsonForTable;
 import cn.soa.entity.UnsafeType;
@@ -93,6 +95,20 @@ public class ReportC {
 		List<UnsafeType> result = unsafeS.getList();
 		
 		return new ResultJson<List<UnsafeType>>(ResultJson.SUCCESS, null, result);
+	}
+	
+	/**   
+	 * @Title: showProlemTypeArea   
+	 * @Description: 查找问题属地对应区域
+	 * @return: ResultJson<List<ProblemTypeArea>>  返回问题属地对应区域数据列表   
+	 */
+	@GetMapping("/problemtype/area")
+	public ResultJson<List<ProblemTypeArea>> showProlemTypeArea(){
+		System.out.println("进入ReportC...showProlemTypeArea...");
+		//调用service层执行查询操作
+		List<ProblemTypeArea> result = reportS.findProblemTypeArea();
+		
+		return new ResultJson<List<ProblemTypeArea>>(ResultJson.SUCCESS, null, result);
 	}
 	
 	/**   

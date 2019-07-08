@@ -413,7 +413,21 @@ public class ActivityS implements ActivitySI{
     		}else {
     			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
-    		map.remove( "comment" );
+    		map.remove( "comment" );   
+    		   
+    		/*
+    		 * 设置当前任务流程变量 - 定制 -后续改设计模式
+    		 */
+    		Object areaValue = taskService.getVariable( tsid, "area" );
+    		String areaValueStr = "";
+//    		Object areaValue = runtimeService.getVariable( piid, "area" );
+    		if( areaValue != null ) {
+    			areaValueStr = areaValue.toString();
+    			logger.info( "---获取当前任务节点流程变量area成功:---------" + areaValue ); 
+    		}else {
+    			logger.info( "---获取当前任务节点流程变量area失败---------" );
+    		}
+    		
     		
         	/*
         	 *设置流程变量
@@ -423,9 +437,16 @@ public class ActivityS implements ActivitySI{
     			if(StringUtils.isBlank( e.getKey() ) ) {
     				logger.info( "---key---------" + e.getKey() );
     			}
-    			taskService.setVariable(tsid, e.getKey(), e.getValue());
+    			taskService.setVariable(tsid, e.getKey(), e.getValue());    			
     			logger.info( "---成功设置流程变量名----" + e.getKey() + "---对应值----" + e.getValue() );
     		}
+    		 
+    		
+    		//设置本节点的流程变量
+    		if( StringUtils.isNotBlank( areaValueStr ) ) {
+    			logger.info( "---获取当前任务节点流程变量area的areaValueStr:---------" + areaValueStr ); 
+    			taskService.setVariableLocal( tsid, "area", areaValueStr );
+    		}  		
     		
     		/*
     		 * 流程流转下一个节点
@@ -475,6 +496,17 @@ public class ActivityS implements ActivitySI{
     			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
     		map.remove( "comment" );
+    		
+    		/*
+    		 * 设置当前任务流程变量 - 定制 -后续改设计模式
+    		 */
+    		Object areaValue = taskService.getVariable( tsid, "area" );
+    		if( areaValue != null ) {
+    			logger.info( "---获取流程变量area成功:---------" + areaValue );
+    		}else {
+    			logger.info( "---获取流程变量area失败---------" );
+    		}
+    		taskService.setVariableLocal( tsid, "area", areaValue );
     		
         	/*
         	 *设置流程变量
@@ -1080,13 +1112,40 @@ public class ActivityS implements ActivitySI{
 		}   	
     }
     
+    
+    /**   
+     * @Title: getHistoryTasksByTsid   
+     * @Description:  根据当tsid，查询该流程的历史任务节点   
+     * @return: List<HistoricTaskInstance>        
+     */  
+    public List<HistoricTaskInstance> getHistoryTasksByTsid( String tsid ){
+    	if( StringUtils.isBlank( tsid ) ) {
+			logger.info( "---S--------任务piid为null-------------" );
+			return null;
+		}	
+    	try {
+    		Task task = taskService.createTaskQuery().taskId( tsid ).singleResult();
+    		String piid = task.getProcessInstanceId();
+    		List<HistoricTaskInstance> lists = historyService
+    				.createHistoricTaskInstanceQuery()
+    				.processInstanceId( piid )
+    				.orderByTaskCreateTime()
+    				.asc()
+    				.list();
+    		return lists;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}   	
+    }
+    
 	/**   
 	 * @Title: getBeforeNodesByTsid   
 	 * @Description:   根据任务tsid，查询流程当前节点的上一个节点 
 	 * @return: HistoricActivityInstance        
 	 */ 
     @Override
-	public HistoricActivityInstance getBeforeNodesByTsid ( String tsid ){
+	public HistoricTaskInstance getBeforeTasksByTsid ( String tsid ){
     	if( StringUtils.isBlank( tsid ) ) {
 			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
@@ -1095,10 +1154,10 @@ public class ActivityS implements ActivitySI{
     	 * 查询所有历史节点
     	 */
     	try {
-    		List<HistoricActivityInstance> historyNodes = getHistoryNodesByTsid( tsid );
-    		logger.info( "---S--------任务tsid的全部历史节点-------------" + historyNodes.toString() );
-    		if( historyNodes.size() > 0 ) {
-    			return historyNodes.get( historyNodes.size() - 2 );    			
+    		List<HistoricTaskInstance> historyTasks = getHistoryTasksByTsid( tsid );
+    		logger.info( "---S--------任务tsid的全部历史节点-------------" + historyTasks.toString() );
+    		if( historyTasks.size() > 0 ) {
+    			return historyTasks.get( historyTasks.size() - 2 );    			
     		}else {
     			return null;
     		}
@@ -1114,7 +1173,7 @@ public class ActivityS implements ActivitySI{
 	 * @return: HistoricActivityInstance        
 	 */  
     @Override
-	public HistoricActivityInstance getBeforeNodesByPiid ( String piid ){
+	public HistoricActivityInstance getBeforeTasksByPiid ( String piid ){
     	if( StringUtils.isBlank( piid ) ) {
 			logger.info( "---S--------任务piid为null-------------" );
 			return null;
@@ -1169,20 +1228,32 @@ public class ActivityS implements ActivitySI{
 			/*
 			 * 查询上一个节点
 			 */
-			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
-			logger.info( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
-			String beforeNodeActid = beforeNode.getActivityId();
-			if( StringUtils.isBlank( beforeNodeActid ) ) {
-				logger.info( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
+			HistoricTaskInstance hisTask = getBeforeTasksByTsid ( tsid );
+			logger.info( "---S--------上一个任务节点hisTasks为-------------" + hisTask );
+			String beforeTaskId = hisTask.getTaskDefinitionKey();
+			if( StringUtils.isBlank( beforeTaskId ) ) {
+				logger.info( "---S--------上一个任务节点beforeTaskId为null或空-------------" ); 
 				return false;
 			}
-			logger.info( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
+			logger.info( "---S--------上一个任务节点beforeTaskId为-------------" + beforeTaskId ); 
 			
+			/*
+    		 * 设置当前任务流程变量 - 定制 -后续改设计模式
+    		 */
+    		Object areaValueNow = taskService.getVariable( tsid, "area" );
+    		String areaValueStr = "";
+//    		Object areaValue = runtimeService.getVariable( piid, "area" );
+    		if( areaValueNow != null ) {
+    			areaValueStr = areaValueNow.toString();
+    			logger.info( "---获取当前任务节点流程变量area成功:---------" + areaValueNow ); 
+    		}else {
+    			logger.info( "---获取当前任务节点流程变量area失败---------" );
+    		}
 			
 			/*
 			 * 回退设置当前的属地变量area - 此部分定制
 			 */
-			String beforeTsid = beforeNode.getTaskId();
+			String beforeTsid = hisTask.getId();
 			logger.info( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
 			if( !StringUtils.isBlank( beforeTsid ) ) {
 				HistoricVariableInstance varibleInstance = historyService
@@ -1200,8 +1271,6 @@ public class ActivityS implements ActivitySI{
 						logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
 						areaValue = beforeArea.toString();
 						taskService.setVariable( tsid, "area", areaValue );
-						taskService.setVariableLocal( tsid, "area", areaValue);
-//						runtimeService.setVariable(piid, "area", areaValue);
 					}else {
 						logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
 					}		
@@ -1210,22 +1279,28 @@ public class ActivityS implements ActivitySI{
 				}
 					
 			}
+			
+			//设置本节点的流程变量
+    		if( StringUtils.isNotBlank( areaValueStr ) ) {
+    			logger.info( "---获取当前任务节点流程变量area的areaValueStr:---------" + areaValueStr ); 
+    			taskService.setVariableLocal( tsid, "area", areaValueStr );
+    		}  	
 
     		/*
     		 * 增加备注信息
     		 */
     		boolean b = saveCommentByPiid( piid, comment );
     		if( b ) {
-    			logger.info( "---执行流转下一个节点，保存备注信息成功---------" );
+    			logger.info( "---回退上一个节点，保存备注信息成功---------" );
     		}else {
-    			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
+    			logger.info( "---回退上一个节点，保存备注信息失败---------" );
     		}
     		map.remove( "comment" );
 			
 			/*
 			 * 跳转
 			 */
-    		transferProcessInVarsAndGroup( tsid, beforeNodeActid, map );
+    		transferProcessInVarsAndGroup( tsid, beforeTaskId, map );
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1240,71 +1315,71 @@ public class ActivityS implements ActivitySI{
 	 */
     @Override
     public boolean backToBeforeNodeByPiid( String piid, String comment ) {
-		if( StringUtils.isBlank( piid ) ) {
-			logger.info( "---S--------任务piid为null或空-------------" );
+//		if( StringUtils.isBlank( piid ) ) {
+//			logger.info( "---S--------任务piid为null或空-------------" );
+//			return false;
+//		}	
+//		
+//		
+//		String tsid = getTsidByPiid( piid );
+//		if( StringUtils.isBlank( tsid ) ) {
+//			logger.info( "---S--------任务tsid为null或空-------------" );
+//			return false;
+//		}
+//		logger.info( "---S--------任务tsid为-------------" + tsid );
+//		
+//		try {			
+//			
+//			/*
+//			 * 查询上一个节点
+//			 */
+//			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
+//			logger.info( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
+//			String beforeNodeActid = beforeNode.getActivityId();
+//			
+//			/*
+//			 * 回退设置前一个的属地变量area
+//			 */
+//			String beforeTsid = beforeNode.getTaskId();
+//			logger.info( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
+//			if( StringUtils.isBlank( beforeTsid ) ) {
+//				Object beforeArea = taskService.getVariableLocal( beforeTsid, "area" );
+//				String areaValue = "";
+//				if( beforeArea != null ) {
+//					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
+//					areaValue = beforeArea.toString();
+//					taskService.setVariable( tsid, "area", areaValue );
+//				}else {
+//					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
+//				}			
+//			}
+//			
+//			
+//			if( StringUtils.isBlank( beforeNodeActid ) ) {
+//				logger.info( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
+//				return false;
+//			}
+//			logger.info( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
+//			
+//			/*
+//    		 * 增加备注信息
+//    		 */
+//    		boolean b = saveCommentByPiid( piid, comment );
+//    		if( b ) {
+//    			logger.info( "---执行回退上一个节点，保存备注信息成功---------" );
+//    		}else {
+//    			logger.info( "---执行回退上一个节点，保存备注信息失败---------" );
+//    		}
+//			
+//			/*
+//			 * 跳转
+//			 */
+//			transferProcessInVars( tsid, beforeNodeActid, null );
+//			return true;
+//		} catch (Exception e) {
+//			e.printStackTrace();
 			return false;
-		}	
-		
-		
-		String tsid = getTsidByPiid( piid );
-		if( StringUtils.isBlank( tsid ) ) {
-			logger.info( "---S--------任务tsid为null或空-------------" );
-			return false;
-		}
-		logger.info( "---S--------任务tsid为-------------" + tsid );
-		
-		try {			
-			
-			/*
-			 * 查询上一个节点
-			 */
-			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
-			logger.info( "---S--------上一个任务节点beforeNode为-------------" + beforeNode );
-			String beforeNodeActid = beforeNode.getActivityId();
-			
-			/*
-			 * 回退设置前一个的属地变量area
-			 */
-			String beforeTsid = beforeNode.getTaskId();
-			logger.info( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
-			if( StringUtils.isBlank( beforeTsid ) ) {
-				Object beforeArea = taskService.getVariableLocal( beforeTsid, "area" );
-				String areaValue = "";
-				if( beforeArea != null ) {
-					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
-					areaValue = beforeArea.toString();
-					taskService.setVariable( tsid, "area", areaValue );
-				}else {
-					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
-				}			
-			}
-			
-			
-			if( StringUtils.isBlank( beforeNodeActid ) ) {
-				logger.info( "---S--------上一个任务节点beforeNodeActid为null或空-------------" ); 
-				return false;
-			}
-			logger.info( "---S--------上一个任务节点beforeNodeActid为-------------" + beforeNodeActid ); 
-			
-			/*
-    		 * 增加备注信息
-    		 */
-    		boolean b = saveCommentByPiid( piid, comment );
-    		if( b ) {
-    			logger.info( "---执行回退上一个节点，保存备注信息成功---------" );
-    		}else {
-    			logger.info( "---执行回退上一个节点，保存备注信息失败---------" );
-    		}
-			
-			/*
-			 * 跳转
-			 */
-			transferProcessInVars( tsid, beforeNodeActid, null );
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+//		}
 	}
 	
 	/**   
@@ -1314,26 +1389,26 @@ public class ActivityS implements ActivitySI{
 	 */
     @Override
 	public boolean backToBeforeNodeByTsid( String tsid ) {
-		if( StringUtils.isBlank( tsid ) ) {
-			logger.info( "---S--------任务tsid为null-------------" );
+//		if( StringUtils.isBlank( tsid ) ) {
+//			logger.info( "---S--------任务tsid为null-------------" );
+//			return false;
+//		}	
+//		
+//		try {
+//			/*
+//			 * 查询上一个节点
+//			 */
+//			HistoricActivityInstance beforeNode = getBeforeTasksByTsid ( tsid );
+//			String beforeNodeActid = beforeNode.getActivityId();
+//			/*
+//			 * 跳转
+//			 */
+//			transferProcessInVars( tsid, beforeNodeActid, null );
+//			return true;
+//		} catch (Exception e) {
+//			e.printStackTrace();
 			return false;
-		}	
-		
-		try {
-			/*
-			 * 查询上一个节点
-			 */
-			HistoricActivityInstance beforeNode = getBeforeNodesByTsid ( tsid );
-			String beforeNodeActid = beforeNode.getActivityId();
-			/*
-			 * 跳转
-			 */
-			transferProcessInVars( tsid, beforeNodeActid, null );
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+//		}
 	}
 	
 	/**   
