@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import cn.soa.entity.ProblemInfo;
+import cn.soa.entity.ProblemTypeArea;
 import cn.soa.entity.UserOrganization;
 
 /**

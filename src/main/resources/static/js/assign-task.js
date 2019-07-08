@@ -39,7 +39,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
 		    		 layer.msg("作业安排成功",{icon:1, time: 2000, offset: '100px'}, function(){
-//		    			 window.location.href = "http://localhost:10238/iot_usermanager/html/userCenter/test.html";
+		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
 		    	 }else{
 		    		 layer.msg("作业安排失败",{icon:2, time: 2000, offset: '100px'});
@@ -72,12 +72,13 @@ layui.use(['tree', 'layer', 'form'], function() {
 			,yes: function(index, layero){
 				//确认按钮的回调函数
 				var comment = $("#comment_assign").val();
-				var receivor = assignUsers.join("，");
+				var receivor = assignUsers.join(",");
 				console.log(receivor);
 				workAssignment(comment, receivor, resavepeople);
 				//layer.closeAll();
 		    }
-		,success:function(){	
+		,success:function(){
+			assignUsers = [];
 			//单选框
 			tree.render({
 				elem: '#task_tree'

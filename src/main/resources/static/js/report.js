@@ -114,15 +114,35 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		//更新不安全select渲染
 	    form.render('select','notsafe-select');
 	  }); 
+	  
+	//异步请求，从数据库中读取问题属地对应区域
+	  var problemTypeList;
+	  $.ajax({  
+        type: 'get',  
+        async: false,
+        url: '/iot_process/report/problemtype/area', // ajax请求路径   
+        success: function(data){ 
+          if(data.state == 0 && data.data != null){
+        	problemTypeList = data.data;
+          	for( x in problemTypeList){
+          		var $option1 = $("<option></option>");
+          		$option1.val(problemTypeList[x].problemName);
+          		$option1.text(problemTypeList[x].problemName);
+          		$("#problemtype").append($option1);  
+          	}
+      		form.render();
+          }
+        }
+    });
 	
-	  //异步请求，从数据库中读取不安全数据列表
+	  //同步请求，从数据库中读取不安全数据列表
 	  var unsafeList;
 	  $.ajax({  
         type: 'get',  
         async: false,
         url: '/iot_process/report/unsafe/showlist', // ajax请求路径   
         success: function(data){ 
-          if(data.state == 0){
+          if(data.state == 0 && data.data != null){
           	unsafeList = data.data;
           	for( x in unsafeList){
           		var $option1 = $("<option></option>");
@@ -143,6 +163,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           }
         }
     });
+	  
+	  
 	  
 	//异步请求，从数据库中读取当前登录用户的暂存问题报告数据
 	 var imgList = new Array(); 
@@ -211,7 +233,29 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           }
         }
     }); 
-	  
+	
+    //监听问题区域级联
+	form.on('select(problem-area)', function(data){
+	   var value = data.value;
+	   console.log(value);
+	   $("#welName").empty();  //清空子选项
+	   $("#welName").append("<option value=''>请选择</option>");
+	   for( x in problemTypeList){
+	      if(value == problemTypeList[x].problemName){
+	    	var areaList = problemTypeList[x].problemAreas;
+            for( y in areaList){
+            	var $option2 = $("<option></option>");
+	            $option2.val(areaList[y].problemName);
+	            $option2.text(areaList[y].problemName);
+	            $("#welName").append($option2);
+            }
+            $("#welName").append("<option value='其他'>其他</option>");
+	      }
+	    }
+	     //更新select渲染
+		 form.render();
+	});
+    
 	//监听不安全行为级联
 	form.on('select(notsafe)', function(data){
 	   var value = data.value;
@@ -262,6 +306,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		  }
 		  //异步请求后端保存数据
 		   $.ajax({
+			    async:false,
 		   		type: "POST",
 		   		url: "/iot_process/report/",
 		   		data: data.field,
@@ -362,14 +407,18 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		  data.field.applydate = new Date();
 		  console.log(data.field);
 		 //流程上报：
+
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
 		     type: "POST"
-<<<<<<< HEAD
-		     ,url: '/iot_process/process/processPure2:1:4'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
-=======
 		     ,url: '/iot_process/process/processPure2:2:15004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
->>>>>>> branch 'master' of https://github.com/soa-iot/iot_process.git
+
+		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+		 $.ajax({
+			  async:false
+		     ,type: "POST"
+		     ,url: '/iot_process/process'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -446,6 +495,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		  }
 		  //异步请求后端保存数据
 		   $.ajax({
+			    async:false,
 		   		type: "POST",
 		   		url: "/iot_process/report/",
 		   		data: data.field,
@@ -525,8 +575,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		    	type: 2,
 		    	id: 'equipmentInfo',
 		    	btn: ['确&nbsp;&nbsp;认','取&nbsp;&nbsp;消','其他设备'],
-		    	offset: ['50px','100px'],
-		    	area: ['73%','80%'],
+		    	offset: ['45px','50px'],
+		    	area: ['88%','82%'],
 		        content: './equipment-location.html',
 		        yes: function(index, layero){
 		        	//获取iframe窗口的body对象
@@ -574,7 +624,25 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		  		}
 		  });
 	  });
-	  
-	  
+  	
 })  
+
+window.onload = function(){
+	 /**
+	 * 窗口调整大小
+	 */
+	function windowResize(){
+		if(window.innerWidth < 990){
+	  		$("#problemdescribe").css({"width": "86%"});
+	  	}else if(window.innerWidth < 1200){
+	  		$("#problemdescribe").css({"width": "84%"});
+	  	}else{
+	  		$("#problemdescribe").css({"width": "77%"});
+	  	}
+	}
+	windowResize();
+	window.onresize = function(){
+		windowResize();
+	}
+}
 	

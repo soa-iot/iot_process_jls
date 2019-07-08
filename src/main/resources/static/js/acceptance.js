@@ -91,7 +91,7 @@ $.ajax({
 								,title:false
 								//,shadeClose:true
 								//,cancel:false
-								,offset:'auto'
+								,offset:'50px'
 								
 								});
 							}
@@ -121,7 +121,8 @@ $("#complete1").click(function(){
 	}else{
 
 		$.ajax({
-			type: "PUT"
+			 async:false
+			,type: "PUT"
 			,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 			,data: {
 
@@ -136,10 +137,46 @@ $("#complete1").click(function(){
 				
 				if (jsonData.data) {
 					layer.msg("闭环处理成功！",{time: 3000,icon:1,offset:"100px"},function() {
-						location.href = getUrlIp()+"/iot_usermanager/html/userCenter/index.html";
+						top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 					});
 				}else{
 					layer.msg("闭环处理失败！！",{icon:2,offset:"100px"});
+				}
+			},
+				//,error:function(){}		       
+		});
+	}
+
+})
+
+/**
+ * 作业验收——回退
+ * @returns
+ */
+$("#rollback-accept").click(function(){
+
+	if ($("#comment").val()=="") {
+		layer.msg("处理说明不能为空",{icon:7,offset:"100px"});
+	}else{
+
+		$.ajax({
+			 async:false
+			,type: "PUT"
+			,url: '/iot_process/process/nodes/before/group/piid/'+piidp    //piid为流程实例id
+			,data: {
+				"comment": $("#comment").val()  //处理信息
+		     	,"userName":$.cookie("name").replace(/"/g,"")
+			}   //问题上报表单的内容
+			,contentType: "application/x-www-form-urlencoded"
+			,dataType: "json"
+			,success: function(jsonData){
+				//后端返回值： ResultJson<Boolean>
+				if (jsonData.data) {
+					layer.msg("回退成功！",{time: 3000,icon:1,offset:"100px"},function() {
+						top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
+					});
+				}else{
+					layer.msg("回退成功失败！！",{icon:2,offset:"100px"});
 				}
 			},
 				//,error:function(){}		       

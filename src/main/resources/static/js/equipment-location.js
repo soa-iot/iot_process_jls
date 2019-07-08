@@ -46,32 +46,6 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			{field:'equPositionNum', title:'设备位号', align:'center'},
 			{field:'equName', title:'设备名称', align:'center'}]]
 	});
-
-	
-	/**
-	 * 监听每一行工具事件
-	 */
-	table.on('tool(equipmentInfo)', function(obj){
-		console.log(obj);
-	    var data = obj.data;
-	    if(obj.event === 'process'){
-	      piid = data.piid;
-	      loadTable();
-	      layer.open({
-	    	title: '处理过程信息',
-	    	type: 1,
-	    	id: obj.event+1,
-	    	btn: ['确认'],
-	    	offset: '100px',
-	    	area: ['80%','60%'],
-	        content: $('#div-process'),
-	        yes: function(index, layero){
-	            layer.close(index); //如果设定了yes回调，需进行手工关闭
-	          }
-	      });
-	       
-	    }
-	});
 	
 	/**
 	 * onblur失去焦点事件
