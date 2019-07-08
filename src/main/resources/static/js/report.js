@@ -261,6 +261,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		  }
 		  //异步请求后端保存数据
 		   $.ajax({
+			    async:false,
 		   		type: "POST",
 		   		url: "/iot_process/report/",
 		   		data: data.field,
@@ -363,8 +364,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		 //流程上报：
 		 //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		 $.ajax({
-		     type: "POST"
-		     ,url: '/iot_process/process/processPure2:2:15004'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
+			  async:false
+		     ,type: "POST"
+		     ,url: '/iot_process/process'    //dfid为流程定义id（暂时就是dfid="processPure2:4:47506"）
 		     ,data: data.field  //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -441,6 +443,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		  }
 		  //异步请求后端保存数据
 		   $.ajax({
+			    async:false,
 		   		type: "POST",
 		   		url: "/iot_process/report/",
 		   		data: data.field,
@@ -520,8 +523,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		    	type: 2,
 		    	id: 'equipmentInfo',
 		    	btn: ['确&nbsp;&nbsp;认','取&nbsp;&nbsp;消','其他设备'],
-		    	offset: ['50px','100px'],
-		    	area: ['73%','80%'],
+		    	offset: ['45px','50px'],
+		    	area: ['88%','82%'],
 		        content: './equipment-location.html',
 		        yes: function(index, layero){
 		        	//获取iframe窗口的body对象
@@ -569,7 +572,25 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		  		}
 		  });
 	  });
-	  
-	  
+  	
 })  
+
+window.onload = function(){
+	 /**
+	 * 窗口调整大小
+	 */
+	function windowResize(){
+		if(window.innerWidth < 990){
+	  		$("#problemdescribe").css({"width": "86%"});
+	  	}else if(window.innerWidth < 1200){
+	  		$("#problemdescribe").css({"width": "84%"});
+	  	}else{
+	  		$("#problemdescribe").css({"width": "77%"});
+	  	}
+	}
+	windowResize();
+	window.onresize = function(){
+		windowResize();
+	}
+}
 	

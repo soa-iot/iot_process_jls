@@ -193,6 +193,7 @@ function workPlan(obj,usernames){
 	}
 	console.log("isIngroupg:"+isIngroup);
 	$.ajax({
+		async:false,
 		type: "PUT"
 		,url: '/iot_process/process/nodes/jump/group/piid/'+piidp    //piid为流程实例id
 		,data: {

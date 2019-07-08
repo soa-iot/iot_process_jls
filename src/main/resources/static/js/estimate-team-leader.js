@@ -217,6 +217,7 @@ $.ajax({
  */
 function workPlan(obj,usernames){
 	$.ajax({
+		async:false,
 		type: "PUT"
 		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 		,data: {
@@ -265,13 +266,14 @@ function estimate_next(obj,usernames){
 	
 	if (area=="净化工段" || area=="化验") {
 		estimate_next_data["puror"] = usernames;
-	}else if(area=="维修工段" ||area=="电机" || area=="电站"){
+	}else if(area=="维修工段" ||area=="电工" || area=="电站"|| area=="机械"|| area=="仪表"){
 		estimate_next_data["repairor"] = usernames;
 	}
 	
 	
 	
 	$.ajax({
+		async:false,
 		type: "PUT"
 		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 		,data: estimate_next_data
