@@ -424,6 +424,7 @@ public class ActivityS implements ActivitySI{
     				logger.info( "---key---------" + e.getKey() );
     			}
     			taskService.setVariable(tsid, e.getKey(), e.getValue());
+    			logger.info( "---成功设置流程变量名----" + e.getKey() + "---对应值----" + e.getValue() );
     		}
     		
     		/*
@@ -481,10 +482,11 @@ public class ActivityS implements ActivitySI{
     		HashMap<String, Object> vars = new HashMap<String,Object>();
     		for( Entry<String, Object> e : map.entrySet() ) {
     			if(StringUtils.isBlank( e.getKey() ) ) {
-    				logger.info( "---key---------" + e.getKey() );
+    				logger.info( "---流程变量名key为空---------" + e.getKey() );
     				continue;
     			}
     			taskService.setVariable(tsid, e.getKey(), e.getValue());
+    			logger.info( "---成功设置流程变量名----" + e.getKey() + "---对应值----" + e.getValue() );
     		}
     		
     		/*
@@ -1178,7 +1180,7 @@ public class ActivityS implements ActivitySI{
 			
 			
 			/*
-			 * 回退设置当前的属地变量area
+			 * 回退设置当前的属地变量area - 此部分定制
 			 */
 			String beforeTsid = beforeNode.getTaskId();
 			logger.info( "---S--------上一个任务节点beforeNode的tsid为-------------" + beforeTsid );
@@ -1190,16 +1192,23 @@ public class ActivityS implements ActivitySI{
 						.singleResult();
 				logger.info( "---S--------上一个任务节点varibleInstance的流程变量varibleInstance为-------------" + varibleInstance );
 				String areaValue = "";
-				Object beforeArea = varibleInstance.getValue();
-				String name = varibleInstance.getVariableName();
-				logger.info( "---S--------上一个任务节点name的流程变量name为-------------" + name );
-				if( beforeArea != null ) {
-					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
-					areaValue = beforeArea.toString();
-					taskService.setVariable( tsid, "area", areaValue );
+				if( varibleInstance != null) {
+					Object beforeArea = varibleInstance.getValue();
+					String name = varibleInstance.getVariableName();
+					logger.info( "---S--------上一个任务节点name的流程变量name为-------------" + name );
+					if( beforeArea != null ) {
+						logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为-------------" + beforeArea.toString() );
+						areaValue = beforeArea.toString();
+						taskService.setVariable( tsid, "area", areaValue );
+						taskService.setVariableLocal( tsid, "area", areaValue);
+//						runtimeService.setVariable(piid, "area", areaValue);
+					}else {
+						logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
+					}		
 				}else {
-					logger.info( "---S--------上一个任务节点beforeNode的流程变量beforeArea为null或空-------------");
-				}			
+					logger.info( "---S--------上一个任务节点varibleInstance的流程变量varibleInstance为null-------------");
+				}
+					
 			}
 
     		/*
