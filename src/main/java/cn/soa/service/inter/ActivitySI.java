@@ -178,7 +178,6 @@ public interface ActivitySI {
 	 * @Description: 根据任务tsid，查询流程当前节点的上一个节点   
 	 * @return: HistoricActivityInstance        
 	 */  
-
 	HistoricTaskInstance getBeforeTasksByTsid(String tsid);
 
 	/**   

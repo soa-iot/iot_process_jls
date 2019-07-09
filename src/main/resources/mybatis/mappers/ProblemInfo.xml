@@ -183,14 +183,27 @@
 			@Param("page") Integer page,
 			@Param("limit") Integer limit, 
 			@Param("startTime") String startTime,
-			@Param("endTime") String endTime); -->
+			@Param("endTime") String endTime,
+			@Param("sortField") String sortField,
+			@Param("sortType") String sortType) -->
 	<select id="findPorblemInfoByPage" resultType="cn.soa.entity.ProblemInfo">
 		SELECT
 			<include refid="problemInfoSelectSql"></include>
 		FROM
 			(
-				SELECT ROWNUM rownum1, CZ_TASK_PROBLEM_REPORT_NEW.*
-				FROM CZ_TASK_PROBLEM_REPORT_NEW
+				SELECT ROWNUM rownum1, REPORT_NEW.*
+				FROM 
+					( 
+						SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW
+						<choose>
+								<when test="sortField != null and sortField != ''">
+									ORDER BY ${sortField} ${sortType}
+								</when>
+								<otherwise>
+									ORDER BY applydate DESC
+								</otherwise>
+						</choose>
+					) REPORT_NEW
 				<where>
 					<if test="record != null">
 					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">
@@ -386,7 +399,7 @@
 					<if test="limit != null and limit != ''">
 						and ROWNUM &lt;= (${limit}*${page})
 					</if>
-				</where>		
+				</where>
 			) probleminfo 
 		<where>
 			<if test="page != null and page != ''">
@@ -1581,6 +1594,11 @@
 	<delete id="deleteByBsid" parameterType="string">
 		delete from CZ_TASK_PROBLEM_REPORT_NEW
 		where T_PROBLEM_REP_ID=#{bsid}
+	</delete>
+	
+	<delete id="deleteByRepid" parameterType="string">
+		delete from CZ_TASK_PROBLEM_REPORT_NEW
+		where T_PROBLEM_REP_ID=#{repid}
 	</delete>
 </mapper>
  

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.validation.validator.Problems;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -127,8 +128,10 @@ public class ReportC {
 		String endTime = problemInfoQuery.getEndTime();
 		String schedule = problemInfoQuery.getSchedule();
 		String handler = problemInfoQuery.getHandler();
+		String sortField = problemInfoQuery.getSortField();
+		String sortType = problemInfoQuery.getSortType();
 
-		List<ProblemInfo> result = reportS.getProblemInfoByPage(problemInfoQuery, page, limit, startTime, endTime);
+		List<ProblemInfo> result = reportS.getProblemInfoByPage(problemInfoQuery, page, limit, startTime, endTime, sortField, sortType);
 		if(result != null) {
 			Map<String, Object> map = reportS.ProblemCount(problemInfoQuery, startTime, endTime);
 			System.err.println(map);
@@ -300,5 +303,18 @@ public class ReportC {
 		}
 		
 	}
-
+	
+	/**
+	 * 删除暂存的问题上报数据
+	 * @return
+	 */
+	@PostMapping("/deletereport")
+	public ResultJson<Void> deleteReport(@RequestParam String repid){
+		
+		Integer result = reportS.deleteByReportid(repid);
+		if(result == null || result == 0) {
+			return new ResultJson<Void>(ResultJson.ERROR, "删除问题上报数据失败");
+		}
+		return new ResultJson<Void>(ResultJson.SUCCESS, "删除问题上报数据成功");
+	}
 }

@@ -36,7 +36,7 @@ public interface ReportSI {
 	 * @return: ProblemInfo  查到的问题报告数据列表 
 	 */
 	public List<ProblemInfo> getProblemInfoByPage(ProblemInfo problemInfo, Integer page,
-			Integer limit, String startTime, String endTime);
+			Integer limit, String startTime, String endTime, String sortField, String sortType);
 	
 	/**   
 	 * @Title: ProblemCount   
@@ -51,4 +51,11 @@ public interface ReportSI {
 	 * @return List<ProblemTypeArea> 问题属地对应区域列表
 	 */
 	List<ProblemTypeArea> findProblemTypeArea();
+	
+	/**   
+	 * 根据问题上报主键id删除问题上报记录   
+	 * @param repid 问题上报主键
+	 * @return: int 删除数据的条数
+	 */
+	Integer deleteByReportid(String repid);
 }
