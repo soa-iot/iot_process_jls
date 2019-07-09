@@ -66,4 +66,9 @@ public class ProblemInfoMapperTest {
 
 	}
 	
+	@Test
+	public void deleteByReportid() {
+		Integer result = problemInfoMapper.deleteByRepid("C00287BE52C1452CA8C0B7D90C9AD749");
+		System.err.println("result: "+result);
+	}
 }

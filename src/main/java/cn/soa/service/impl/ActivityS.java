@@ -413,6 +413,7 @@ public class ActivityS implements ActivitySI{
     		}else {
     			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
+
     		map.remove( "comment" );   
     		   
     		/*

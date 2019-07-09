@@ -47,6 +47,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		method: 'post',
 		url: '/iot_process/report/showproblembycondition',
 		toolbar: '#toolbarBtn',
+		autoSort: false,  //禁用前端自动排序
 		defaultToolbar: [''],
 		cellMinWidth:70,
 		totalRow: true,
@@ -189,10 +190,31 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 					//2. 过滤多余属性
 					var exportData = excel.filterExportData(data, ['applydate', 'applypeople', 'welName', 'problemclass', 'profession', 'problemtype', 'problemdescribe', 'problemstate']);
 					console.log(123);
+					//2.1 设置列宽,G列为180， 其他列默认为100
+					var colConf = excel.makeColConfig({
+					    'G': 180,
+					    'H': 100
+					}, 100);
+					
+					// 2.2 调用设置样式的函数，传入设置的范围，支持回调
+					excel.setExportCellStyle(exportData, 'A1:H1', {
+					    s: {
+					        alignment: {
+					            horizontal: 'center',
+					            vertical: 'center'
+					        },
+					        font: {bold: true }
+					    }
+					});
+					
 					//3. 执行导出函数，系统会弹出弹框
 					excel.exportExcel({
 			            sheet1: exportData
-			        }, '问题上报数据.xlsx', 'xlsx');
+			        }, '问题上报数据.xlsx', 'xlsx',{
+			            extend: {
+			                '!cols': colConf
+			            }
+			        });
 
 					//table.exportFile(problemTable.config.id,exportData, 'xls');
 				}
@@ -222,7 +244,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	/**
 	 * 重新加载表
 	 */
-	function reloadTable(){
+	function reloadTable(sortField, sortType){
 		problemTable.reload({
     		url: '/iot_process/report/showproblembycondition'
     	   ,page: {
@@ -239,7 +261,9 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'endTime': $("#enddate").val(),
     			'schedule': $("#schedule").val(),
     			'handler': $("#handler").val(),
-    			'applypeople': $("#applypeople").val()
+    			'applypeople': $("#applypeople").val(),
+    			'sortField': sortField,
+    			'sortType': sortType
     	   }
     	})
 	}
@@ -295,4 +319,12 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    };
 	  });
 	
+	 /**
+	  * 监听排序事件
+	  */
+	 table.on('sort(reportTrace)', function(obj){
+		 console.log(obj.field); //当前排序的字段名
+		 console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
+		 reloadTable(obj.field, obj.type);
+	 });
 })
