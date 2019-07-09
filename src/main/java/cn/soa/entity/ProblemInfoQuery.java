@@ -28,7 +28,6 @@ public class ProblemInfoQuery extends ProblemInfo {
 	private String startTime;
 	private String endTime;
 	private String schedule;
-	private String handler;
 	private String sortField;
 	private String sortType;
 	

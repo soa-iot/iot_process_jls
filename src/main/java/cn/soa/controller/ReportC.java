@@ -126,8 +126,6 @@ public class ReportC {
 		Integer limit = problemInfoQuery.getLimit();
 		String startTime = problemInfoQuery.getStartTime();
 		String endTime = problemInfoQuery.getEndTime();
-		String schedule = problemInfoQuery.getSchedule();
-		String handler = problemInfoQuery.getHandler();
 		String sortField = problemInfoQuery.getSortField();
 		String sortType = problemInfoQuery.getSortType();
 
