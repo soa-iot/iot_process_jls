@@ -1,8 +1,5 @@
 package cn.soa.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +13,13 @@ import cn.soa.dao.ProblemReportphoMapper;
 import cn.soa.dao.ProblemTypeAreaMapper;
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoVO;
-import cn.soa.entity.ProblemReportpho;
 import cn.soa.entity.ProblemTypeArea;
 import cn.soa.service.inter.ReportSI;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
+@Slf4j
 public class ReportS implements ReportSI {
 	
 	@Autowired
@@ -128,9 +126,10 @@ public class ReportS implements ReportSI {
 	 */
 	@Override
 	public List<ProblemInfo> getProblemInfoByPage(ProblemInfo problemInfo, Integer page, Integer limit, String startTime,
-			String endTime) {
+			String endTime, String sortField, String sortType) {
 		
-		List<ProblemInfo> result = reportMapper.findPorblemInfoByPage(problemInfo, page, limit, startTime, endTime);
+		sortField = findDataBaseFieldName(sortField);		
+		List<ProblemInfo> result = reportMapper.findPorblemInfoByPage(problemInfo, page, limit, startTime, endTime, sortField, sortType);
 		return result;
 	}
 	
@@ -156,7 +155,42 @@ public class ReportS implements ReportSI {
 		
 		return problemTypeAreaMapper.findAll();
 	}
-
 	
+	/**   
+	 * 根据问题上报主键id删除问题上报记录   
+	 * @param repid 问题上报主键
+	 * @return: int 删除数据的条数
+	 */
+	@Override
+	public Integer deleteByReportid(String repid) {
+		
+		try {
+			Integer row = reportMapper.deleteByRepid(repid);
+			return row;
+		}catch (Exception e) {
+			log.error("删除数据reportID:{}失败"+repid);
+			return null;
+		}
+	}
+	
+	/**
+	 * Map数据结构存储属性字段与数据库字段的对应关系
+	 * key - 实体类属性名   value - 数据库字段名
+	 * @return
+	 */
+	private String findDataBaseFieldName(String key) {
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("applydate", "APPLYDATE");
+		map.put("applypeople", "APPLYPEOPLE");
+		map.put("welName", "WEL_NAME");
+		map.put("problemclass", "PROBLEMCLASS");
+		map.put("profession", "PROFESSION");
+		map.put("problemtype", "PROBLEMTYPE");
+		map.put("problemdescribe", "PROBLEMDESCRIBE");
+		map.put("problemstate", "PROBLEMSTATE");
+		
+		return map.get(key);
+	}
 }
 

@@ -423,6 +423,17 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		    		piid = arr[0];
 		    		tProblemRepId = arr[1];
 		    		
+		    		//上报成功，删除暂存数据
+		    		$.ajax({
+		    			type: "POST",
+		    			url: "/iot_process/report/deletereport",
+		    			data: {"repid":tempRepId},
+		    			dataType: "json",
+		    			success: function(json){
+		    				console.log(json.message);
+		    			}
+		    		});
+		    		
 		    		//获取暂存图片列表
 			    	  $(".imgList").each(function(index){
 			  			  imgList.splice(index,1,"");
