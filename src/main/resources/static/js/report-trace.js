@@ -164,7 +164,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'startTime': $("#startdate").val(),
     			'endTime': $("#enddate").val(),
     			'schedule': $("#schedule").val(),
-    			'handler': $("#handler").val()
+    			'maintenanceman': $("#maintenanceman").val()
 			},
 			dataType: "json",
 			success: function(json){
@@ -260,7 +260,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'startTime': $("#startdate").val(),
     			'endTime': $("#enddate").val(),
     			'schedule': $("#schedule").val(),
-    			'handler': $("#handler").val(),
+    			'maintenanceman': $("#maintenanceman").val(),
     			'applypeople': $("#applypeople").val(),
     			'sortField': sortField,
     			'sortType': sortType

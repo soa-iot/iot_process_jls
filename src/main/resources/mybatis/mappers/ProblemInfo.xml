@@ -258,7 +258,7 @@
 					   		and supervisoryperson = #{record.supervisoryperson}
 					   </if>
 					   <if test="record.maintenanceman != null and record.maintenanceman != ''">
-					   		and maintenanceman = #{record.maintenanceman}
+					   		and maintenanceman LIKE '%${record.maintenanceman}%'
 					   </if>
 					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
 					   		and rectificationmeasures = #{record.rectificationmeasures}
@@ -466,7 +466,7 @@
 					   		and supervisoryperson = #{record.supervisoryperson}
 					   </if>
 					   <if test="record.maintenanceman != null and record.maintenanceman != ''">
-					   		and maintenanceman = #{record.maintenanceman}
+					   		and maintenanceman LIKE '%${record.maintenanceman}%'
 					   </if>
 					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
 					   		and rectificationmeasures = #{record.rectificationmeasures}
