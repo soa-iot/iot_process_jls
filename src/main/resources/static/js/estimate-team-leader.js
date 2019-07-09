@@ -11,7 +11,6 @@ $("#coordinate_tree").hide();
 
 $("#repair_cadre_tree").hide();
 $("#estimate_cadre_tree").hide();
-
 console.log("--------"+$.cookie("organ"));
 /**
  * 作业安排

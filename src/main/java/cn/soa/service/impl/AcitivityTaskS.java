@@ -1,7 +1,6 @@
 package cn.soa.service.impl;
 
 import java.util.List;
-
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
@@ -82,5 +81,9 @@ public class AcitivityTaskS implements AcitivityTaskSI{
 			e.printStackTrace();
 			return null;
 		}
+
+	
+
 	}
+
 }
