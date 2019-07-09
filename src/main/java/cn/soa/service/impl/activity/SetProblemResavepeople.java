@@ -70,7 +70,7 @@ public class SetProblemResavepeople implements ExecutionListener{
 			
 			ProblemInfo problemInfo = new ProblemInfo();
 			problemInfo.setPiid(piid);
-			problemInfo.setResavepeople(name);
+			problemInfo.setMaintenanceman (name);
 			Integer row = problemInfoS.changeProblemDescribeByPiid(problemInfo);
 			
 			logger.info( "---------责任人后置任务更新行数------------" + row );
