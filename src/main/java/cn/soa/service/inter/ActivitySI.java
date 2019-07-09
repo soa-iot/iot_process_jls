@@ -178,14 +178,15 @@ public interface ActivitySI {
 	 * @Description: 根据任务tsid，查询流程当前节点的上一个节点   
 	 * @return: HistoricActivityInstance        
 	 */  
-	HistoricActivityInstance getBeforeNodesByTsid(String tsid);
+
+	HistoricTaskInstance getBeforeTasksByTsid(String tsid);
 
 	/**   
 	 * @Title: getBeforeNodesByPiid   
 	 * @Description: 根据流程piid，查询流程当前节点的上一个节点  
 	 * @return: HistoricActivityInstance        
 	 */  
-	HistoricActivityInstance getBeforeNodesByPiid(String piid);
+	HistoricActivityInstance getBeforeTasksByPiid(String piid);
 
 	/**   
 	 * @Title: backToBeforeNodeByTsid 

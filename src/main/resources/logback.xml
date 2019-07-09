@@ -174,7 +174,8 @@
         <logger name="com.nmys.view" level="info"/>
     </springProfile>
 
-    <root level="info">
+
+    <root level="INFO">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="DEBUG_FILE" />
         <appender-ref ref="INFO_FILE" />
