@@ -10,12 +10,16 @@ layui.use('laydate', function(){
 	});
 });
 
+//从url中取出piid
+var piid = GetQueryString("piid");
+piid = '123';
+
 layui.use(['layer', 'form', 'table'], function() {
 	var layer = layui.layer, $ = layui.$, form = layui.form;
 	var table = layui.table;
 
 	/**
-	 * 打印申请单
+	 * 打印脚手架搭拆申请单
 	 */
 	form.on('submit(print-page)', function(data){
 		console.log("开始打印");
@@ -34,6 +38,30 @@ layui.use(['layer', 'form', 'table'], function() {
 		 }); 
 		$("#base").css({"display":"none"});
 		console.log("打印结束");
+	});
+	
+	/**
+	 * 保存脚手架搭拆申请单
+	 */
+	form.on('submit(save-page)', function(data){
+		console.log("开始保存");
+		$.ajax({
+			async: false,
+			type: 'POST',
+			url: '#',
+			data: $("form").serialize(),
+			dataType: 'json',
+			success: function(json){
+				if(json.state == 0){
+					layer.msg("保存成功",{icon:1, time: 2000, offset: '150px'});
+				}else{
+					layer.msg("保存失败",{icon:2, time: 2000, offset: '150px'});
+				}
+			},
+			error: function(){
+				layer.msg("保存失败， 请检查网路是否正常",{icon:2, time: 2000, offset: '150px'});
+			}
+		})
 	});
 	
 	/**
@@ -61,7 +89,7 @@ layui.use(['layer', 'form', 'table'], function() {
 		$("#tips_").text($("#tips").val());
 		$("#action_").text($("#action").val());
 		$("#caculator_").text($("#caculator").val());
-		$("#amount_").text($("#amount").val());
+		$("#workAmount_").text($("#workAmount").val());
 		$("#comment_").text($("#comment").val());
 	}
 	

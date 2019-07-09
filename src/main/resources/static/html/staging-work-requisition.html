@@ -19,6 +19,7 @@
 				
 		<div class="hbtn h2c">
 		   <button class="layui-btn layui-btn-normal layui-btn-sm btn" lay-submit lay-filter="clean-data">清&nbsp;&nbsp;空</button>
+		   <button class="layui-btn layui-btn-normal layui-btn-sm btn" lay-submit lay-filter="save-page">保&nbsp;&nbsp;存</button>
 		   <button class="layui-btn layui-btn-normal layui-btn-sm btn" lay-submit lay-filter="print-page">打&nbsp;&nbsp;印</button>
 		</div>	
 				
@@ -37,14 +38,14 @@
 				    <div class="layui-inline"> 
 				      <label class="layui-form-label">申请部门</label>
 				      <div class="layui-input-inline">
-				        <input id="applydept" type="text" class="layui-input" autocomplete="off">
+				        <input id="applydept" name="applydept" type="text" class="layui-input" autocomplete="off">
 				      </div>
 				    </div>
 				    <div class="layui-inline div-space" style="width: 110px;"></div>
 				    <div class="layui-inline">
 				      <label class="layui-form-label">申请时间</label>
 				      <div class="layui-input-inline">
-				    	<input id="applydate" type="text" class="layui-input" autocomplete="off">
+				    	<input id="applydate" name="applydate" type="text" class="layui-input" autocomplete="off">
 				    </div>
 				 </div>
 			  </div>
@@ -52,7 +53,7 @@
 			  	  <div class="layui-col-md2">&nbsp;</div>
 			      <label class="layui-form-label" style="width: 150px;">脚手架搭拆地点</label>
 			      <div class="layui-input-inline">
-			        <input id="location" type="text" class="layui-input" style="width: 600px;" autocomplete="off">
+			        <input id="location" name="location" type="text" class="layui-input" style="width: 600px;" autocomplete="off">
 			      </div>
 			  </div>
 			  <div class="layui-form-item">
@@ -60,14 +61,14 @@
 				    <div class="layui-inline"> 
 				      <label class="layui-form-label">申请人</label>
 				      <div class="layui-input-inline">
-				        <input id="applypeople" type="text" class="layui-input" autocomplete="off">
+				        <input id="applypeople" name="applypeople" type="text" class="layui-input" autocomplete="off">
 				      </div>
 				    </div>
 				    <div class="layui-inline div-space" style="width: 110px;"></div>
 				    <div class="layui-inline">
 				      <label class="layui-form-label">部门负责人</label>
 				      <div class="layui-input-inline">
-				    	<input id="deptowner" type="text" class="layui-input" autocomplete="off">
+				    	<input id="deptowner" name="deptowner" type="text" class="layui-input" autocomplete="off">
 				    </div>
 				 </div>
 			  </div>
@@ -78,7 +79,7 @@
 			   <div class="layui-form-item">
 			  	  <div class="layui-col-md2">&nbsp;</div>
 			      <div class="layui-input-block">
-			         <textarea id="workdescription" maxlength="145" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入工作内容描述" autocomplete="off"></textarea>
+			         <textarea id="workdescription" name="workdescription" maxlength="145" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入工作内容描述" autocomplete="off"></textarea>
 			      </div>
 			  </div>
 			  <div class="layui-form-item" style="margin-bottom: 0px;">
@@ -88,7 +89,7 @@
 			   <div class="layui-form-item">
 			  	  <div class="layui-col-md2">&nbsp;</div>
 			      <div class="layui-input-block">
-			         <textarea id="tips" maxlength="100" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入风险安全提示" autocomplete="off"></textarea>
+			         <textarea id="tips" name="tips" maxlength="100" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入风险安全提示" autocomplete="off"></textarea>
 			      </div>
 			  </div>
 			   <div class="layui-form-item" style="margin-bottom: 0px;">
@@ -98,7 +99,7 @@
 			   <div class="layui-form-item">
 			  	  <div class="layui-col-md2">&nbsp;</div>
 			      <div class="layui-input-block">
-			         <textarea id="action" maxlength="100" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入应急措施" autocomplete="off"></textarea>
+			         <textarea id="action" name="action" maxlength="100" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入应急措施" autocomplete="off"></textarea>
 			      </div>
 			  </div>
 			   <div class="layui-form-item" style="margin-bottom: 0px;">
@@ -108,7 +109,7 @@
 			   <div class="layui-form-item">
 			  	  <div class="layui-col-md2">&nbsp;</div>
 			      <div class="layui-input-block">
-			         <textarea id="caculator" maxlength="100" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入工作量计算式" autocomplete="off"></textarea>
+			         <textarea id="caculator" name="caculator" maxlength="100" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入工作量计算式" autocomplete="off"></textarea>
 			      </div>
 			  </div>
 			   <div class="layui-form-item" style="margin-bottom: 0px;">
@@ -118,14 +119,14 @@
 			   <div class="layui-form-item">
 			  	  <div class="layui-col-md2">&nbsp;</div>
 			      <div class="layui-input-block">
-			         <textarea id="amount" maxlength="70" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入工作量" autocomplete="off"></textarea>
+			         <textarea id="workAmount" name="workAmount" maxlength="70" class="layui-input" style="height:80px; width: 750px;" placeholder="请输入工作量" autocomplete="off"></textarea>
 			      </div>
 			  </div>
 			  <div class="layui-form-item">
 			  	  <div class="layui-col-md2">&nbsp;</div>
 			      <label class="layui-form-label" style="width: 150px;">备注</label>
 			      <div class="layui-input-inline">
-			        <input id="comment" type="text" class="layui-input" style="width: 600px;" autocomplete="off">
+			        <input id="comment" name="comment" type="text" class="layui-input" style="width: 600px;" autocomplete="off">
 			      </div>
 			  </div>
 			</form> 
@@ -213,7 +214,7 @@
 		 <div class="layui-row" style="border-top: 0; height: 105px;">
 			<div class="layui-col-md12 div-text">
 				<span class="body-text">工作量（m2）：</span> <br/>
-				<pre class="body-text" id="amount_" style="display:inline-block; width:450px;"></pre>
+				<pre class="body-text" id="workAmount_" style="display:inline-block; width:450px;"></pre>
 				<span class="body-text signature-text-two">验收人（签字）：</span>
 				<span class="body-text signature-date-text-two">年<span style="color:rgba(255,255,255,0.0)">111</span>月<span style="color:rgba(255,255,255,0.0)">111</span>日</span>
 			</div>
@@ -235,6 +236,7 @@
 	<script src="../jsPackage/js/jquery.print.js"></script>
     <!-- 引入layui -->
     <script type="text/javascript" src="../jsPackage/layui-v2.4.2/layui.js"></script>
+    <script src="../js/url_param.js"></script>
     <script src="../js/work-requisition.js"></script>
     <script type="text/javascript">
 
