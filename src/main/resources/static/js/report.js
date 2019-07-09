@@ -522,7 +522,6 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			   			     ,error:function(){
 			   			     }		       
 		   			    });
-		   				
 				   		if(result){
 				   			type = 1;
 				    		//上传问题图片
