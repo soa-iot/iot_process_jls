@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.task.IdentityLink;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,12 +20,12 @@ import cn.soa.service.inter.ProblemInfoSI;
 import cn.soa.utils.SpringUtils;
 
 /**
- * 责任人后置任务
+ * 
  * @author Bru.Lo
  *
  */
 @Service
-public class SetProblemRemarktwo implements ExecutionListener{
+public class SetProblemRemarktwo implements ExecutionListener {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -32,8 +34,10 @@ public class SetProblemRemarktwo implements ExecutionListener{
 	/**
 	 * 将责任人写入数据库
 	 */
+
 	@Override
-	public void notify(DelegateExecution execution) throws Exception {
+	public void notify(DelegateExecution execution) {
+
 		
 		logger.info( "---------后置任务获取任务---------" );	
 		ProblemInfoSI problemInfoS= SpringUtils.getObject(ProblemInfoSI.class);
@@ -45,7 +49,7 @@ public class SetProblemRemarktwo implements ExecutionListener{
 		String piid = execution.getProcessInstanceId();
 		logger.info( "---------获取流程piid："+piid );	
 		
-		String tsid = activityS.getTsidByPiid(piid);
+		String tsid = activityS.getActiveTsidByPiid(piid);
 		logger.info( "---------获取流程tsid："+tsid );	
 		
 		//获取任务名
@@ -56,14 +60,19 @@ public class SetProblemRemarktwo implements ExecutionListener{
 			logger.info( "---------获取流程piid为空或null------------" );			
 		}else {
 			
-			ProblemInfo problemInfo = new ProblemInfo();
-			problemInfo.setPiid(piid);
-			problemInfo.setRemarktwo(name);
-			Integer row = problemInfoS.changeProblemDescribeByPiid(problemInfo);
+			logger.info( "---------下一个节点名称后置任务更新行数------------2");
 			
-			logger.info( "---------下一个节点名称后置任务更新行数------------" + row );
+			/*
+			 * ProblemInfo problemInfo = new ProblemInfo(); problemInfo.setPiid(piid);
+			 * problemInfo.setRemarktwo(name); Integer row =
+			 * problemInfoS.changeProblemDescribeByPiid(problemInfo);
+			 * 
+			 * logger.info( "---------下一个节点名称后置任务更新行数------------" + row );
+			 */
 			
 		}	
+	
+		
 	}
 	
 }
