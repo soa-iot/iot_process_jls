@@ -176,6 +176,9 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
         	  tempRepId = data.data.tproblemRepId;
         	  console.log("tempRepId="+tempRepId);
         	  
+        	  //根据属地单位判断问题区域
+      		  selectWelName(data.data.problemtype);
+        	  
               //表单初始赋值
       		  form.val('report-form', {
       		    "applypeople": data.data.applypeople 
@@ -237,23 +240,27 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	form.on('select(problem-area)', function(data){
 	   var value = data.value;
 	   console.log(value);
-	   $("#welName").empty();  //清空子选项
-	   $("#welName").append("<option value=''>请选择</option>");
-	   for( x in problemTypeList){
-	      if(value == problemTypeList[x].problemName){
-	    	var areaList = problemTypeList[x].problemAreas;
-            for( y in areaList){
-            	var $option2 = $("<option></option>");
-	            $option2.val(areaList[y].problemName);
-	            $option2.text(areaList[y].problemName);
-	            $("#welName").append($option2);
-            }
-            $("#welName").append("<option value='其他'>其他</option>");
-	      }
-	    }
-	     //更新select渲染
-		 form.render();
+	   selectWelName(value);
 	});
+	
+	function selectWelName(value){
+		$("#welName").empty();  //清空子选项
+		$("#welName").append("<option value=''>请选择</option>");
+		for( x in problemTypeList){
+		    if(value == problemTypeList[x].problemName){
+		    var areaList = problemTypeList[x].problemAreas;
+	        for( y in areaList){
+	            var $option2 = $("<option></option>");
+		        $option2.val(areaList[y].problemName);
+		        $option2.text(areaList[y].problemName);
+		        $("#welName").append($option2);
+	         }
+	          $("#welName").append("<option value='其他'>其他</option>");
+		    }
+		}
+		//更新select渲染
+		form.render();
+	}
     
 	//监听不安全行为级联
 	form.on('select(notsafe)', function(data){
