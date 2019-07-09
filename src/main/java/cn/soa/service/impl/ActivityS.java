@@ -210,6 +210,38 @@ public class ActivityS implements ActivitySI{
     }
     
     /**   
+	 * @Title: getActiveTsidByPiid   
+	 * @Description:  根据piid，查找当前活动任务的tsid 
+	 * @return: String        
+	 */ 
+	@Override
+	public String getActiveTsidByPiid( String piid ) {
+		if( StringUtils.isBlank( piid ) ) {
+			logger.info( "---S--------任务piid为null-------------" );
+			return null;
+		}	
+    	try {
+    		List<HistoricTaskInstance> lists = historyService
+    				.createHistoricTaskInstanceQuery()
+    				.processInstanceId( piid )
+    				.orderByTaskCreateTime()
+    				.asc()
+    				.list();
+    		if( lists != null && lists.size()>0 ) {
+    			logger.info( lists.toString() );
+    		}else {
+    			logger.info( "---------根据流程piid，查询该流程的历史任务节点  为null或空-------------" );
+    		}
+    		logger.info( "---------根据流程piid，该流程的历史任务节点id------------" + lists.get( lists.size() - 1 ).getId());
+    		return lists.get( lists.size() - 1 ).getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}  
+    }
+
+    
+    /**   
      * @Title: getPiidByTsid   
      * @Description:  根据tsid查询当前任务节点的  piid
      * @return: String        

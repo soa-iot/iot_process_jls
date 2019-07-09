@@ -320,6 +320,8 @@ public interface ActivitySI {
 	 */  
 	boolean transferProcessByPiid(String piid, Map<String, Object> vars);
 
+	String getActiveTsidByPiid(String piid);
+
 	
 
 	
