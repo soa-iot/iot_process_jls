@@ -68,7 +68,7 @@
     </sequenceFlow>
     <sequenceFlow id="flow5" sourceRef="pure" targetRef="repair"></sequenceFlow>
     <sequenceFlow id="flow11" name="分支1流向1" sourceRef="node1" targetRef="repair">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ (isIngroup=='3')  &&  (area == '维修工段' || area == '电站' || area == '机械' || area == '仪表' || area == '电气') }]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ (isIngroup=='3')  &&  (area == '维修工段' || area == '电站' || area == '机械' || area == '仪表' || area == '电气'|| area == '电工') }]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow13" name="分支1流向3" sourceRef="node1" targetRef="receive">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isIngroup=='1' }]]></conditionExpression>
@@ -142,7 +142,7 @@
         <omgdi:waypoint x="665.0" y="27.0"></omgdi:waypoint>
         <omgdi:waypoint x="832.0" y="160.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="48.0" width="60.0" x="470.0" y="107.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="78.0" x="470.0" y="107.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
