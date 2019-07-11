@@ -58,6 +58,11 @@
 
 				</table>
 			</div>
+			
+			<table class="layui-table" id="unfinishedProblem" lay-filter="unfinishedProblem" style="height:360px;display:none">
+
+			</table>
+			
 		</div>
 
 	</div>
@@ -410,24 +415,60 @@
 					}
 				})
 			});
+			//未闭环问题展示
+			function  renderTable(problemType){
+				table.render({
+				    	elem: '#unfinishedProblem'
+				    	,url:'/iot_process/report/showproblembycondition'
+				    	,method:'post'
+				    	,where:{
+				    		'startTime':$('#startTime').val(),
+				    		'endTime':$('#endTime').val(),
+				    		'problemType':problemType,
+				    		'problemState':'UNFINISHED'
+				    	}
+				        ,height: 420
+				        ,page: true //开启分页
+				        ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+				        ,cols: [[{field:'id', title:'编号', width:'5%', sort:false, type:'numbers', fixed:'left', align:'center'},
+							{field:'applydate', title:'上报日期', width:'10%', sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
+							{field:'applypeople', title:'上报人', width:'10%', sort:true, align:'center'},
+							{field:'problemdescribe', title:'描述', width:'16%', sort:true, align:'center'},
+							{field:'welName', title:'流程节点', width:'10%', sort:true, align:'center'},
+							{field:'problemclass', title:'责任人', width:'10%', sort:true, align:'center'}]]  
+				      });
+				layer.open({
+					 type: 1,
+					  content: $('#unfinishedProblem')
+				});
+			}
+
 			//表格监听事件
 			table.on('tool(problemReport)', function(obj){
 				var data=obj.data;
-				console.log(data);
+				console.log(obj.event);
 				switch(obj.event){
 				case 'cw_check':
+					alert(232333333333);
+					renderTable('财务经营办');
 					break;
 				case 'hse_check':
+					renderTable('HSE办公室');
 					break;
 				case 'sb_check':
+					renderTable('设备办');
 					break;
 				case 'jh_check':
+					renderTable('净化工段');
 					break;
 				case 'zh_check':
+					renderTable('综合办');
 					break;
 				case 'wx_check':
+					renderTable('维修工段');
 					break;
-				case 'jh_check':
+				case 'sc_check':
+					renderTable('生产办');
 					break;
 				}
 	
