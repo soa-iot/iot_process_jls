@@ -83,4 +83,32 @@ public class AcitivityTaskS implements AcitivityTaskSI{
 			return null;
 		}
 	}
+	
+	/**   
+	 * @Title: getActiveTsidByPiid   
+	 * @Description:  根据piid，查找当前活动任务的tsid 
+	 * @return: String        
+	 */ 
+	@Override
+	public String getActiveTsidByPiid( String piid ) {
+    	if( StringUtils.isBlank( piid )) {
+    		logger.info( "------piid为null--------" );
+    		return null;
+    	}
+    	try {
+    		Task task = taskService
+    				.createTaskQuery()
+    				.processInstanceId(piid)
+    				.active()
+    				.singleResult();
+    		if( task == null ) {
+    			logger.info( "------未正确找到task对象-------" );
+    			return null;
+    		}   		
+    		return task.getId();    		
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+    }
 }

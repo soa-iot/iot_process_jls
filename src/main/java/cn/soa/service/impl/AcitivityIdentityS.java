@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import cn.soa.dao.activity.IdentityLinkMapper;
 import cn.soa.entity.activity.IdentityLink;
 import cn.soa.service.inter.AcitivityIdentitySI;
+import cn.soa.service.inter.ActivitySI;
 
 @Service
 public class AcitivityIdentityS implements AcitivityIdentitySI{
@@ -19,11 +20,43 @@ public class AcitivityIdentityS implements AcitivityIdentitySI{
 	@Autowired
 	private IdentityLinkMapper identityLinkMapper;
 	
+	@Autowired
+	private ActivitySI activityS;
+	
+	/**   
+	 * @Title: getConnectorByPiid   
+	 * @Description: 查找与指定人相关的流程的piid  
+	 * @return: List<String>        
+	 */
+	@Override
+	public List<String> getConnectPiidByUserId( String userid ){
+		logger.info( "---S--------查找与指定人相关的流程的piid  -------------" );
+		if( StringUtils.isBlank( userid ) ) {
+			logger.info( "---S--------任务userid为null或空-------------" );
+			return null;
+		}	
+		
+		try {
+			List<String> piids = identityLinkMapper.findConnectPiidByUserId( userid );
+			if( piids != null && piids.size() > 0 ) {
+				logger.info( "---S--------piid查询成功，包括：-------------" );
+				piids.forEach( p -> logger.info(  p + "" ) );
+			}else {
+				logger.info( "---S--------piid查询结果为null或空：-------------" );
+			}
+			return piids;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**   
 	 * @Title: findCandidateByTsid   
 	 * @Description: 根据任务tsid查询流程当前代办人  
 	 * @return: List<IdentityLink>        
-	 */  
+	 */ 
+	@Override
 	public List<IdentityLink> findCandidateByTsid( String tsid ){
 		logger.info( "---S--------根据任务tsid查询流程当前代办人  -------------" );
 		if( StringUtils.isBlank( tsid ) ) {
@@ -40,4 +73,26 @@ public class AcitivityIdentityS implements AcitivityIdentitySI{
 		}
 	}
 	
+	
+	/**   
+	 * @Title: findParticipantByPiid   
+	 * @Description: 根据流程实例piid查询流程所有节点执行人   
+	 * @return: List<IdentityLink>        
+	 */ 
+	@Override
+	public List<IdentityLink> findParticipantByPiid( String piid ){
+		logger.info( "---S--------根据流程实例piid查询流程所有节点执行人   -------------" );
+		if( StringUtils.isBlank( piid ) ) {
+			logger.info( "---S--------任务piid为null或空-------------" );
+			return null;
+		}	
+			
+		try {
+			List<IdentityLink> identitys = identityLinkMapper.findParticipantByPiid( piid );
+			return identitys;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

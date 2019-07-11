@@ -31,4 +31,11 @@ public interface AcitivityTaskSI {
 	 */  
 	Task getTaskByTsid(String tsid);
 
+	/**   
+	 * @Title: getActiveTsidByPiid   
+	 * @Description: 根据piid，查找当前活动任务的tsid   
+	 * @return: String        
+	 */  
+	String getActiveTsidByPiid(String piid);
+
 }

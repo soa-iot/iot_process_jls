@@ -16,4 +16,18 @@ public interface IdentityLinkMapper {
 	 */  
 	List<IdentityLink> findCandidateByTsid( String tsid );
 	
+	
+	/**   
+	 * @Title: findParticipantByPiid   
+	 * @Description:  根据流程实例piid查询流程所有节点执行人 
+	 * @return: List<IdentityLink>        
+	 */  
+	List<IdentityLink> findParticipantByPiid( String piid );
+	
+	/**   
+	 * @Title: findConnectPiidByUserId   
+	 * @Description:  查找与指定人相关的流程的piid 
+	 * @return: List<String>        
+	 */  
+	List<String> findConnectPiidByUserId( String userid );
 }

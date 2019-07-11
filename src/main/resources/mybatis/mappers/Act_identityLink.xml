@@ -12,6 +12,18 @@
 		where TASK_ID_ = #{ tsid }
 	</select>
 	
+	<!-- 1.2、根据流程实例piid查询流程所有节点执行人  -->
+	<select id="findParticipantByPiid"  resultType="cn.soa.entity.activity.IdentityLink">
+		select * from ACT_HI_IDENTITYLINK
+		where PROC_INST_ID_ = #{ piid }
+	</select>
+	
+	<!-- 1.3、查找与指定人相关的流程的piid  -->
+	<select id="findConnectPiidByUserId"  resultType="cn.soa.entity.activity.IdentityLink">
+		select distinct(PROC_INST_ID_) from ACT_HI_IDENTITYLINK
+		where USER_ID_ = #{ userId }
+	</select>
+	
 	<!-- ===========================2、新增===============================  -->
 	<!-- 2.2、根据id增加组织 ，返回id			
 	<insert id="saveUserBackId"  parameterType="cn.soa.entity.UserOrganization">		
