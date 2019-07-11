@@ -3,6 +3,7 @@ package cn.soa.service.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +29,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.identity.User;
@@ -1711,7 +1714,10 @@ public class ActivityS implements ActivitySI{
 							Object reportTimeObj = firstTisTaskNode.getCreateTime();
 							logger.info( "---------问题上报时间 ：------------" + reportTimeObj );
 							if( reportTimeObj != null ) {
-								String reportTime = reportTimeObj.toString();
+								Date date = (Date) reportTimeObj;
+//								String reportTime = reportTimeObj.toString();
+								SimpleDateFormat sdf = new SimpleDateFormat( "YYYY-MM-DD hh:mm:ss");
+								String reportTime = sdf.format(date);
 								todoTask.setReporttime( reportTime );
 								logger.info( "---------问题上报时间 获取成功：------------" + reportTime );
 							}	
