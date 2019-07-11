@@ -198,7 +198,7 @@ public class ActivityS implements ActivitySI{
     	try {
     		List<Task> tasks = taskService.createTaskQuery().processInstanceId(piid).list();
     		if( tasks.size() > 0 ) {
-    			logger.info( tasks.toString() );
+    			logger.info( "tasks.toString()--------------------------"+tasks.toString() );
     			return tasks.get(0).getId();
     		}
     		logger.info( "------未正确找到task对象-------" );

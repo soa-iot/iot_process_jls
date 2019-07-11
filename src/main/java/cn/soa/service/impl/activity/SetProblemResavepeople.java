@@ -1,7 +1,9 @@
 package cn.soa.service.impl.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -35,33 +37,57 @@ public class SetProblemResavepeople implements ExecutionListener{
 	@Override
 	public void notify(DelegateExecution execution) throws Exception {
 		
+		//execution.getVariable(variableName);
 		logger.info( "---------获取责任人后置任务---------" );	
-		ProblemInfoSI problemInfoS= SpringUtils.getObject(ProblemInfoSI.class);
 		
-		AcitivityTaskS acitivityTaskS = SpringUtils.getObject(AcitivityTaskS.class);
+		Map<String, String> map = new HashMap<>();
+		map.put("estimate", "estimators");
+		map.put("pure", "puror");
+		map.put("repair", "repairor");
+		map.put("arrange", "arrangor");
+		map.put("receive", "receivor");
+		map.put("complement", "complementor");
+		map.put("check", "checkor");
+		//map.put("end", "");
 		
-		ActivityS activityS = SpringUtils.getObject(ActivityS.class);
+		
+		String activityId = execution.getCurrentActivityId();
+		logger.info( "---------后置任务当前流程id："+activityId );
 		
 		String piid = execution.getProcessInstanceId();
 		logger.info( "---------获取流程piid："+piid );	
+		String name = null;
+		logger.info( "---------获取流程piid："+!("end".equals(activityId)) );	
 		
-		String tsid = activityS.getTsidByPiid(piid);
-		logger.info( "---------获取流程tsid："+tsid );	
-		
-		//获取责任人名
-		List<IdentityLink> identityLinks = acitivityTaskS.getGroupTaskCandidateByTsid(tsid);
-		List<String> candidateNames = new ArrayList<>(); 
-		String name= null;
-		for (IdentityLink identityLink : identityLinks) {
-			if ("candidate".equals(identityLink.getType())) {
-				candidateNames.add(identityLink.getUserId());
-				logger.info( "---------候选人信息identityLink："+identityLink );	
-			}
+		if (!("end".equals(activityId))) {
+			name = execution.getVariable(map.get(activityId)).toString();
+		} else {
+
+			AcitivityTaskS acitivityTaskS = SpringUtils.getObject(AcitivityTaskS.class);
 			
+			ActivityS activityS = SpringUtils.getObject(ActivityS.class);
+			
+			String tsid = activityS.getTsidByPiid(piid);
+			logger.info("---------后置任务当前流程tsid：" + tsid);
+				
+			//获取责任人名
+			List<IdentityLink> identityLinks = acitivityTaskS.getGroupTaskCandidateByTsid(tsid);
+			List<String> candidateNames = new ArrayList<>();
+			
+			for (IdentityLink identityLink : identityLinks) {
+				if ("candidate".equals(identityLink.getType())) {
+					candidateNames.add(identityLink.getUserId());
+					logger.info("---------闭环候选人信息identityLink：" + identityLink);
+				}
+
+			}
+			name = StringUtils.join(candidateNames, ",");
+
 		}
 		
-		name = StringUtils.join(candidateNames, ",");
-		logger.info( "---------候选人名："+name );	
+		ProblemInfoSI problemInfoS= SpringUtils.getObject(ProblemInfoSI.class);
+		
+		logger.info( "---------后置任务候选人名："+name );	
 		
 		
 		if( piid == null ) {
