@@ -18,3 +18,14 @@ function getUrlIp(){
 	
 	return $.trim(window.location.href.split("/")[2]);
 }
+
+
+/**
+  * 脚手架和防腐保温作业清单url
+  */
+function getUrl(){
+	var piid = GetQueryString("piid");
+	$(".staging-requisition").attr({"href": "./staging-work-requisition.html?piid="+piid});
+	$(".anticor-requisition").attr({"href": "./anticorrosion-work-requisition.html?piid="+piid});
+}
+getUrl();
