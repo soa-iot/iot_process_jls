@@ -80,10 +80,14 @@ public class AcitivityTaskS implements AcitivityTaskSI{
 			logger.info( "--S----------获取当前个人任务报错-------------" );
 			e.printStackTrace();
 			return null;
-		}
+		}	
 
-	
+	}
 
+	@Override
+	public String getActiveTsidByPiid(String piid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
