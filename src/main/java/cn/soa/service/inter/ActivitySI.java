@@ -15,6 +15,7 @@ import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
 
 import cn.soa.entity.TodoTask;
+import cn.soa.entity.activity.HistoryAct;
 
 @Service
 public interface ActivitySI {
@@ -319,6 +320,15 @@ public interface ActivitySI {
 	 * @return: boolean        
 	 */  
 	boolean transferProcessByPiid(String piid, Map<String, Object> vars);
+
+	String getActiveTsidByPiid(String piid);
+
+	/**   
+	 * @Title: findAllHisActsBypiid   
+	 * @Description: 根据任务piid,查询当前流程实例的所有任务节点（包括完成和未完成,）      
+	 * @return: List<HistoryAct>        
+	 */  
+	List<HistoryAct> findAllHisActsBypiid(String piid);
 
 	
 

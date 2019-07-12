@@ -37,9 +37,9 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
 		    		 updateEstimated(data);
-		    		 layer.msg("作业指派成功",{icon:1, time: 2000, offset: '100px'}, function(){
+		    		 layer.msg("作业指派成功,问题流转到:"+arrangor,{icon:1, time: 2000, offset: '100px'}, function(){
 		    			top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
-		    		 })
+		    		 });
 		    	 }else{
 		    		 layer.msg("作业指派失败",{icon:2, time: 2000, offset: '100px'});
 		    	 }
@@ -83,8 +83,8 @@ layui.use(['tree', 'layer', 'form'], function() {
 					layer.msg("至少选择一名人员", {icon:7, offset: '100px'});
 				}else{
 					workAssignment(comment, arrangor, resavepeople, data);
+					layer.close(index);
 				}
-				layer.close(index);
 		    }
 		,success:function(){	
 			//单选框
@@ -217,6 +217,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 				//确认按钮的回调函数
 				if(assignUsers.length < 1){
 					layer.msg("至少选择一名人员", {icon:7, offset: '100px'});
+					return;
 				}else{
 					var arr = getDeptByIds(ids);
 					for(var i=0;i<arr.length-1;i++){
@@ -281,7 +282,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
-		    		 layer.msg("外部协调成功,问题流转到:"+assignUsers.join("，"),{icon:1, time: 2000, offset: '100px'}, function(){
+		    		 layer.msg("外部协调成功,问题流转到:"+assignUsers.join(","),{icon:1, time: 2000, offset: '100px'}, function(){
 		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
 		    	 }else{
@@ -348,7 +349,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		
 		for ( var key in outhelperData) {
 			
-				if (key != "龙王庙天然气净化厂" && key != '维修工段') {
+				if (key != "龙王庙天然气净化厂" && key != '维修工段' && key != '净化工段') {
 					$.ajax({    
 						url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  
 						type : "get",

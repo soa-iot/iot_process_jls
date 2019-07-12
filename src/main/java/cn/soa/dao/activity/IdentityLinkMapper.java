@@ -29,5 +29,5 @@ public interface IdentityLinkMapper {
 	 * @Description:  查找与指定人相关的流程的piid 
 	 * @return: List<String>        
 	 */  
-	List<String> findConnectPiidByUserId( String userid );
+	List<IdentityLink> findConnectPiidByUserId( String userid );
 }

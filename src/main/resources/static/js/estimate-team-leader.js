@@ -11,7 +11,6 @@ $("#coordinate_tree").hide();
 
 $("#repair_cadre_tree").hide();
 $("#estimate_cadre_tree").hide();
-
 console.log("--------"+$.cookie("organ"));
 /**
  * 作业安排
@@ -104,7 +103,6 @@ $.ajax({
 
 				});
 
-
 			});
 
 		}
@@ -117,7 +115,7 @@ $.ajax({
  * 维修/净化技术干部弹窗
  */
 var next_div_id = area=="净化工段"?"estimate_cadre_tree":"repair_cadre_tree";
-var organ = area=="净化工段"?"净化技术干部":"维修技术干部";
+var organ = area=="净化工段"||area=="化验"?"净化技术干部":"维修技术干部";
 $.ajax({  
 	//url : "http://localhost:10238/iot_usermanager/user/roleName",  
 	url : "/iot_process/userOrganizationTree/userOrganizationOrgan",  

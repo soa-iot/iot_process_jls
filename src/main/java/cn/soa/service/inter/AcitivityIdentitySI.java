@@ -31,4 +31,11 @@ public interface AcitivityIdentitySI {
 	 */  
 	List<String> getConnectPiidByUserId(String userid);
 
+	/**   
+	 * @Title: findCandidateByPiid   
+	 * @Description:  根据流程实例piid，查询流程当前代办人     
+	 * @return: List<IdentityLink>        
+	 */  
+	List<IdentityLink> findCandidateByPiid(String piid);
+
 }
