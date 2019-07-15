@@ -80,19 +80,10 @@ public class AcitivityTaskS implements AcitivityTaskSI{
 			logger.info( "--S----------获取当前个人任务报错-------------" );
 			e.printStackTrace();
 			return null;
-		}
-
-	
+		}	
 
 	}
 
-	
-	/**   
-	 * @Title: getActiveTsidByPiid   
-	 * @Description:  根据piid，查找当前活动任务的tsid 
-	 * @return: String        
-	 */ 
-	@Override
 	public String getActiveTsidByPiid( String piid ) {
     	if( StringUtils.isBlank( piid )) {
     		logger.info( "------piid为null--------" );
@@ -114,5 +105,6 @@ public class AcitivityTaskS implements AcitivityTaskSI{
 			return null;
 		}
     }
+
 
 }

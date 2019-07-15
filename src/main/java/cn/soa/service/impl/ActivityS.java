@@ -57,7 +57,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
 import cn.soa.entity.TodoTask;
+import cn.soa.entity.activity.HistoryAct;
 import cn.soa.service.abs.BussinessSA;
+import cn.soa.service.inter.AcitivityHistoryActSI;
+import cn.soa.service.inter.AcitivityIdentitySI;
 import cn.soa.service.inter.ActivitySI;
 import cn.soa.service.inter.BussinessSI;
 import cn.soa.service.inter.ProblemInfoSI;
@@ -87,11 +90,17 @@ public class ActivityS implements ActivitySI{
     @Autowired
     private IdentityService identityService;
     
+    @Autowired
+    private AcitivityIdentitySI acitivityIdentityS;
+    
 //    @Autowired
 //    private BussinessSA bussinessSA;
     
     @Autowired
     private BussinessSI bussinessSI;
+    
+    @Autowired
+    private AcitivityHistoryActSI acitivityHistoryActS;
     
     
     /**   
@@ -1716,7 +1725,7 @@ public class ActivityS implements ActivitySI{
 							if( reportTimeObj != null ) {
 								Date date = (Date) reportTimeObj;
 //								String reportTime = reportTimeObj.toString();
-								SimpleDateFormat sdf = new SimpleDateFormat( "YYYY-MM-DD hh:mm:ss");
+								SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
 								String reportTime = sdf.format(date);
 								todoTask.setReporttime( reportTime );
 								logger.info( "---------问题上报时间 获取成功：------------" + reportTime );
@@ -1886,4 +1895,72 @@ public class ActivityS implements ActivitySI{
 		return users;
 	}
 
+    /**   
+     * @Title: findAllHisActsBypiid   
+     * @Description: 根据任务piid,查询当前流程实例的所有任务节点（包括完成和未完成任务的候选执行人,不包括分支节点）    
+     * @return: List<HistoryAct>        
+     */  
+    @Override
+    public List<HistoryAct> findAllHisActsBypiid( String piid ){
+    	logger.info( "--S-------根据当前任务id，查询当前任务潜在的所有执行人  -------------" );
+    	if( StringUtils.isBlank( piid ) ) {
+			logger.info( "---S--------piid为null-------------" );
+			return null;
+		}
+    	
+    	List<HistoryAct> hisActs = new ArrayList<HistoryAct>();
+    	try {
+    		//查询所有节点
+    		List<HistoryAct> oldHisActs = acitivityHistoryActS.findAllHisActsBypiid( piid );
+    		if( oldHisActs == null || oldHisActs.size() < 1 ) {
+    			logger.info( "---S--------全部act节点为null或空-------------" );
+    			return null;
+    		}
+    		logger.info( "---S--------全部act节点为-------------" + oldHisActs.toString() );
+    		
+    		//去掉分支节点
+    		String flag = "1";//判断最新节点有无执行人
+    		int i= 0;
+    		int s = oldHisActs.size();
+    		int s1 = oldHisActs.size();
+    		for( HistoryAct h : oldHisActs ) {
+    			i++;
+    			if( i == s  ) {
+    				if( h.getEND_TIME_() == null ) {
+    					flag = null;
+    				}
+    			}
+    			String act_TYPE_ = h.getACT_TYPE_();
+    			if(  act_TYPE_ != null  ) {
+    				if( act_TYPE_.contains( "exclusiveGateway") || act_TYPE_.contains( "startEvent") ) {
+    					s1 --;
+    					continue;
+    				}		
+    			}
+    			hisActs.add( h );   			
+    		}
+    		if( hisActs == null || hisActs.size() < 1 ) {
+    			logger.info( "---S--------全部task节点为null或空-------------" );
+    			return null;
+    		}
+    		logger.info( "---S--------全部task节点为-------------" + hisActs.toString() );
+    		
+    		//查看问题是否完成，若为完成，则查找最后候选执行人
+    		String candidateStr = null;
+    		if( flag == null ) {//流程是未完成的状态
+    			List<cn.soa.entity.activity.IdentityLink> candidates = acitivityIdentityS.findCandidateByPiid( piid );
+    			for( cn.soa.entity.activity.IdentityLink id : candidates ) {
+    				candidateStr = candidateStr == null ? id.getUSER_ID_():candidateStr + "," + id.getUSER_ID_();
+    			}
+    			logger.info( "---S--------最后一个节点的执行人-------------" + candidateStr );
+    			hisActs.get( s1 - 1 ).setASSIGNEE_( candidateStr );
+    			return hisActs;
+    		}
+    		
+    		return hisActs;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+    }
 }

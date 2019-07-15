@@ -27,6 +27,7 @@ import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ResultJson;
 import cn.soa.entity.ResultJsonForTable;
 import cn.soa.entity.TodoTask;
+import cn.soa.entity.activity.HistoryAct;
 import cn.soa.service.inter.AcitivityHistorySI;
 import cn.soa.service.inter.AcitivityIdentitySI;
 import cn.soa.service.inter.ActivitySI;
@@ -571,7 +572,7 @@ public class ProcessC {
 	 * @Description: 查找与指定人相关的流程的piid    
 	 * @return: ResultJsonForTable<List<TodoTask>>        
 	 */  
-	@GetMapping("/userId")
+	@GetMapping("/userId/piid")
 	public ResultJson<List<String>> getPiidsByUserIdC(
 			@RequestParam("userId") @NotBlank String userId ){
 		logger.info( "--C-------- 查找与指定人相关的流程的piid    -------------" );
@@ -595,9 +596,23 @@ public class ProcessC {
 		return null;
 	}
 	
-	@GetMapping()
-	public ResultJson<List<String>> getPiidsByUserIdC(){
-		
-		return null;
+	/**   
+	 * @Title: getProcessNodeInfosByPiidC   
+	 * @Description:  根据任务piid,查询当前流程实例的所有任务节点（包括完成和未完成任务的候选执行人,不包括分支节点）    
+	 * @return: ResultJson<List<Map<String,Object>>>        
+	 */  
+	@GetMapping("/nodes/all/piid/{piid}")
+	public ResultJson<List<HistoryAct>> findAllHisActsBypiid(
+		@PathVariable("piid") String piid){
+		logger.info( "--C-------- 根据任务piid,查询当前流程实例的所有任务节点（包括完成和未完成任务的候选执行人,不包括分支节点）      -------------" );
+		logger.info( piid );
+		if( StringUtils.isBlank( piid )) {
+			return null;
+		}
+		List<HistoryAct> acts = activityS.findAllHisActsBypiid( piid );
+		return new ResultJson<List<HistoryAct>>( 0, "查找成功",  acts );				
 	}
+	
+	
+	
 }

@@ -1,5 +1,6 @@
 package cn.soa.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,10 +38,14 @@ public class AcitivityIdentityS implements AcitivityIdentitySI{
 		}	
 		
 		try {
-			List<String> piids = identityLinkMapper.findConnectPiidByUserId( userid );
+			List<String> piids = new ArrayList<String>();
+			List<IdentityLink> idendtitys = identityLinkMapper.findConnectPiidByUserId( userid );
+			for( IdentityLink i : idendtitys) {
+				piids.add( i.getPROC_INST_ID_() );
+			} 
 			if( piids != null && piids.size() > 0 ) {
 				logger.info( "---S--------piid查询成功，包括：-------------" );
-				piids.forEach( p -> logger.info(  p + "" ) );
+				piids.forEach( p -> logger.info(  p.toString()) );
 			}else {
 				logger.info( "---S--------piid查询结果为null或空：-------------" );
 			}
@@ -74,6 +79,35 @@ public class AcitivityIdentityS implements AcitivityIdentitySI{
 	}
 	
 	
+	/**   
+	 * @Title: findCandidateByPiid   
+	 * @Description: 根据流程实例piid，查询流程当前代办人    
+	 * @return: List<IdentityLink>        
+	 */ 
+	@Override
+	public List<IdentityLink> findCandidateByPiid( String piid ){
+		logger.info( "---S--------根据任务tsid查询流程当前代办人  -------------" );
+		if( StringUtils.isBlank( piid ) ) {
+			logger.info( "---S--------任务piid为null或空-------------" );
+			return null;
+		}
+		
+		//根据piid查询当前流程实例的tsid
+		String tsid = activityS.getTsidByPiid( piid );
+		if( StringUtils.isBlank( tsid ) ) {
+			logger.info( "---S--------任务tsid为null或空-------------" );
+			return null;
+		}
+			
+		try {
+			List<IdentityLink> identitys = identityLinkMapper.findCandidateByTsid( tsid );
+			return identitys;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+		
 	/**   
 	 * @Title: findParticipantByPiid   
 	 * @Description: 根据流程实例piid查询流程所有节点执行人   

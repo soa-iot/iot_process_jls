@@ -27,7 +27,9 @@
 			pta2.problem_id problem_id2, pta2.problem_name problem_name2, pta2.is_parent is_parent2, pta2.parent_id parent_id2
 		FROM
 			CZ_PROBLEM_TYPE_AREA pta1 RIGHT JOIN (SELECT * FROM CZ_PROBLEM_TYPE_AREA WHERE is_parent = 1) pta2
+
 			ON pta1.parent_id = pta2.problem_id ORDER BY pta2.problem_id DESC, pta1.problem_id ASC
+
 	</select>
 
 	

@@ -118,17 +118,18 @@ public class ReportC {
 	 * @return: ResultJsonForTable<List<ProblemInfo>> 返回成功响应数据 
 	 */
 	@PostMapping("/showproblembycondition")
-	public ResultJsonForTable<List<ProblemInfo>> showProblemInfoByCondition(ProblemInfoQuery problemInfoQuery) {
+	public ResultJsonForTable<List<ProblemInfo>> showProblemInfoByCondition(ProblemInfoQuery problemInfoQuery, @RequestParam(value="piidArray[]", required=false) String[] piidArray) {
 	
-		log.debug("------查询条件：{}", problemInfoQuery);
-		
+		log.info("------查询条件：{}", problemInfoQuery);
+		log.info("------piids: {}",Arrays.toString(piidArray));
 		Integer page = problemInfoQuery.getPage();
 		Integer limit = problemInfoQuery.getLimit();
 		String startTime = problemInfoQuery.getStartTime();
 		String endTime = problemInfoQuery.getEndTime();
 		String sortField = problemInfoQuery.getSortField();
 		String sortType = problemInfoQuery.getSortType();
-
+		problemInfoQuery.setPiids(piidArray);
+		
 		List<ProblemInfo> result = reportS.getProblemInfoByPage(problemInfoQuery, page, limit, startTime, endTime, sortField, sortType);
 		if(result != null) {
 			Map<String, Object> map = reportS.ProblemCount(problemInfoQuery, startTime, endTime);
