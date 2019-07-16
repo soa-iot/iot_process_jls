@@ -195,6 +195,14 @@
 				FROM 
 					( 
 						SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW
+						<where>
+							<if test="record != null and record.piids != null">
+								PIID IN 
+								<foreach collection="record.piids" index="index" item="item" open="(" separator="," close=")">
+									#{item}
+								</foreach>
+							</if>
+						</where>
 						<choose>
 								<when test="sortField != null and sortField != ''">
 									ORDER BY ${sortField} ${sortType}
@@ -411,7 +419,18 @@
 	
 	<select id="PorblemCount" resultType="map">
 		SELECT COUNT(1) total,COUNT(CASE when problemstate='FINISHED' THEN '1' else null end) complete
-				FROM CZ_TASK_PROBLEM_REPORT_NEW
+				FROM 
+					(
+						SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW
+						<where>
+							<if test="record != null and record.piids != null">
+								PIID IN 
+								<foreach collection="record.piids" index="index" item="item" open="(" separator="," close=")">
+									#{item}
+								</foreach>
+							</if>
+						</where>
+					) REPORT_NEW
 				<where>
 					<if test="record != null">
 					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">

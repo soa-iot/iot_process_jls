@@ -184,6 +184,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		        dataType : "json",  
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
+		        		$("#comment_receive").val("");
 		        		layer.msg("接收作业成功", {icon: 1, time: 2000, offset: '100px'}, function(){
 		        			top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		        		});

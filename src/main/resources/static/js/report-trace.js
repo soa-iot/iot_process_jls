@@ -4,6 +4,8 @@ layui.config({
 }).extend({
     excel: 'excel',
 });
+//从cookie中获取当前登录用户
+var resavepeople = getCookie1("name").replace(/"/g,'');
 
 /**
  * 日期插件
@@ -105,7 +107,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    	id: obj.event+1,
 	    	btn: ['确认'],
 	    	offset: '100px',
-	    	area: ['80%','60%'],
+	    	area: ['50%','60%'],
 	        content: $('#div-process'),
 	        yes: function(index, layero){
 	            layer.close(index); //如果设定了yes回调，需进行手工关闭
@@ -121,26 +123,20 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	function loadTable(){
 		table.render({
 			elem: '#processStep'
-			,url: '/iot_process/process/nodes/historyTask/piid/'+piid //数据接口
+			,url: '/iot_process/process/nodes/all/piid/'+piid //数据接口
 			,parseData: function(res) { //res 即为原始返回的数据
-				var data = res.data     
-		    	if(data != null || data != ''){
-		    		 for(var i=0;i<data.length;i++){
-		    			 data[i].nodeEndTime = data[i].nodeEndTime.replace(/T/, ' ').replace(/\..*/, '');
-		    		 }
-		    	}
+				var data = res.data;     
 				return {
 					"code": res.state, //解析接口状态
 					"msg": res.message, //解析提示文本
-					"count": res.length, //解析数据长度
-					"data": res.data //解析数据列表
+					"count": data.length, //解析数据长度
+					"data": data //解析数据列表
 				}
 			}
 			,cols: [[ //表头
-				{field: 'nodeExecutor', title: '处理人', width:'25%',fixed: 'left'}
-				,{field: 'nodeName', title: '处理节点', width:'15%'}
-				,{field: 'nodeComment', title: '处理说明', width:'40%'}
-				,{field: 'nodeEndTime', title: '时间', width:'20%',fixed: 'right'} 
+				{field: 'assignee_', title: '处理人', width:'35%',fixed: 'left'}
+				,{field: 'act_NAME_', title: '处理节点', width:'30%'}
+				,{field: 'start_TIME_', title: '时间', width:'34.5%',fixed: 'right'} 
 				]]
 		});
 	}
@@ -244,7 +240,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	/**
 	 * 重新加载表
 	 */
-	function reloadTable(sortField, sortType){
+	function reloadTable(sortField, sortType, piids){
 		problemTable.reload({
     		url: '/iot_process/report/showproblembycondition'
     	   ,page: {
@@ -263,7 +259,8 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'maintenanceman': $("#maintenanceman").val(),
     			'applypeople': $("#applypeople").val(),
     			'sortField': sortField,
-    			'sortType': sortType
+    			'sortType': sortType,
+    			'piidArray': piids
     	   }
     	})
 	}
@@ -277,7 +274,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		 switch(obj.event){
 	      case 'querydata':
 	    	console.log('querydata');
-	    	reloadTable();
+	    	reloadTable(null, null, null);
 	        break;
 	      case 'finish':
 	    	  console.log('finish');
@@ -313,9 +310,24 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    	  console.log('export');
 	    	  exportExcel();
 	    	  break;
-	      case 'delete':
-	    	  console.log('delete');
-	    	  layer.msg("功能正在完善中...",{icon: 5})
+	      case 'queryself':
+	    	  console.log('queryself');
+	    	  var piids = null;
+	    	  $.ajax({
+	    		  async: false,
+	    		  type: 'GET',
+	    		  url: '/iot_process/process/userId/piid',
+	    		  data: {"userId": resavepeople},
+	    		  dataType: 'json',
+	    		  success: function(json){
+	    			  if(json.state == 0){
+	    				  piids = json.data;
+	    			  }
+	    		  }
+	    	  })
+	    	  piids = (piids == null||piids == '')?['nodata']:piids;
+	    	  reloadTable(null, null, piids);
+	    	  
 	    };
 	  });
 	
@@ -325,6 +337,6 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	 table.on('sort(reportTrace)', function(obj){
 		 console.log(obj.field); //当前排序的字段名
 		 console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
-		 reloadTable(obj.field, obj.type);
+		 reloadTable(obj.field, obj.type, null);
 	 });
 })
