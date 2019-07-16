@@ -37,6 +37,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
 		    		 updateEstimated(data);
+		    		 $("#comment_repair").val("");
 		    		 layer.msg("作业指派成功,问题流转到:"+arrangor,{icon:1, time: 2000, offset: '100px'}, function(){
 		    			top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 });

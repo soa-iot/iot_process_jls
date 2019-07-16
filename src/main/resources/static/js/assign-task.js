@@ -38,7 +38,8 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<Boolean>
 		    	 if(jsonData.data){
-		    		 layer.msg("作业安排成功",{icon:1, time: 2000, offset: '100px'}, function(){
+		    		 $("#comment_assign").val("");
+		    		 layer.msg("作业安排成功,问题流转到:"+receivor,{icon:1, time: 2000, offset: '100px'}, function(){
 		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
 		    	 }else{

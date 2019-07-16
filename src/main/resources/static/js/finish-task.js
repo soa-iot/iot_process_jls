@@ -37,6 +37,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        	if(jsonData.data == true){
 		        		//上传问题图片
 				   		uploadList.upload();
+				   		$("#comment_finish").val("");
 				   		layer.msg("完成作业提交成功",{icon: 1, time:2000, offset: '100px'}, function(){
 				   			top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 				   		});
