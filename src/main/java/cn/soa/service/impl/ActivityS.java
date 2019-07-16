@@ -944,7 +944,7 @@ public class ActivityS implements ActivitySI{
      * @return: void        
      */ 
     @Override
-    public void transferProcessNoVars( String tsid, String actId ) {
+    public void transferProcessNoVars( String tsid, String actId, String userName ) {
 		/*
 		 * 当前节点、目标节点
 		 */
@@ -962,6 +962,9 @@ public class ActivityS implements ActivitySI{
 		TransitionImpl newTransition = startAct.createOutgoingTransition(); 
 		//设置新流向
 		newTransition.setDestination( targetAct ); 
+		
+		//拾取任务
+		taskService.claim( tsid, userName );  
 		
 		/*
 		 * 完成转向
@@ -983,7 +986,12 @@ public class ActivityS implements ActivitySI{
      * @return: String        
      */  
     @Override
-    public String endProcessByPiidInComment( String piid, String comment ) {
+    public String endProcessByPiidInComment( String piid, String comment, String userName ) {
+    	if( StringUtils.isBlank( userName ) ) {
+			logger.info( "---S--------任务userName为null或空-------------" );
+			return null;
+		}	
+    	
     	if( StringUtils.isBlank( piid ) ) {
 			logger.info( "---S--------任务piid为null或空-------------" );
 			return null;
@@ -995,7 +1003,7 @@ public class ActivityS implements ActivitySI{
 			return null;
 		}	
     	
-    	String endProcessByTsid = endProcessByTsidInComment( tsid, comment  );
+    	String endProcessByTsid = endProcessByTsidInComment( tsid, comment, userName  );
     	logger.info( "---S--------任务piid为null或空-------------" );
     	if( StringUtils.isBlank( endProcessByTsid ) ) {
 			logger.info( "---S--------闭环流程失败-------------" );
@@ -1013,41 +1021,41 @@ public class ActivityS implements ActivitySI{
      */  
     @Override
     public String endProcessByTsid( String tsid ) {
-    	if( StringUtils.isBlank( tsid ) ) {
-			logger.info( "---S--------任务tsid为null-------------" );
+//    	if( StringUtils.isBlank( tsid ) ) {
+//			logger.info( "---S--------任务tsid为null-------------" );
+//			return null;
+//		}	
+//    	
+//		/*
+//		 * 获取流程的end节点
+//		 */
+//    	ActivityImpl actiImpl;
+//    	try {
+//			actiImpl = getEndNode( tsid );
+//			logger.info( "---S--------end节点为-------------" + actiImpl );
+//			if( actiImpl == null ) {
+//				return null;
+//			}
+//    	} catch (Exception e) {
+//			logger.info( "--S---------获取流程的end节点失败----" );
+//			return null;
+//		}
+//		
+//		/*
+//		 * 流程跳转
+//		 */
+//		try {
+//			transferProcessNoVars( tsid, actiImpl.getId() );
+//		} catch (Exception e) {
+//			logger.info( "--S---------流程转向失败----" );
 			return null;
-		}	
-    	
-		/*
-		 * 获取流程的end节点
-		 */
-    	ActivityImpl actiImpl;
-    	try {
-			actiImpl = getEndNode( tsid );
-			logger.info( "---S--------end节点为-------------" + actiImpl );
-			if( actiImpl == null ) {
-				return null;
-			}
-    	} catch (Exception e) {
-			logger.info( "--S---------获取流程的end节点失败----" );
-			return null;
-		}
-		
-		/*
-		 * 流程跳转
-		 */
-		try {
-			transferProcessNoVars( tsid, actiImpl.getId() );
-		} catch (Exception e) {
-			logger.info( "--S---------流程转向失败----" );
-			return null;
-		}
-				
-		/*
-		 * 完成流程
-		 */
-		taskService.complete( tsid );
-		return "终止流程成功";		
+//		}
+//				
+//		/*
+//		 * 完成流程
+//		 */
+//		taskService.complete( tsid );
+//		return "终止流程成功";		
 	}
     
     /**   
@@ -1056,7 +1064,7 @@ public class ActivityS implements ActivitySI{
      * @return: String        
      */  
     @Override
-    public String endProcessByTsidInComment( String tsid, String comment ) {
+    public String endProcessByTsidInComment( String tsid, String comment, String userName ) {
     	if( StringUtils.isBlank( tsid ) ) {
 			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
@@ -1080,7 +1088,7 @@ public class ActivityS implements ActivitySI{
     	/*
     	 * 增加备注信息
     	 */
-    	boolean b = saveCommentByTsid( tsid, comment );
+    	boolean b = saveCommentByTsid( tsid, comment);
     	if( b ) {
     		logger.info( "---执行回退上一个节点，保存备注信息成功---------" );
     	}else {
@@ -1092,7 +1100,7 @@ public class ActivityS implements ActivitySI{
 		 */
 		try {
 //			transferProcessNoVars( tsid, actiImpl.getId() );
-			transferProcessNoVars( tsid, "end" );
+			transferProcessNoVars( tsid, "end" , userName );
 		} catch (Exception e) {
 			logger.info( "--S---------流程转向失败----" );
 			return null;
@@ -1932,7 +1940,7 @@ public class ActivityS implements ActivitySI{
     			}
     			String act_TYPE_ = h.getACT_TYPE_();
     			if(  act_TYPE_ != null  ) {
-    				if( act_TYPE_.contains( "exclusiveGateway") || act_TYPE_.contains( "startEvent") ) {
+    				if( act_TYPE_.contains( "exclusiveGateway") || act_TYPE_.contains( "startEvent")  || act_TYPE_.contains( "endEvent") ) {
     					s1 --;
     					continue;
     				}		

@@ -366,11 +366,13 @@ public class ProcessC {
 	@PutMapping("/nodes/end/group/piid/{piid}")
 	public ResultJson<String> endProcessIngroup(
 			@PathVariable("piid") @NotBlank String piid,
-			@RequestParam String comment ){
+			@RequestParam("comment") String comment,
+			@RequestParam("userName") String userName){
 		logger.info( "--C-------- 终止流程     -------------" );
 		logger.info( piid );
 		logger.info( comment );
-		String s = activityS.endProcessByPiidInComment(piid, comment);
+		logger.info( userName );
+		String s = activityS.endProcessByPiidInComment(piid, comment, userName );
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
 		}
@@ -385,11 +387,13 @@ public class ProcessC {
 	@PutMapping("/nodes/end/piid/{piid}")
 	public ResultJson<String> endProcess(
 			@PathVariable("piid") @NotBlank String piid,
-			@RequestParam String comment ){
+			@RequestParam("comment") String comment,
+			@RequestParam("userName") String userName){
 		logger.info( "--C-------- 终止流程     -------------" );
 		logger.info( piid );
 		logger.info( comment );
-		String s = activityS.endProcessByPiidInComment(piid, comment);
+		logger.info( userName );
+		String s = activityS.endProcessByPiidInComment(piid, comment, userName );
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
 		}
