@@ -136,7 +136,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			,cols: [[ //表头
 				{field: 'assignee_', title: '处理人', width:'35%',fixed: 'left'}
 				,{field: 'act_NAME_', title: '处理节点', width:'30%'}
-				,{field: 'start_TIME_', title: '时间', width:'35%',fixed: 'right'} 
+				,{field: 'start_TIME_', title: '时间', width:'34.5%',fixed: 'right'} 
 				]]
 		});
 	}
@@ -325,6 +325,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    			  }
 	    		  }
 	    	  })
+	    	  piids = (piids == null||piids == '')?['nodata']:piids;
 	    	  reloadTable(null, null, piids);
 	    	  
 	    };
