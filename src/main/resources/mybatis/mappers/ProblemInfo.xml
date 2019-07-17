@@ -224,7 +224,17 @@
 					   		and tas_id = #{record.tasId}
 					   </if>
 					   <if test="record.problemtype != null and record.problemtype != ''">
-					   		and PROBLEMTYPE = #{record.problemtype}
+					   		<choose>
+					   			<when test="record.problemtype == '维修工段'">
+					   				and PROBLEMTYPE IN ('电站', '电气', '仪表', '机械', '维修工段')
+					   			</when>
+					   			<when test="record.problemtype == '净化工段'">
+					   				and PROBLEMTYPE IN ('净化工段', '化验')
+					   			</when>
+					   			<otherwise>
+					   				and PROBLEMTYPE = #{record.problemtype}
+					   			</otherwise>
+					   		</choose>
 					   </if>
 					   <if test="record.welId != null and record.welId != ''">
 					   		and wel_id = #{record.welId}
@@ -443,7 +453,17 @@
 					   		and tas_id = #{record.tasId}
 					   </if>
 					   <if test="record.problemtype != null and record.problemtype != ''">
-					   		and PROBLEMTYPE = #{record.problemtype}
+					   		<choose>
+					   			<when test="record.problemtype == '维修工段'">
+					   				and PROBLEMTYPE IN ('电站', '电气', '仪表', '机械', '维修工段')
+					   			</when>
+					   			<when test="record.problemtype == '净化工段'">
+					   				and PROBLEMTYPE IN ('净化工段', '化验')
+					   			</when>
+					   			<otherwise>
+					   				and PROBLEMTYPE = #{record.problemtype}
+					   			</otherwise>
+					   		</choose>
 					   </if>
 					   <if test="record.welId != null and record.welId != ''">
 					   		and wel_id = #{record.welId}

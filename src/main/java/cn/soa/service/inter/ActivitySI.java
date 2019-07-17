@@ -144,7 +144,7 @@ public interface ActivitySI {
 	 * @Description: 流程跳转(不提供流程变量)    
 	 * @return: void        
 	 */  
-	void transferProcessNoVars(String tsid, String actId);
+	void transferProcessNoVars(String tsid, String actId, String userName);
 
 	/**   
 	 * @Title: endProcess   
@@ -158,7 +158,7 @@ public interface ActivitySI {
 	 * @Description: 终止流程（批准信息）   
 	 * @return: String        
 	 */  
-	String endProcessByTsidInComment(String tsid, String comment);
+	String endProcessByTsidInComment(String tsid, String comment, String userName);
 
 	/**   
 	 * @Title: getHistoryNodesByPiid   
@@ -312,7 +312,7 @@ public interface ActivitySI {
 	 * @Description:终止流程（piid）   
 	 * @return: String        
 	 */  
-	String endProcessByPiidInComment(String piid, String comment);
+	String endProcessByPiidInComment(String piid, String comment, String userName );
 
 	/**   
 	 * @Title: transferProcessInVarsByPiid   

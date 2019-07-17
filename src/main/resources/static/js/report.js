@@ -157,6 +157,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           		$option2.text(actionList[y].actionsName);
           		$("#detail-select").append($option2);
       		}
+      		$("#detail-select").append("<option value='其他'>其他</option>");
             //更新不安全select渲染
     	    form.render('select','notsafe-select');
           }
@@ -206,6 +207,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
        		            $option2.text(actionList[y].actionsName);
        		            $("#detail-select").append($option2);
        	            }
+       	          $("#detail-select").append("<option value='其他'>其他</option>");
        		      }
        		    }
        	    	
@@ -275,6 +277,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	            $option2.text(actionList[y].actionsName);
 	            $("#detail-select").append($option2);
             }
+            $("#detail-select").append("<option value='其他'>其他</option>");
 	      }
 	    }
 	     //更新不安全select渲染

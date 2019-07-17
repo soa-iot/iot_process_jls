@@ -28,6 +28,7 @@ layui.use([ 'element', 'layer' ], function() {
  */
 //从cookie中获得piid
 var piid = GetQueryString("piid");
+piid = 123;
 layui.use('table', function(){
 	  var table = layui.table;
 	  
@@ -119,8 +120,10 @@ layui.use(['form', 'jquery','layer'], function(){
  	success: function( json) {
  		if (json.state == 0) {
  			var imgs = json.data;
- 			if (imgs.length==0) {
-				$("#div-img").hide();
+ 			if (imgs==null || imgs.length==0) {
+				//$("#div-img").hide();
+				$("#div-img").empty();
+				$("#div-img").append("<p style='background-color:#FAFDFD; padding-top:9px;'>没有上传图片</p>")
 			}else{
 			$("#div-img").show();
  			var mode = imgs.length%3;
@@ -152,6 +155,7 @@ layui.use(['form', 'jquery','layer'], function(){
 					elem: '#div-img'
 					,arrow: 'always'
 					,height: '150px'
+					,width: '556px'
 					,interval: 5000
 				});
 			}); 
@@ -184,6 +188,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		        dataType : "json",  
 		        success: function(jsonData) {
 		        	if(jsonData.data == true){
+		        		$("#comment_receive").val("");
 		        		layer.msg("接收作业成功", {icon: 1, time: 2000, offset: '100px'}, function(){
 		        			top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		        		});
