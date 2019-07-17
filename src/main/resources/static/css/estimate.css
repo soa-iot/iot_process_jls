@@ -112,10 +112,11 @@
 		} */
 		
 	.big-img,.big-img-new{
+		margin-left:5px;
 		width: 180px;
 		height: 150px;
 		/* margin-top: 50px;
-		margin-left: 10px; */
+		margin-left: 10px; */ 
 	}
 	
 	.big-img:hover {

@@ -19,6 +19,7 @@ layui.use('laydate', function(){
 	});
 });
 
+
 layui.use('laydate', function(){
 	var laydate = layui.laydate;
 	//常规用法
@@ -52,7 +53,6 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		autoSort: false,  //禁用前端自动排序
 		defaultToolbar: [''],
 		cellMinWidth:70,
-		totalRow: true,
 		page: true,   //开启分页
 		request: {
 		    pageName: 'page' //页码的参数名称，默认：page
@@ -82,14 +82,14 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		},
 		cols: [[{field:'id', title:'编号', width:'5%', sort:false, type:'numbers', fixed:'left', align:'center'},
 			{field:'applydate', title:'上报日期', width:'10%', sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
-			{field:'applypeople', title:'上报人', width:'10%', sort:true, align:'center'},
+			{field:'applypeople', title:'上报人', width:'7%', sort:true, align:'center'},
 			{field:'welName', title:'装置单元', width:'10%', sort:true, align:'center'},
 			{field:'problemclass', title:'问题类别', width:'10%', sort:true, align:'center'},
 			{field:'profession', title:'专业', width:'8%', sort:true, align:'center'},
-			{field:'problemtype', title:'部门', width:'10%', sort:true, align:'center'},
+			{field:'problemtype', title:'部门', width:'9.2%', sort:true, align:'center'},
 			{field:'problemdescribe', title:'描述', width:'16%', sort:true, align:'center'},
-			{field:'problemstate', title:'问题状态', width:'9%', sort:true, align:'center'},
-			{fixed:'right',  title:'处理过程', minWidth:105, width:'12%', align:'center', toolbar:'#barBtn'} ]]  
+			{field:'problemstate', title:'问题状态', width:'8%', sort:true, align:'center'},
+			{fixed:'right',  title:'处理过程', minWidth:105, width:'16.7%', align:'center', toolbar:'#barBtn'} ]]  
 	});
 	
 	/**
@@ -113,8 +113,11 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	            layer.close(index); //如果设定了yes回调，需进行手工关闭
 	          }
 	      });
-	       
 	    }
+	    if(obj.event === 'detail'){
+		   piid = data.piid;
+		   $(".problem-detail").attr({"href":"/iot_process/html/problem-detail.html?piid="+piid});
+		}
 	});
 	
 	/**
