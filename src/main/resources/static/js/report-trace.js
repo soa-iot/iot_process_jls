@@ -5,8 +5,8 @@ layui.config({
     excel: 'excel',
 });
 //从cookie中获取当前登录用户
-var resavepeople = getCookie1("name").replace(/"/g,'');
-
+var resavepeople = getCookie1("userID").replace(/"/g,'');
+console.log("resavepeople="+resavepeople);
 /**
  * 日期插件
  */
@@ -86,7 +86,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			{field:'welName', title:'装置单元', width:'10%', sort:true, align:'center'},
 			{field:'problemclass', title:'问题类别', width:'10%', sort:true, align:'center'},
 			{field:'profession', title:'专业', width:'8%', sort:true, align:'center'},
-			{field:'problemtype', title:'部门', width:'9.2%', sort:true, align:'center'},
+			{field:'depet', title:'部门', width:'9.2%', sort:true, align:'center'},
 			{field:'problemdescribe', title:'描述', width:'16%', sort:true, align:'center'},
 			{field:'problemstate', title:'问题状态', width:'8%', sort:true, align:'center'},
 			{fixed:'right',  title:'处理过程', minWidth:105, width:'16.7%', align:'center', toolbar:'#barBtn'} ]]  
@@ -157,7 +157,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 				'welName': $("#welName").val(),
     			'problemclass': $("#problemclass").val(),
     			'profession': $("#profession").val(),
-    			'problemtype': $("#problemtype").val(),
+    			'depet': $("#depet").val(),
     			'problemdescribe': $("#problemdescribe").val(),
     			'problemstate': $("#problemstate").val(),
     			'startTime': $("#startdate").val(),
@@ -182,12 +182,12 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 						welName: '装置单元',
 						problemclass: '问题类别',
 						profession: '专业',
-						problemtype: '部门',
+						depet: '部门',
 						problemdescribe: '描述',
 						problemstate: '问题状态',
 					});
 					//2. 过滤多余属性
-					var exportData = excel.filterExportData(data, ['applydate', 'applypeople', 'welName', 'problemclass', 'profession', 'problemtype', 'problemdescribe', 'problemstate']);
+					var exportData = excel.filterExportData(data, ['applydate', 'applypeople', 'welName', 'problemclass', 'profession', 'depet', 'problemdescribe', 'problemstate']);
 					console.log(123);
 					//2.1 设置列宽,G列为180， 其他列默认为100
 					var colConf = excel.makeColConfig({
@@ -253,7 +253,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'welName': $("#welName").val(),
     			'problemclass': $("#problemclass").val(),
     			'profession': $("#profession").val(),
-    			'problemtype': $("#problemtype").val(),
+    			'depet': $("#depet").val(),
     			'problemdescribe': $("#problemdescribe").val(),
     			'problemstate': $("#problemstate").val(),
     			'startTime': $("#startdate").val(),

@@ -10,7 +10,10 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
 	//上报部门
-	var dept = getCookie1("organ").replace(/"/g,'');
+	var depet = getCookie1("organ").replace(/"/g,'');
+	if(depet == 'HSE办'){
+		depet = 'HSE办公室';
+	}
 	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;
@@ -56,7 +59,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	
 	  //隐藏字段初始赋值
 	  form.val('report-form', {
-	    "dept": dept,
+	    "depet": depet,
 	    "applypeople": resavepeople
 	  })
 	  
