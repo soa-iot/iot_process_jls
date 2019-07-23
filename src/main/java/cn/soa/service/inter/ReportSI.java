@@ -63,5 +63,5 @@ public interface ReportSI {
 	/**
 	 * 读取excel表批量问题上报
 	 */
-	String massProblemReport(InputStream is);
+	String massProblemReport(InputStream is, String fileName, String depet);
 }

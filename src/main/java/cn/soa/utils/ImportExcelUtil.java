@@ -13,6 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import cn.soa.entity.ProblemInfoForExcel;
 import cn.soa.service.inter.ReportSI;
@@ -112,8 +114,8 @@ public class ImportExcelUtil {
      * @Description: 读取Excel信息
      * @return List<T> 对象集合 
      */
-	public List<ProblemInfoForExcel> readExcelValue(XSSFWorkbook workbook, short sheetIndex, String deptName){
-		List<ProblemInfoForExcel> list = new ArrayList<>();
+	public List<MultiValueMap<String, String>> readExcelValue(XSSFWorkbook workbook, short sheetIndex, String deptName){
+		List<MultiValueMap<String, String>> list = new ArrayList<>();
 		
 		XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
 		//得到数据最后一行数
@@ -128,7 +130,7 @@ public class ImportExcelUtil {
 				throw new RuntimeException("第"+(i+1)+"行数据不符合要求");
 			}
 			 // 循环Excel的列
-			ProblemInfoForExcel porblemInfo = new ProblemInfoForExcel();
+			MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 			for(int j=0;j<9;j++) {
 				XSSFCell cell = row.getCell(j);
 				if(cell == null) {
@@ -169,39 +171,45 @@ public class ImportExcelUtil {
 						throw new RuntimeException("第"+(i+1)+"行属地单位填写不符合要求");
 					}
 				}
+				
+				if((j == 5 || j == 6) && cellValue.contains("_")) {
+					cellValue = cellValue.replace("_", "/");
+				}
+				
 				switch(j) {
 				case 0:
-					porblemInfo.setApplypeople(cellValue);
+					map.add("applypeople", cellValue);
 					break;
 				case 1:
-					porblemInfo.setProblemtype(cellValue);
+					map.add("problemtype", cellValue);
 					break;
 				case 2:
-					porblemInfo.setWelName(cellValue);
+					map.add("welName", cellValue);
 					break;
 				case 3:
-					porblemInfo.setProfession(cellValue);
+					map.add("profession", cellValue);
 					break;
 				case 4:
-					porblemInfo.setRfid(cellValue);
+					map.add("rfid", cellValue);
 					break;
 				case 5:
-					porblemInfo.setProblemclass(cellValue);
+					map.add("problemclass", cellValue);
 					break;
 				case 6:
-					porblemInfo.setRemarkfive(cellValue);
+					map.add("remarkfive", cellValue);
 					break;
 				case 7:
-					porblemInfo.setRemarksix(cellValue);
+					map.add("remarksix", cellValue);
 					break;
 				case 8:
-					porblemInfo.setProblemdescribe(cellValue);
+					map.add("problemdescribe", cellValue);
 				}
+				
 			}
-			porblemInfo.setApplydate(new Date());
-			porblemInfo.setDept(deptName);
-			porblemInfo.setProblemstate("UNFINISHED");
-			list.add(porblemInfo);
+			map.add("applydate", new Date().toString());
+			map.add("dept", deptName);
+			map.add("problemstate", "UNFINISHED");
+			list.add(map);
 		}
 		if(lastRowNum < 2) {
 			throw new RuntimeException("Excel表里没有数据");

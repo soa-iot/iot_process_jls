@@ -173,30 +173,47 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			    		 for(var i=0;i<data.length;i++){
 			    			 data[i].applydate = data[i].applydate.replace(/T/, ' ').replace(/\..*/, '');
 			    			 data[i].problemstate = (data[i].problemstate == 'FINISHED')?'已整改':'未整改';
+			    			 data[i].rectificationperiod = 
+			    				 (data[i].rectificationperiod != null && data[i].rectificationperiod != '')?data[i].rectificationperiod.substring(0,10):'';
+			    			 if(data[i].problemclass != '不安全行为/状态'){
+			    				 data[i].remarkfive = '';
+			    				 data[i].remarksix = '';
+			    			 }
 			    		 }
 			    	}
-					 // 1. 数组头部新增表头
+					// 1. 数组头部新增表头
 					data.unshift({
 						applydate: '上报日期',
 						applypeople: '申请人', 
-						welName: '装置单元',
-						problemclass: '问题类别',
-						profession: '专业',
 						depet: '部门',
-						problemdescribe: '描述',
+						maintenanceman: '问题当前责任人',
+						remarktwo: '当前进度',
+						rectificationperiod: '计划完成时间',
+						remarkthree, '是否超期',
+						problemtype: '属地单位',
+						welName: '问题区域',
+						profession: '专业',
+						rfid: '设备位号',
+						problemclass: '问题类别',
+						remarkfive: '不安全行为',
+						remarksix: '具体行为',
+						problemdescribe: '问题描述',
 						problemstate: '问题状态',
+						
 					});
 					//2. 过滤多余属性
-					var exportData = excel.filterExportData(data, ['applydate', 'applypeople', 'welName', 'problemclass', 'profession', 'depet', 'problemdescribe', 'problemstate']);
+					var exportData = excel.filterExportData(data, ['applydate', 'applypeople', 'depet', 'maintenanceman', 'remarktwo', 
+						'rectificationperiod', 'remarkthree', 'problemtype', 'welName', 'profession', 'rfid', 'problemclass', 'remarkfive', 'remarksix', 'problemdescribe', 'problemstate']);
 					console.log(123);
-					//2.1 设置列宽,G列为180， 其他列默认为100
+					//2.1 设置列宽,N列为180， 其他列默认为100
 					var colConf = excel.makeColConfig({
-					    'G': 180,
-					    'H': 100
+						'A': 120,
+					    'O': 200,
+					    'P': 100
 					}, 100);
 					
 					// 2.2 调用设置样式的函数，传入设置的范围，支持回调
-					excel.setExportCellStyle(exportData, 'A1:H1', {
+					excel.setExportCellStyle(exportData, 'A1:P1', {
 					    s: {
 					        alignment: {
 					            horizontal: 'center',
@@ -206,10 +223,13 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 					    }
 					});
 					
+					var date= new Date();
+					date = '问题上报跟踪数据'+date.toLocaleDateString().replace(/\//g, '-')+'.xlsx';
+					
 					//3. 执行导出函数，系统会弹出弹框
 					excel.exportExcel({
 			            sheet1: exportData
-			        }, '问题上报数据.xlsx', 'xlsx',{
+			        }, date, 'xlsx',{
 			            extend: {
 			                '!cols': colConf
 			            }

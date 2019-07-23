@@ -28,7 +28,7 @@ layui.use([ 'element', 'layer' ], function() {
  */
 //从cookie中获得piid
 var piid = GetQueryString("piid");
-piid = 123;
+
 layui.use('table', function(){
 	  var table = layui.table;
 	  

@@ -352,7 +352,8 @@ public class ReportC {
 			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 			headers.add("Content-Disposition", "attchement;filename=" + fileName);
 			return new ResponseEntity<byte[]>(byteArray.toByteArray(), headers, HttpStatus.OK);
-		} catch (Exception e) {
+		}catch (Exception e) {
+			log.error("-------下载问题批量上报模板excel表失败------");
 			e.printStackTrace();
 		}
 		return null;
@@ -363,10 +364,10 @@ public class ReportC {
 	 * 
 	 */
 	@PostMapping("/upload/template")
-	public ResultJson<String> uploadExcelTemplate(@RequestParam("file") MultipartFile file){
-		log.info("------上传的excel表名为："+file.getName());
+	public ResultJson<String> uploadExcelTemplate(@RequestParam("file") MultipartFile file, String depet){
+		log.info("------上传的excel表名为："+file.getOriginalFilename());
 		try {
-			String msg = reportS.massProblemReport(file.getInputStream());
+			String msg = reportS.massProblemReport(file.getInputStream(), file.getOriginalFilename(), depet);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
