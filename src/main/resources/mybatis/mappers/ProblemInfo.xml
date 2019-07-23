@@ -399,7 +399,33 @@
 					   		and PROFESSION = #{record.profession}
 					   </if>
 					   <if test="record.depet != null and record.depet != ''">
-					   		and depet = #{record.depet}
+					   		
+					   		<choose>
+					   			<when test="record.depet == '维修工段' ">
+					   				and depet IN ('电站','钳工班','仪表班','维修班','电站班','管焊班','维修工段')
+					   			</when>
+					   			<when test="record.depet == '净化工段' ">
+					   				and depet IN ('净化1班','净化4班','净化2班','净化3班','行政班','分析班')
+					   			</when>
+					   			<when test="record.depet == 'HSE办公室' ">
+					   				and depet IN ('HSE办公室')
+					   			</when>
+					   			<when test="record.depet == '设备办' ">
+					   				and depet IN ('设备办','设备办公室')
+					   			</when>
+					   			<when test="record.depet == '生产办' ">
+					   				and depet IN ('生产办','生产办公室')
+					   			</when>
+					   			<when test="record.depet == '财务经营办' ">
+					   				and depet IN ('财务经营办','财务办公室')
+					   			</when>
+					   			<when test="record.depet == '综合办' ">
+					   				and depet IN ('综合办','综合办公室')
+					   			</when>
+					   			<otherwise>
+					   				and depet = #{record.depet}
+					   			</otherwise>
+					   		</choose>
 					   </if>
 					   <if test="record.interOrOuter != null and record.interOrOuter != ''">
 					   		and inter_or_outer = #{record.interOrOuter}
@@ -628,7 +654,33 @@
 					   		and PROFESSION = #{record.profession}
 					   </if>
 					   <if test="record.depet != null and record.depet != ''">
-					   		and depet = #{record.depet}
+					   		
+					   		<choose>
+					   			<when test="record.depet == '维修工段' ">
+					   				and depet IN ('电站','钳工班','仪表班','维修班','电站班','管焊班','维修工段')
+					   			</when>
+					   			<when test="record.depet == '净化工段' ">
+					   				and depet IN ('净化1班','净化4班','净化2班','净化3班','行政班','分析班')
+					   			</when>
+					   			<when test="record.depet == 'HSE办公室' ">
+					   				and depet IN ('HSE办公室')
+					   			</when>
+					   			<when test="record.depet == '设备办' ">
+					   				and depet IN ('设备办','设备办公室')
+					   			</when>
+					   			<when test="record.depet == '生产办' ">
+					   				and depet IN ('生产办','生产办公室')
+					   			</when>
+					   			<when test="record.depet == '财务经营办' ">
+					   				and depet IN ('财务经营办','财务办公室')
+					   			</when>
+					   			<when test="record.depet == '综合办' ">
+					   				and depet IN ('综合办','综合办公室')
+					   			</when>
+					   			<otherwise>
+					   				and depet = #{record.depet}
+					   			</otherwise>
+					   		</choose>
 					   </if>
 					   <if test="record.interOrOuter != null and record.interOrOuter != ''">
 					   		and inter_or_outer = #{record.interOrOuter}

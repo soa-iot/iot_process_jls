@@ -39,7 +39,7 @@
 			IOT_USER_ORGANIZATION uo JOIN IOT_USER_USER_ROLE uur ON uo.usernum = uur.userid
 			JOIN IOT_USER_ROLE ur ON uur.rolid = ur.rolid
 		<where>
-			ur.name IN ('仪表班班长', '管焊班班长', '钳工班班长', '电气班班长')
+			ur.name IN ('仪表班长', '管焊班班长', '钳工班班长', '电气班班长')
 		</where>
 	</select>
 
