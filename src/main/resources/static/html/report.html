@@ -154,10 +154,11 @@
 			 </div>
 
 			  <div class="layui-form-item" id="problem_report" style="display: none;">
-			  	<div class="layui-col-md-offset6 layui-col-xs-offset7">
-			  		<span style="color:">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			  	<div class="layui-col-md-offset5 layui-col-xs-offset5">
+			  		<button class="layui-btn saveBtn primary-btn" type="button" id="saveMassBtn">
+				           <i class="layui-icon">&#xe656;</i>问题批量上报</button> &nbsp;&nbsp;
 				    <button class="layui-btn saveBtn primary-btn" lay-submit lay-filter="saveBtn" id="saveBtn">
-				           <i class="layui-icon">&#xe621;</i>暂&nbsp;&nbsp;&nbsp;&nbsp;存&nbsp;&nbsp;</button> &nbsp;&nbsp;&nbsp;&nbsp;
+				           <i class="layui-icon">&#xe621;</i>暂&nbsp;&nbsp;&nbsp;&nbsp;存&nbsp;&nbsp;</button> &nbsp;&nbsp;
 				    <button class="layui-btn primary-btn" type="button" lay-submit lay-filter="problem_report">
 				    		<i class="layui-icon">&#x1005;</i>问题上报</button>
 			    </div>
@@ -169,6 +170,36 @@
 			 </div>
 		   </form>
 	  	</div>
+	 </div>
+	 
+	 <div id="problemMass" style="display: none;">
+	 	<form class="layui-form" style="width: 550px;">
+	 		<div class="layui-form-item">
+	 			<label class="layui-form-label" style="width: 550px; color: blue;">
+	 				<i class="layui-icon" style="color:blue;">&#xe66c;</i>提示：请先下载excel模板表，填入问题上报数据后上传excel表，然后点击上报
+	 			</label>
+	 		</div>
+	 		<div class="layui-form-item">
+			      <label class="text-font layui-form-label " style="width: 130px;">下载excel模板表</label>
+			      <div class="layui-input-block layui-form">
+			        <a href="/iot_process/report/download/template"><button id="template-btn" type="button" class="layui-btn layui-btn-sm primary-btn">
+				  		<i class="layui-icon">&#xe601;</i>&nbsp;下&nbsp;&nbsp;载&nbsp;</button></a>
+			      </div>
+	 		</div>
+	 		<div class="layui-form-item">
+			      <label class="text-font layui-form-label" style="width: 130px;">上传excel表</label>
+			      <div class="layui-input-block layui-form">
+			        <button id="upload-excel-btn" type="button" class="layui-btn layui-btn-sm primary-btn">
+				  		<i class="layui-icon">&#xe681;</i>&nbsp;上&nbsp;&nbsp;传&nbsp;</button>
+			      </div>
+	 		</div>
+	 		<div class="layui-form-item">
+			      <label class="text-font layui-form-label" style="width: 130px;">上报结果：</label>
+			      <div class="layui-form" style="padding-top: 10px;">
+				       <p>12312你速递费史蒂芬森佛山东佛山的胜多负少的理发师的方式的浪费式单例发生了的法律上了</p>
+			      </div>
+	 		</div>
+	 	</form>
 	 </div>
 	 
 	<script src="../jsPackage/js/jquery-1.9.1.min.js"></script>

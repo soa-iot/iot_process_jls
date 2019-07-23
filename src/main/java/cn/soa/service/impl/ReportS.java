@@ -1,5 +1,6 @@
 package cn.soa.service.impl;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +192,15 @@ public class ReportS implements ReportSI {
 		map.put("problemstate", "PROBLEMSTATE");
 		
 		return map.get(key);
+	}
+	
+	/**
+	 * 读取excel表批量问题上报
+	 */
+	@Override
+	public String massProblemReport(InputStream is) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

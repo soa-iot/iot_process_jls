@@ -562,6 +562,63 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	    return false;
 		
 	  });
+	  
+	  /**
+	   * 问题批量上报
+	   */
+	  $("#saveMassBtn").click(function(){
+		  console.log("-----问题批量上报开始--------");
+		  layer.open({
+		        type: 1
+		        ,title: '问题批量上报'
+		        ,id: 'problemmass'
+		        ,btn: ['上&nbsp;&nbsp;报','关&nbsp;&nbsp;闭']
+		  		,offset: ['45px','100px']
+		  		,area: ['650px','400px']
+		        ,content:$("#problemMass")
+		        ,yes: function(index, layero){
+		        	
+		        },
+		        success: function(){
+		        	console.log("success");
+		        	upload.render({
+		        	    elem: '#upload-excel-btn'
+		        	    ,url: '#'
+		        	    ,auto: false
+		        	    ,accept:'file'
+		        	    ,bindAction: '.layui-layer .layui-layer-btn0'
+		        	    ,done: function(res){
+		        	      //请求完成后回调
+		        	    	
+		        	     layer.closeAll('loading'); 
+		        	    }
+		        		,before: function(res){
+		        	      //文件提交上传前的回调
+		        		  layer.load(1,{offset: ['190px', '400px']}); 
+		        	    }
+		        		,error: function(){
+		        	      //请求异常回调
+		        		  $(".layui-layer-dialog .layui-layer-padding:contains('请求上传接口出现异常')").css({"display":"none"});
+		        		  layer.msg("连接数据库失败，请检查网络是否正常", {icon: 2, offset: ['180px', '320px']});
+		        		  layer.closeAll('loading');
+		        	    }
+		        	});
+		        	$(".layui-layer .layui-layer-btn0").prepend("<i class='layui-icon'>&#x1005;</i>&nbsp;&nbsp;");
+		        	$(".layui-layer .layui-layer-btn1").prepend("<i class='layui-icon'>&#x1006;</i>&nbsp;&nbsp;");
+		        	$(".layui-layer .layui-layer-btn0").addClass("primary-btn");
+		        	$(".layui-layer .layui-layer-btn1").addClass("primary-btn");
+		        	$(".layui-layer .layui-layer-btn0,.layui-layer .layui-layer-btn1").mouseover(function(){
+			  			  $(this).find("i").css({"color":"white"});
+			  		})
+			  		   
+			  		$(".layui-layer .layui-layer-btn1,.layui-layer .layui-layer-btn0").mouseout(function(){
+			  			  $(this).find("i").css({"color":"green"});
+			  		})
+		        }
+		  });
+	  })
+	  
+	  
      
 	  /**
 	   * 汉字转成拼音的功能

@@ -24,7 +24,9 @@ $.ajax({
 		if (json.state == 0) {
 			var imgs = json.data;
 			if (imgs.length==0) {
-				$("#doimg-div").hide();
+				//$("#doimg-div").hide();
+				$("#doimg-div").empty();
+				$("#doimg-div").append("<p style='background-color:#FAFDFD; padding-top:9px;'>没有上传图片</p>")
 			}else{
 				$("#doimg-div").show();
 				var mode = imgs.length%3;
