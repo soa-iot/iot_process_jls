@@ -45,7 +45,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	/**
 	 * 问题上报信息展示表
 	 */
-	var problemTable = table.render({
+	var  = table.render({
 		elem: '#reportTrace',
 		method: 'post',
 		url: '/iot_process/report/showproblembycondition',
