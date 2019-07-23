@@ -10,7 +10,6 @@
 					trigger: 'click' //采用click弹出
 				});
 			};
-
 			renderTime('#startTime');
 			renderTime('#endTime');
 			form.render(); 
