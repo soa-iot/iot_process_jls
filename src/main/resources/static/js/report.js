@@ -9,11 +9,13 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
+	resavepeople = '吴娇';
 	//上报部门
 	var depet = getCookie1("organ").replace(/"/g,'');
 	if(depet == 'HSE办'){
 		depet = 'HSE办公室';
 	}
+	depet = '净化一班';
 	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;
@@ -572,51 +574,75 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		        type: 1
 		        ,title: '问题批量上报'
 		        ,id: 'problemmass'
+		        ,size: '51200'
 		        ,btn: ['上&nbsp;&nbsp;报','关&nbsp;&nbsp;闭']
 		  		,offset: ['45px','100px']
-		  		,area: ['650px','400px']
+		  		,area: ['610px','315px']
 		        ,content:$("#problemMass")
 		        ,yes: function(index, layero){
-		        	
-		        },
-		        success: function(){
-		        	console.log("success");
-		        	upload.render({
-		        	    elem: '#upload-excel-btn'
-		        	    ,url: '#'
-		        	    ,auto: false
-		        	    ,accept:'file'
-		        	    ,bindAction: '.layui-layer .layui-layer-btn0'
-		        	    ,done: function(res){
-		        	      //请求完成后回调
-		        	    	
-		        	     layer.closeAll('loading'); 
-		        	    }
-		        		,before: function(res){
-		        	      //文件提交上传前的回调
-		        		  layer.load(1,{offset: ['190px', '400px']}); 
-		        	    }
-		        		,error: function(){
-		        	      //请求异常回调
-		        		  $(".layui-layer-dialog .layui-layer-padding:contains('请求上传接口出现异常')").css({"display":"none"});
-		        		  layer.msg("连接数据库失败，请检查网络是否正常", {icon: 2, offset: ['180px', '320px']});
-		        		  layer.closeAll('loading');
-		        	    }
-		        	});
-		        	$(".layui-layer .layui-layer-btn0").prepend("<i class='layui-icon'>&#x1005;</i>&nbsp;&nbsp;");
-		        	$(".layui-layer .layui-layer-btn1").prepend("<i class='layui-icon'>&#x1006;</i>&nbsp;&nbsp;");
-		        	$(".layui-layer .layui-layer-btn0").addClass("primary-btn");
-		        	$(".layui-layer .layui-layer-btn1").addClass("primary-btn");
-		        	$(".layui-layer .layui-layer-btn0,.layui-layer .layui-layer-btn1").mouseover(function(){
-			  			  $(this).find("i").css({"color":"white"});
-			  		})
-			  		   
-			  		$(".layui-layer .layui-layer-btn1,.layui-layer .layui-layer-btn0").mouseout(function(){
-			  			  $(this).find("i").css({"color":"green"});
-			  		})
+		        	if($("#problemmass").find("span.layui-upload-choose").length == 1){
+						uploadTepmlate.upload();
+					}
+		        }
+		        ,btn2: function(index, layero){
+		        	 $("#response-div").css({"display": "none"});
+		        }
+		        ,success: function(){
+		        	 console.log("success");
+		        	 $(".layui-layer .layui-layer-btn0").prepend("<i class='layui-icon'>&#x1005;</i>&nbsp;&nbsp;");
+		    	     $(".layui-layer .layui-layer-btn1").prepend("<i class='layui-icon'>&#x1006;</i>&nbsp;&nbsp;");
+		    	     $(".layui-layer .layui-layer-btn0").addClass("primary-btn");
+		    	     $(".layui-layer .layui-layer-btn1").addClass("primary-btn");
+		    	     $(".layui-layer .layui-layer-btn0,.layui-layer .layui-layer-btn1").mouseover(function(){
+		    	        $(this).find("i").css({"color":"white"});
+		    	     })
+		    	        				  		   
+		    	     $(".layui-layer .layui-layer-btn1,.layui-layer .layui-layer-btn0").mouseout(function(){
+		    	        $(this).find("i").css({"color":"green"});
+		    	     })
 		        }
 		  });
 	  })
+	  
+     var uploadTepmlate = upload.render({
+	        			   elem: '#upload-excel-btn'
+	        			   ,url: '/iot_process/report/upload/template'
+	        			   ,auto: false
+	        			   ,data: {
+	        			       depet: function(){ return depet;},
+	        			       resavepeople: function(){ return resavepeople; }
+	        			   }
+	        			   ,accept:'file'
+	        			   ,bindAction: '#'
+	        			   ,done: function(res, index){
+	        			     //请求完成后回调
+	        			     $("#response-div").css({"display": "block"});
+	        			     layer.closeAll('loading'); 
+	        			     if(res.state == 0 && res.message != null){
+	        				     if(!res.message.match("成功")){
+	        				        $("#reponse-text").text("问题上报失败，"+res.message);
+	        				     }else{
+	        				        $("#reponse-text").text(res.message); 
+	        				     }
+	        				 }else if(res.state == 1){
+	        				      $("#reponse-text").text(res.message);
+	        				   }else{
+	        				      layer.msg("连接服务器失败，请检查网络是否正常", {icon: 2, offset: ['180px', '300px']});
+	        				   }
+
+	        		       }
+	        			   ,before: function(res){
+	        			      //文件提交上传前的回调
+	        			      layer.load(1,{offset: ['190px', '400px']}); 
+	        			   }
+	        			   ,error: function(){
+	        			      //请求异常回调
+	        			       $(".layui-layer-dialog .layui-layer-padding:contains('请求上传接口出现异常')").css({"display":"none"});
+	        			        	layer.msg("连接服务器失败，请检查网络是否正常", {icon: 2, offset: ['180px', '300px']});
+	        			        	layer.closeAll('loading');
+	        			    }
+	     });
+	    
 	  
 	  
      

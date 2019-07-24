@@ -114,7 +114,7 @@ public class ImportExcelUtil {
      * @Description: 读取Excel信息
      * @return List<T> 对象集合 
      */
-	public List<MultiValueMap<String, String>> readExcelValue(XSSFWorkbook workbook, short sheetIndex, String deptName){
+	public List<MultiValueMap<String, String>> readExcelValue(XSSFWorkbook workbook, short sheetIndex, String resavepeople, String deptName){
 		List<MultiValueMap<String, String>> list = new ArrayList<>();
 		
 		XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
@@ -138,6 +138,7 @@ public class ImportExcelUtil {
 				}
 				
 				String cellValue = "";
+				log.info("cellValue="+cellValue);
 				if (cell.getCellTypeEnum() == CellType.STRING) {
 					cellValue = cell.getStringCellValue().trim();
 				}
@@ -153,18 +154,19 @@ public class ImportExcelUtil {
 					throw new RuntimeException("第"+(i+1)+"行数据不符合要求");
 				}
 				
-				/*if(j == 0) {
+				if(j == 0) {
 					String[] userList = null;
 					if(cellValue.contains(",")) {
 						userList = cellValue.split(",");
-					}else if(cellValue.contains("，")) {
+					}else{
 						userList = cellValue.split("，");
 					}
+					log.info("reportS:"+reportS+" userList: "+userList);
 					String result = reportS.verifyApplyPeople(userList);
 					if(result != null) {
 						throw new RuntimeException("第"+(i+1)+"行："+result);
 					}
-				}*/
+				}
 				
 				if(j == 1) {
 					if(!Arrays.toString(PROBLEM_LOCATION).contains(cellValue)) {
@@ -207,7 +209,8 @@ public class ImportExcelUtil {
 				
 			}
 			map.add("applydate", new Date().toString());
-			map.add("dept", deptName);
+			map.add("depet", deptName);
+			map.add("resavepeople", resavepeople);
 			map.add("problemstate", "UNFINISHED");
 			list.add(map);
 		}

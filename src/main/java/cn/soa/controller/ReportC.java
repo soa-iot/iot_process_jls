@@ -364,14 +364,18 @@ public class ReportC {
 	 * 
 	 */
 	@PostMapping("/upload/template")
-	public ResultJson<String> uploadExcelTemplate(@RequestParam("file") MultipartFile file, String depet){
+	public ResultJson<Void> uploadExcelTemplate(@RequestParam("file") MultipartFile file, String resavepeople, String depet){
 		log.info("------上传的excel表名为："+file.getOriginalFilename());
+		log.info("------resavepeople："+resavepeople);
+		log.info("------depet："+depet);
+		
 		try {
-			String msg = reportS.massProblemReport(file.getInputStream(), file.getOriginalFilename(), depet);
+			String msg = reportS.massProblemReport(file.getInputStream(), file.getOriginalFilename(), resavepeople, depet);
+			return new ResultJson<>(ResultJson.SUCCESS, msg);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ResultJson<>(ResultJson.ERROR, "上传Excel表失败");
 	}
 	
 }

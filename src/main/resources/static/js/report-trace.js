@@ -5,7 +5,7 @@ layui.config({
     excel: 'excel',
 });
 //从cookie中获取当前登录用户
-var resavepeople = getCookie1("userID").replace(/"/g,'');
+var resavepeople = getCookie1("name").replace(/"/g,'');
 console.log("resavepeople="+resavepeople);
 /**
  * 日期插件
@@ -40,7 +40,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	
 	//问题未整改数量和已整改数量
 	var uncount = 0, count = 0;
-	var piid, isreload = false;
+	var piid, isreload = true;
 	
 	/**
 	 * 问题上报信息展示表
@@ -60,18 +60,24 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		},
 		parseData: function(res){ //res 即为原始返回的数据
 			var data = res.data     
-	    	if(data != null || data != ''){
+	    	if(data != null && data != '' && res.count != 0){
 	    		 for(var i=0;i<data.length;i++){
 	    			 data[i].applydate = (data[i].applydate == '' || data[i].applydate == null)?data[i].applydate : data[i].applydate.replace(/T/, ' ').replace(/\..*/, '');
 	    			 data[i].problemstate = (data[i].problemstate == 'FINISHED')?'已整改':'未整改';
-	    			 if(!isreload){
+	    			 if(isreload){
 	    				count = res.msg;
 		    		    uncount = res.count - count; 
 	    			 }
 	    		 }
+	    		$("#count").text(count);
+	 			$("#uncount").text(uncount);
+	    	}else{
+	    		$("#count").text(0);
+				count = 0;
+	 			$("#uncount").text(0);
+				uncount = 0;
 	    	}
-			$("#count").text(count);
-			$("#uncount").text(uncount);
+			
 			isreload = false;
 		    return {
 		      "code": res.code, //解析接口状态
@@ -189,7 +195,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 						maintenanceman: '问题当前责任人',
 						remarktwo: '当前进度',
 						rectificationperiod: '计划完成时间',
-						remarkthree, '是否超期',
+						remarkthree: '是否超期',
 						problemtype: '属地单位',
 						welName: '问题区域',
 						profession: '专业',
@@ -297,33 +303,38 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		 switch(obj.event){
 	      case 'querydata':
 	    	console.log('querydata');
+	    	isreload = true;
 	    	reloadTable(null, null, null);
 	        break;
 	      case 'finish':
 	    	  console.log('finish');
-	    	  isreload = true;
-	    	  problemTable.reload({
-	      		url: '/iot_process/report/showproblembycondition'
-	      	   ,page: {
-	      		   curr: 1 //重新从第 1 页开始
-	      	   }
-	      	   ,where: {
-	      			'problemstate': 'FINISHED',
-	      	   }
-	      	})
-	        break;
-	      case 'unfinish':
-	    	  console.log('unfinish');
-	    	  isreload = true;
-	    	  problemTable.reload({
+			   console.log("count="+count+" , uncount="+uncount);
+	    	  if(count != 0){
+		    	  problemTable.reload({
 		      		url: '/iot_process/report/showproblembycondition'
 		      	   ,page: {
 		      		   curr: 1 //重新从第 1 页开始
 		      	   }
 		      	   ,where: {
-		      			'problemstate': 'UNFINISHED',
+		      			'problemstate': 'FINISHED',
 		      	   }
-		      })
+		      	})
+	    	  }
+	        break;
+	      case 'unfinish':
+	    	  console.log('unfinish');
+			  console.log("count="+count+" , uncount="+uncount);
+	    	  if(uncount != 0){
+	    		  problemTable.reload({
+			      		url: '/iot_process/report/showproblembycondition'
+			      	   ,page: {
+			      		   curr: 1 //重新从第 1 页开始
+			      	   }
+			      	   ,where: {
+			      			'problemstate': 'UNFINISHED',
+			      	   }
+			      })  
+	    	  }
 		      break;
 	      case 'open-advance':
 	    	  console.log('open-advance');
@@ -349,6 +360,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    		  }
 	    	  })
 	    	  piids = (piids == null||piids == '')?['nodata']:piids;
+	    	  isreload = true;
 	    	  reloadTable(null, null, piids);
 	    	  
 	    };

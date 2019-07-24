@@ -255,7 +255,7 @@
 					   		and RESAVEPEOPLE = #{record.resavepeople}
 					   </if>
 					   <if test="record.applypeople != null and record.applypeople != ''">
-					   		and APPLYPEOPLE = #{record.applypeople}
+					   		and APPLYPEOPLE LIKE '%${record.applypeople}%'
 					   </if>
 					   <if test="record.problemstate != null and record.problemstate != ''">
 					   		and PROBLEMSTATE = #{record.problemstate}
@@ -504,13 +504,13 @@
 					   		and impacts = #{record.impacts}
 					   </if>
 					   <if test="record.problemdescribe != null and record.problemdescribe != ''">
-					   		and PROBLEMDESCRIBE = #{record.problemdescribe}
+					   		and PROBLEMDESCRIBE LIKE '%${record.problemdescribe}%'
 					   </if>
 					   <if test="record.resavepeople != null and record.resavepeople != ''">
 					   		and RESAVEPEOPLE = #{record.resavepeople}
 					   </if>
 					   <if test="record.applypeople != null and record.applypeople != ''">
-					   		and APPLYPEOPLE = #{record.applypeople}
+					   		and APPLYPEOPLE LIKE '%${record.applypeople}%'
 					   </if>
 					   <if test="record.problemstate != null and record.problemstate != ''">
 					   		and PROBLEMSTATE = #{record.problemstate}

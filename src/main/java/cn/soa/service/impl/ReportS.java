@@ -216,7 +216,7 @@ public class ReportS implements ReportSI {
 	 * 读取excel表批量问题上报
 	 */
 	@Override
-	public String massProblemReport(InputStream is, String filename, String depet) {
+	public String massProblemReport(InputStream is, String filename, String resavepeople, String depet) {
 		
 		List<Integer> errRecord = new ArrayList<Integer>();
 		
@@ -235,10 +235,18 @@ public class ReportS implements ReportSI {
 			}
 			
 		} catch (IOException e) {
+			log.error("-------读取excel流失败");
 			e.printStackTrace();
 		}
-		List<MultiValueMap<String, String>> list = importExcelUtil.readExcelValue(workbook, (short)0, depet);
-		
+		List<MultiValueMap<String, String>> list = null;
+		try {
+			list = importExcelUtil.readExcelValue(workbook, (short)0, resavepeople, depet);
+			log.info(list.toString());
+		}catch (RuntimeException e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+			
 		//解决中文乱码
 		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
 		HttpHeaders headers = new HttpHeaders();
@@ -255,7 +263,7 @@ public class ReportS implements ReportSI {
 				log.error("----------第{}行数据问题上报失败", i+3);
 				errRecord.add(i+3);
 				e.printStackTrace();
-			}	
+			}
 		}
 		
 		if(errRecord.size() == 0) {

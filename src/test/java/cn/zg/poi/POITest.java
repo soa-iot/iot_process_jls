@@ -27,7 +27,7 @@ public class POITest {
 		ImportExcelUtil excel = new ImportExcelUtil();
 		
 		try {
-			List<MultiValueMap<String, String>> result = excel.readExcelValue(workbook, (short)0, null);
+			List<MultiValueMap<String, String>> result = excel.readExcelValue(workbook, (short)0, null, null);
 			RestTemplate rest = new RestTemplate();
 			//解决中文乱码
 			rest.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
