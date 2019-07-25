@@ -91,22 +91,6 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 });
 
 
-/*$.ajax({  
-	url : "http://localhost:8080/iot_process/estimates/problemtype",  
-	type : "get",
-	data : {problemtype:area},
-	dataType : "json",  
-	success: function( json) {
-		//console.log(json.state);
-		if (json.state == 0) {
-			var datapro = json.data;
-
-
-		}
-
-	}  
-});*/
-
 /**
  * 作业安排确认提交
  * 
@@ -140,6 +124,7 @@ function workPlan(obj,usernames){
 			"comment": $("#comment").val(),     //节点的处理信息
 			"receivor":usernames,
 			"userName":$.cookie("name").replace(/"/g,"")
+			,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"

@@ -169,21 +169,6 @@ $.ajax({
 					});
 
 				});
-				/* //轮播图
-				layui.use(['carousel', 'form'], function(){
-					var carousel = layui.carousel
-					,form = layui.form;
-
-					//常规轮播
-					carousel.render({
-						elem: '.imgshow'
-						,arrow: 'always'
-							
-							//,width: '778px'
-						,height: '150px'
-						,interval: 5000
-					});
-				}); */ 
 
 			}
 		}
@@ -243,9 +228,6 @@ function modifyEstimated(msge) {
 	if ($("#sele").val() == "指定日期") {
 		dateEstimated["rectificationperiod"] = period.replace(/-/g, "/");
 	}
-	/*if ($("#problem_describe").val() != "") {
-		dateEstimated[] = $("#problem_describe").val();
-	}*/
 	
 
 		$.ajax({  
@@ -257,15 +239,11 @@ function modifyEstimated(msge) {
 			success: function( json) {
 				console.log("问题处理json："+json.state);
 				if (json.state==0) {
-					//if ($(obj).attr("id")=="work_plant") {
 					$("#comment").val("");
 						layer.msg(msge , {time: 3000,icon:1,offset:"100px"},function() {
 							
 							top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 						});
-//					}else{
-//						layer.msg("提交成功！",{time: 3000,icon:1});
-//					}
 					
 
 				}else{
@@ -355,6 +333,7 @@ $("#rollback").click(function(){
 				     ,data: {
 				     	"comment": $("#comment").val()  //处理信息
 				     	,"userName":$.cookie("name").replace(/"/g,"")
+				     	,"operateName":$(this).html().replace(/[^\u4e00-\u9fa5]/g,'')
 				     }  
 				     ,contentType: "application/x-www-form-urlencoded"
 				     ,dataType: "json"
@@ -500,6 +479,7 @@ $("#complete").click(function(){
 
 						"comment": $("#comment").val()     //节点的处理信息
 						,"userName":$.cookie("name").replace(/"/g,"")
+						,"operateName":$(this).html().replace(/[^\u4e00-\u9fa5]/g,'')
 
 					}   //问题上报表单的内容
 					,contentType: "application/x-www-form-urlencoded"
@@ -653,7 +633,7 @@ function outhelperm(obj,dept,usernames){
 			
 			"area": dept //属地单位
 			,"actId": actualIds  //跳转节点id
-		     								 
+			,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')								 
 			,"comment": $("#comment").val()     //节点的处理信息
 			,"userName":$.cookie("name").replace(/"/g,"")
 		}
@@ -701,6 +681,7 @@ $.ajax({
     	"comment": $("#comment").val()     //通用 -- 节点的处理信息
     	,"repairor": usernames     //通用 -- 下一个节点问题处理人
     	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
+    	,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')
     }   //问题上报表单的内容
     ,contentType: "application/x-www-form-urlencoded"
     ,dataType: "json"
