@@ -1,17 +1,25 @@
 package cn.soa.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.soa.dao.ProblemInfoMapper;
 import cn.soa.dao.ProblemTypeAreaMapper;
+import cn.soa.dao.activity.HisActMapper;
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemTypeArea;
 import cn.soa.entity.UserOrganization;
+import cn.soa.entity.activity.HistoryAct;
 import cn.soa.service.inter.ProblemInfoSI;
 import javassist.expr.NewArray;
 
@@ -23,9 +31,13 @@ import javassist.expr.NewArray;
  */
 @Service
 public class ProblemInfoS implements ProblemInfoSI {
+	private static Logger logger = LoggerFactory.getLogger( ProblemInfoS.class );
 
 	@Autowired
 	private ProblemInfoMapper problemInfoMapper;
+	
+	@Autowired
+	private HisActMapper hisActMapper;
 	
 	/**
 	 * lixuefeng:新增接口用于问题查询，多个维度，可分页
@@ -247,5 +259,157 @@ public class ProblemInfoS implements ProblemInfoSI {
 			return -1;
 		}
 	}
+	
+	/**   
+	 * @Title: modifyProblemState   
+	 * @Description: 修改问题是否超期的状态  
+	 * @return: boolean        
+	 */  
+	public boolean modifyNodeCurrentState() {
+		logger.info( "---------修改问题是否超期的状态  ------------" );
+		try {
+			/*
+			 * 查找所有未完成的任务和未超期的任务
+			 */
+			List<ProblemInfo> problems = problemInfoMapper.findUnfinishedAndTimeover();
+			logger.info( "---------需要修改超期的状态的问题-----------"  + problems );
+			
+			if( problems == null ) return false;
+			logger.info( "---------需要修改超期的状态的问题数  ------------" );
+			logger.info( problems.size() + "" );
+			
+			/*
+			 * 查找流程历史节点表，得到超期状态
+			 */
+			Map<String, String> timeState = new HashMap<String,String>();
+			List<String> piids = new ArrayList<String>();
+			for( ProblemInfo p : problems ) {
+				if( p == null ) continue;
+				if( p.toString() == null ) continue;
+				piids.add( p.getPiid() );
+			}
+			logger.info( "---------需要修改超期的状态的问题的piid  ------------" );
+			piids.forEach( p-> logger.info( p.toString() ));
+			List<HistoryAct> lastActs = getLastActByPiidsS( piids );
+			//判断状态
+			for( HistoryAct h : lastActs ) {
+				if( "endEvent".equals( h.getACT_TYPE_())  ) {
+					timeState.put( h.getPROC_INST_ID_(), " "); 
+					continue;
+				}else if( h.getEND_TIME_() == null  ){
+					Date startTime = h.getSTART_TIME_();
+					//判断标准为2天
+					long standard = 2*24*60*60*1000;
+					long start = startTime.getTime();
+					if( start - System.currentTimeMillis() > standard ) {
+						timeState.put( h.getPROC_INST_ID_(), "超期"); 
+					}else {
+						timeState.put( h.getPROC_INST_ID_(), "未超期"); 
+					}
+					logger.info( "---------所有流程的超期状态  ------------" + timeState );
+				}else {
+					logger.info( "---------获取节点结束时间有误  ------------" + h.getEND_TIME_() );
+				}				
+			}			
+			
+			//修改超期状态
+			for( Entry<String,String> e : timeState.entrySet() )  {
+				String state = e.getKey();
+				String piid = e.getValue();
+				try {
+					int i = problemInfoMapper.updateTimeoverState( state, piid );
+					if( i <= 0 ) logger.info( "------更新失败，piid为  ------------" + piid );
+				} catch (Exception e2) {
+					e2.printStackTrace();
+					continue;
+				}			
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
 
+	/**   
+	 * @Title: getLastActByPiids   
+	 * @Description: 根据任务piid,查询当前流程实例的最后一个节点    
+	 * @return: List<HistoryAct>        
+	 */  
+	public List<HistoryAct> getLastActByPiidsS( List<String> piids ){
+		logger.info( "--S-------根据任务piid,查询当前流程实例的最后一个节点  --------" );
+		try {
+			List<HistoryAct> lastActs = hisActMapper.findLastActByPiids(piids);
+			logger.info( "--S-------查询当前流程实例的最后一个节点  --------" + lastActs );
+			if( lastActs == null ) return null;
+			lastActs.forEach( l-> logger.info( "--S------------" + l.toString() ));	
+			return lastActs;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**   
+	 * @Title: modifyProblemState   
+	 * @Description: 查询所有问题状态为‘未超期’和未完成的的问题  
+	 * @return: boolean        
+	 */  
+	@Override
+	public boolean modifyProblemState() {
+		try {
+			logger.info( "--------- 查询所有问题状态为‘未超期’和未完成的的问题  ------------" );
+			/*
+			 * 查找所有未完成的任务和未超期的任务
+			 */
+			List<ProblemInfo> problems = problemInfoMapper.findUnfinishedAndTimeover();
+			logger.info( "---------需要检查超期的状态的问题-----------"  + problems );
+			
+			if( problems == null ) return false;
+			logger.info( "---------需要检查超期的状态的问题数  ------------" );
+			logger.info( problems.size() + "" );
+			
+
+			/*
+			 * 循环判断得到超期状态
+			 */
+			Map<String, String> timeState = new HashMap<String,String>();
+			for( ProblemInfo p : problems ) {
+				try {
+					if( p.getRemark() == null ) continue;
+					if( "指定日期".equals( p.getRemark() ) ) {
+						Date requireDate = p.getRectificationperiod();
+						if( requireDate.getTime() + 1000*24*60*60 > System.currentTimeMillis() ) {
+							timeState.put( p.getPiid(), "未超期" );
+						}else {
+							timeState.put( p.getPiid(), "超期" );
+						}
+					}else {
+						timeState.put( p.getPiid(), "未超期" );
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+			
+			//修改超期状态
+			for( Entry<String,String> e : timeState.entrySet() )  {
+				String state = e.getKey();
+				String piid = e.getValue();
+				try {
+					int i = problemInfoMapper.updateTimeoverState( state, piid );
+					if( i <= 0 ) logger.info( "------更新失败，piid为  ------------" + piid );
+				} catch (Exception e2) {
+					e2.printStackTrace();
+					continue;
+				}			
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

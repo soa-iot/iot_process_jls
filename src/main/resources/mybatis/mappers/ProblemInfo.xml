@@ -695,10 +695,24 @@
 		SELECT MAX(PROBLEMNUM) ma FROM CZ_TASK_PROBLEM_REPORT_NEW
 	</select>
 	
-	<!-- 1.4、根据用户名查找上报申请用户    -->
+	<!-- 1.5、根据用户名查找上报申请用户    -->
 	<!-- public String findApplyPeople(String name) -->
 	<select id="findApplyPeople" resultType="string">
 		SELECT PARENT_ID FROM IOT_USER_ORGANIZATION WHERE NAME = #{name, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 1.6、查询所有未完成的问题上报任务    -->
+	<select id="findUnfinished" resultType="cn.soa.entity.ProblemInfo">
+		SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW 
+		WHERE PROBLEMSTATE = 'UNFINISHED'
+	</select>
+	
+	<!-- 1.6、查询所有问题状态为‘未超期’和未完成的的问题   -->
+	<select id="findUnfinishedAndTimeover" resultType="cn.soa.entity.ProblemInfo">
+		SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW 
+		WHERE REMARKTHREE like '%未超期%' 
+		and PROBLEMSTATE = 'UNFINISHED' 
+		and remark like '%指定日期%'
 	</select>
 	
 	<!-- ===========================2、新增===============================  -->
@@ -1541,6 +1555,13 @@
 		WHERE 
 			T_PROBLEM_REP_ID=#{bsid}
 	
+	</update>
+	
+	<!-- 根据piid，修改流程的超期状态-->
+	<update id="updateTimeoverState" >
+		UPDATE CZ_TASK_PROBLEM_REPORT_NEW 
+		SET REMARKTHREE = #{ state }
+		where piid = #{ piid }
 	</update>
 	
 	
