@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import cn.soa.controller.ProcessC;
 import cn.soa.entity.ProblemInfo;
+import cn.soa.service.inter.AcitivityHistoryActSI;
 import cn.soa.service.inter.activiti.ProcessStartHandler;
 
 @Service
@@ -21,6 +22,9 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 	
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private AcitivityHistoryActSI acitivityHistoryActS;
 
 	@Override
 	public boolean before( String bsid, ProblemInfo problemInfo ) {
@@ -82,6 +86,9 @@ public class AutoJumpReportNode implements ProcessStartHandler {
 			var.put( "bsid", bsidVar.toString() );
 			var.put( "area", areaVar.toString() );
 			taskService.complete( task.getId(), var, true);			
+			
+			//保存操作名称
+			acitivityHistoryActS.updateOprateNameS( piid, tsid, "上报问题" );
 			
 			return true;
 		}

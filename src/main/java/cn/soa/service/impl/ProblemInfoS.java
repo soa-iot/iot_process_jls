@@ -396,11 +396,15 @@ public class ProblemInfoS implements ProblemInfoSI {
 			
 			//修改超期状态
 			for( Entry<String,String> e : timeState.entrySet() )  {
-				String state = e.getKey();
-				String piid = e.getValue();
+				String piid = e.getKey();
+				String  state= e.getValue();
 				try {
 					int i = problemInfoMapper.updateTimeoverState( state, piid );
-					if( i <= 0 ) logger.info( "------更新失败，piid为  ------------" + piid );
+					if( i <= 0 ) {
+						logger.info( "------更新失败，piid为  ------------" + piid );					
+					}else {
+						logger.info( "------更新成功，piid为  ------------" + piid );	
+					}
 				} catch (Exception e2) {
 					e2.printStackTrace();
 					continue;

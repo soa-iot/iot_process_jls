@@ -117,7 +117,6 @@ $.ajax({
  */
 
 $("#complete1").click(function(){
-
 	if ($("#comment").val()=="") {
 		layer.msg("处理说明不能为空",{icon:7,offset:"100px"});
 	}else{
@@ -129,7 +128,7 @@ $("#complete1").click(function(){
 			,data: {
 
 				"comment": $("#comment").val()     //节点的处理信息
-				
+				,"operateName":"闭环处理"
 				,"userName":$.cookie("name").replace(/"/g,"")
 			}   //问题上报表单的内容
 			,contentType: "application/x-www-form-urlencoded"
@@ -156,7 +155,7 @@ $("#complete1").click(function(){
  * @returns
  */
 $("#rollback-accept").click(function(){
-
+	
 	if ($("#comment").val()=="") {
 		layer.msg("处理说明不能为空",{icon:7,offset:"100px"});
 	}else{
@@ -167,6 +166,7 @@ $("#rollback-accept").click(function(){
 			,url: '/iot_process/process/nodes/before/group/piid/'+piidp    //piid为流程实例id
 			,data: {
 				"comment": $("#comment").val()  //处理信息
+				,"operateName":"回退"
 		     	,"userName":$.cookie("name").replace(/"/g,"")
 			}   //问题上报表单的内容
 			,contentType: "application/x-www-form-urlencoded"

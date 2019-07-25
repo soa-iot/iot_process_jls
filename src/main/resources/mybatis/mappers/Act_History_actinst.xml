@@ -19,7 +19,7 @@
 		WHERE ID_ IN (
 			SELECT max(ID_) FROM ACT_HI_ACTINST  
 			where PROC_INST_ID_ in 
-			<foreach collection="piids" index="index" item="item" open="(" separator="," end=")"> 
+			<foreach collection="piids" index="index" item="item" open="(" separator="," close=")"> 
 				#{item}
 			</foreach>
 			group by PROC_INST_ID_
