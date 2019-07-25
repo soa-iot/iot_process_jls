@@ -166,7 +166,7 @@ layui.use(['form', 'jquery','layer'], function(){
  });
   	
  	//从cookie中获取处理人
-    var userName = getCookie1("name").replace(/"/g,'')
+    var userName = getCookie1("name").replace(/"/g,'');
 	//点击下一步按钮操作
 	form.on('submit(next_step)', function(data){
 		//验证表单是否为空
@@ -182,7 +182,8 @@ layui.use(['form', 'jquery','layer'], function(){
 		        data : {
 		        		"comment": data.field.comment,
 		        		"complementor":userName,
-		        		"userName": userName
+		        		"userName": userName,
+		        		"operateName": "下一步"
 		        },
 		        contentType: "application/x-www-form-urlencoded",
 		        dataType : "json",  
@@ -197,12 +198,56 @@ layui.use(['form', 'jquery','layer'], function(){
 		        	}
 		        } 
 		        ,error:function(){
-		        	layer.msg("接收作业失败",{icon: 2, offset: '100px'});
+		        	layer.msg("接收作业失败,请检查网络是否正常",{icon: 2, offset: '100px'});
 		        }	
 		   });		  
 		  
 		  //return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
    });
+    
+    /**
+	 * 回退到上一个节点
+	 */
+    form.on('submit(back_previous)', function(data){
+		if(isempty()){
+			return false;
+		}
+		console.log(data.field)
+		$.ajax({
+			 async:false
+		     ,type: "PUT"
+		     ,url: '/iot_process/process/nodes/before/group/piid/'+piid   //piid为流程实例id
+		     ,data: {
+		     	"comment": data.field.comment  //处理信息
+		     	,"userName": userName
+		     	,"operateName": "回退"
+		     }  
+		     ,contentType: "application/x-www-form-urlencoded"
+		     ,dataType: "json"
+		     ,success: function(jsonData){
+		     	//后端返回值： ResultJson<String>
+		    	 if(jsonData){
+		    		 layer.msg("回退成功",{icon:1, time: 2000, offset: '100px'}, function(){
+		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
+		    		 })
+		    	 }else{
+		    		 layer.msg("回退失败",{icon:2, offset: '100px'});
+		    	 }
+		     },
+		     error:function(){
+		    	 layer.msg("回退失败,请检查网络是否正常",{icon:2, offset: '100px'});
+		     }		       
+	  });
+    })
+   
+    //验证表单是否为空
+	function isempty(){
+		if($("#comment_receive").val().replace(/^\s+/, '').replace(/\s+$/, '') == ''){
+			  layer.msg("处理说明不能为空", {icon: 7, offset: '100px'});
+			  return true;
+		}
+		return false;
+	}
     
    //触发事件
 	var active = {

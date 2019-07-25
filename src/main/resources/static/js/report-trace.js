@@ -29,6 +29,15 @@ layui.use('laydate', function(){
 	});
 });
 
+layui.use('laydate', function(){
+	var laydate = layui.laydate;
+	//常规用法
+	laydate.render({
+		elem: '#duedate'
+		,format: 'yyyy-MM-dd'
+	});
+});
+
 
 //加载layui内置模块
 layui.use(['jquery','form','layer','table','excel'], function(){
@@ -89,13 +98,16 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		cols: [[{field:'id', title:'编号', width:'5%', sort:false, type:'numbers', fixed:'left', align:'center'},
 			{field:'applydate', title:'上报日期', width:'10%', sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
 			{field:'applypeople', title:'上报人', width:'7%', sort:true, align:'center'},
-			{field:'welName', title:'装置单元', width:'10%', sort:true, align:'center'},
-			{field:'problemclass', title:'问题类别', width:'10%', sort:true, align:'center'},
-			{field:'profession', title:'专业', width:'8%', sort:true, align:'center'},
-			{field:'depet', title:'部门', width:'9.2%', sort:true, align:'center'},
-			{field:'problemdescribe', title:'描述', width:'16%', sort:true, align:'center'},
-			{field:'problemstate', title:'问题状态', width:'8%', sort:true, align:'center'},
-			{fixed:'right',  title:'处理过程', minWidth:105, width:'16.7%', align:'center', toolbar:'#barBtn'} ]]  
+			{field:'welName', title:'装置单元', width:'9%', sort:true, align:'center'},
+			{field:'problemclass', title:'问题类别', width:'9%', sort:true, align:'center'},
+			{field:'profession', title:'专业', width:'7%', sort:true, align:'center'},
+			{field:'depet', title:'部门', width:'8%', sort:true, align:'center'},
+			{field:'rectificationperiod', title:'整改时间', width:'8%', sort:true, align:'center'},
+			{field:'remarkthree', title:'是否超期', width:'8%', sort:true, align:'center'},
+			{field:'problemdescribe', title:'问题描述', width:'16%', sort:true, align:'center'},
+			{field:'problemstate', title:'问题状态', width:'7%', sort:true, align:'center'},
+			{field:'piid', title:'流程ID', width:'8%', sort:false, hide:true},
+			{fixed:'right',  title:'处理过程', minWidth:105, width:'15.7%', align:'center', toolbar:'#barBtn'} ]]  
 	});
 	
 	/**
@@ -168,7 +180,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'problemstate': $("#problemstate").val(),
     			'startTime': $("#startdate").val(),
     			'endTime': $("#enddate").val(),
-    			'schedule': $("#schedule").val(),
+    			'applypeople': $("#applypeople").val(),
     			'maintenanceman': $("#maintenanceman").val()
 			},
 			dataType: "json",
@@ -306,6 +318,30 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    	isreload = true;
 	    	reloadTable(null, null, null);
 	        break;
+	      case 'querydata-all':
+	    	  problemTable.reload({
+	      		url: '/iot_process/report/showproblembycondition'
+	      	   ,page: {
+	      		   curr: 1 //重新从第 1 页开始
+	      	   }
+	      	   ,where: {
+	      			'welName': '',
+	      			'problemclass': '',
+	      			'profession': '',
+	      			'depet': '',
+	      			'problemdescribe': '',
+	      			'problemstate': '',
+	      			'startTime': '',
+	      			'endTime': '',
+	      			'schedule': '',
+	      			'maintenanceman': '',
+	      			'applypeople': '',
+	      			'sortField': null,
+	    			'sortType': null,
+	      			'piidArray': ''
+	      	   }
+	      	})
+	    	break;
 	      case 'finish':
 	    	  console.log('finish');
 			   console.log("count="+count+" , uncount="+uncount);

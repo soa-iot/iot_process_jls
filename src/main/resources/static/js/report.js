@@ -9,13 +9,13 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	resavepeople = '吴娇';
+	//resavepeople = '吴娇';
 	//上报部门
 	var depet = getCookie1("organ").replace(/"/g,'');
 	if(depet == 'HSE办'){
 		depet = 'HSE办公室';
 	}
-	depet = '净化一班';
+	//depet = '净化一班';
 	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;

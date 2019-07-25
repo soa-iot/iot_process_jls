@@ -30,6 +30,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	"comment": comment     //通用 -- 节点的处理信息
 		     	,"arrangor": arrangor     //通用 -- 下一个节点问题处理人
 		     	,"userName": username    //当前任务的完成人
+		     	,"operateName": "作业指派"
 		     }   //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -46,7 +47,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		    	 }
 		     }
 		     ,error:function(){
-		    	 layer.msg("作业指派失败",{icon:2, time: 2000, offset: '100px'});
+		    	 layer.msg("作业指派失败，请检查网络是否正常",{icon:2, time: 2000, offset: '100px'});
 		     }		       
 		});
 		
@@ -136,6 +137,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,url: '/iot_process/process/nodes/end/piid/'+piidp   //piid为流程实例id
 		     ,data: {
 		     	"comment": data.field.comment  //处理信息
+		     	,"operateName": "闭环"
 		     }  
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -151,7 +153,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		    	 }
 		     },
 		     error:function(){
-		    	 layer.msg("闭环处理失败",{icon:2, offset: '100px'});
+		    	 layer.msg("闭环处理失败，请检查网络是否正常",{icon:2, offset: '100px'});
 		     }		       
 		});
 		
@@ -173,6 +175,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,data: {
 		     	"comment": data.field.comment  //处理信息
 		     	,"userName": resavepeople
+		     	,"operateName": "回退"
 		     }  
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -187,7 +190,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		    	 }
 		     },
 		     error:function(){
-		    	 layer.msg("回退失败",{icon:2, offset: '100px'});
+		    	 layer.msg("回退失败，请检查网络是否正常",{icon:2, offset: '100px'});
 		     }		       
 		});
 		
@@ -277,6 +280,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 					,"estimators": assignUsers.join("，")  //下一步流程变量
 					,"userName": resavepeople  //当前节点任务执行人
 					,"comment": $("#comment_repair").val()  //备注信息
+					,"operateName": "外部协调"
 			 }  
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -291,7 +295,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		    	 }
 		     },
 		     error:function(){
-		    	 layer.msg("外部协调失败",{icon:2, offset: '100px'});
+		    	 layer.msg("外部协调失败，请检查网络是否正常",{icon:2, offset: '100px'});
 		     }		       
 		});
 	}
