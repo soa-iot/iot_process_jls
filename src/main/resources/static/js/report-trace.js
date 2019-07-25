@@ -207,7 +207,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 					// 1. 数组头部新增表头
 					data.unshift({
 						applydate: '上报日期',
-						applypeople: '申请人', 
+						applypeople: '上报人', 
 						depet: '部门',
 						maintenanceman: '问题当前责任人',
 						remarktwo: '当前进度',

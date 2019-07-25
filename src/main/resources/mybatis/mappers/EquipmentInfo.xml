@@ -134,6 +134,17 @@
 		</where>
 	</select>
 	
+	<!-- 1.3、根据条件查统计设备信息条数   	-->
+	<!-- Integer findNumByRfid(String rfid) -->
+	<select id="findNumByRfid" resultType="int">
+		SELECT 
+			COUNT(1)
+		FROM
+			CZ_EQUIPMENT_INFO
+		WHERE
+			EQU_POSITION_NUM = #{rfid, jdbcType=VARCHAR}
+	</select>
+	
 	<!-- ===========================2、新增===============================  -->
 	<!-- 2.1、添加一条问题报告数据 	-->
 	<!--  -->

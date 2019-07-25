@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import cn.soa.dao.EquipmentInfoMapper;
 import cn.soa.entity.ProblemInfoForExcel;
 import cn.soa.service.inter.ReportSI;
 import cn.soa.service.inter.UserManagerSI;
@@ -32,6 +33,8 @@ public class ImportExcelUtil {
 	
 	@Autowired
 	private ReportSI reportS; 
+	@Autowired
+	private EquipmentInfoMapper equipInfoMapper;
 	
 	private static final String[] HEADER_NAMES = {"上报人","属地单位","问题区域","所属专业","设备位号",
 			"问题类别","不安全行为","具体行为","问题描述"};
@@ -170,7 +173,13 @@ public class ImportExcelUtil {
 				
 				if(j == 1) {
 					if(!Arrays.toString(PROBLEM_LOCATION).contains(cellValue)) {
-						throw new RuntimeException("第"+(i+1)+"行属地单位填写不符合要求");
+						throw new RuntimeException("第"+(i+1)+"行属地单位填写不正确");
+					}
+				}
+				
+				if(j == 4) {
+					if(!validateRfid(cellValue)) {
+						throw new RuntimeException("第"+(i+1)+"行设备位号填写不正确");
 					}
 				}
 				
@@ -220,5 +229,18 @@ public class ImportExcelUtil {
 		System.out.println(list);
 		
 		return list;
+	}
+	
+	/**
+     * @Title: validateRow
+     * @Description: 验证设备位号是否合法
+     * @return 验证结果 true or false
+     */
+	private boolean validateRfid(String rfid) {
+		Integer rows = equipInfoMapper.findNumByRfid(rfid);
+		if(rows == null || rows == 0) {
+			return false;
+		}
+		return true;
 	}
 }

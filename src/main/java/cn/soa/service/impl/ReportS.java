@@ -28,6 +28,7 @@ import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoVO;
 import cn.soa.entity.ProblemTypeArea;
 import cn.soa.entity.ResultJson;
+import cn.soa.service.inter.ProblemInfoSI;
 import cn.soa.service.inter.ReportSI;
 import cn.soa.utils.ImportExcelUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,8 @@ public class ReportS implements ReportSI {
 	
 	@Autowired
 	private ProblemInfoMapper reportMapper;
+	@Autowired
+	private ProblemInfoSI probelInfoS;
 	@Autowired
 	private ProblemReportphoMapper phoMapper;
 	@Autowired
@@ -147,7 +150,10 @@ public class ReportS implements ReportSI {
 	public List<ProblemInfo> getProblemInfoByPage(ProblemInfo problemInfo, Integer page, Integer limit, String startTime,
 			String endTime, String sortField, String sortType) {
 		
-		sortField = findDataBaseFieldName(sortField);	
+		sortField = findDataBaseFieldName(sortField);
+		boolean isOutDate = probelInfoS.modifyProblemState();
+		log.info("-----------查询所有问题状态为‘未超期’和未完成的的问题 结果:", isOutDate);
+		
 		List<ProblemInfo> result = reportMapper.findPorblemInfoByPage(problemInfo, page, limit, startTime, endTime, sortField, sortType);
 		return result;
 	}
