@@ -9,13 +9,11 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	//resavepeople = '吴娇';
 	//上报部门
 	var depet = getCookie1("organ").replace(/"/g,'');
 	if(depet == 'HSE办'){
 		depet = 'HSE办公室';
 	}
-	//depet = '净化一班';
 	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;
@@ -530,6 +528,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			   			     ,data: {
 			   			     	"comment": $("#problemdescribe").val()     //节点的处理信息     	
 			   			     	,"area": $("#problemtype").val()
+			   			     	,"operateName": "上报"
 			   			     }  
 			   			     ,contentType: "application/x-www-form-urlencoded"
 			   			     ,dataType: "json"
@@ -619,10 +618,10 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	        			     $("#response-div").css({"display": "block"});
 	        			     layer.closeAll('loading'); 
 	        			     if(res.state == 0 && res.message != null){
-	        				     if(!res.message.match("成功")){
-	        				        $("#reponse-text").text("问题上报失败，"+res.message);
+	        				     if(res.message.match("上报失败") || res.message.match("成功")){
+	        				        $("#reponse-text").text(res.message);
 	        				     }else{
-	        				        $("#reponse-text").text(res.message); 
+	        				    	 $("#reponse-text").text("数据验证错误 - "+res.message);
 	        				     }
 	        				 }else if(res.state == 1){
 	        				      $("#reponse-text").text(res.message);

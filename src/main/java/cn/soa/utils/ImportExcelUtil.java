@@ -217,6 +217,7 @@ public class ImportExcelUtil {
 				}
 				
 			}
+			map.add("operateName", "上报");
 			map.add("applydate", new Date().toString());
 			map.add("depet", deptName);
 			map.add("resavepeople", resavepeople);

@@ -276,7 +276,10 @@ public class ReportS implements ReportSI {
 			log.info("--------问题批量上报成功，总共上报{}个问题", list.size());
 			return "问题批量上报成功，总共上报"+list.size()+"个问题";
 		}
-		return "第"+errRecord.toString()+"行数据问题上报失败";
+		if(errRecord.size() == list.size()) {
+			return "全部问题上报失败，请检查网络是否正常";
+		}
+		return "部分问题上报成功，其中第"+errRecord.toString()+"行数据问题上报失败";
 	}
 }
 

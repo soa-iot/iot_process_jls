@@ -6,7 +6,6 @@ layui.use(['form', 'jquery','upload','layer'], function(){
   
   	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
-	//var resavepeople = "孙超";
 	console.log("当前登录人为:"+resavepeople);
 	
 	//点击完成按钮操作
@@ -30,7 +29,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 	        		"comment": data.field.comment,
 	        		"complementor": resavepeople,
 	        		"userName": resavepeople,
-	        		"operateName": "下一步"
+	        		"operateName": "完成作业"
 	            },
 	            contentType: "application/x-www-form-urlencoded",
 		        dataType : "json",  

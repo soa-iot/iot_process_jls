@@ -147,7 +147,14 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			elem: '#processStep'
 			,url: '/iot_process/process/nodes/all/piid/'+piid //数据接口
 			,parseData: function(res) { //res 即为原始返回的数据
-				var data = res.data;     
+				var data = res.data; 
+				
+				if(data != null && data != '' && data.length != 0){
+					for(var i=0; i<data.length;i++){
+						data[i].duration_ = (data[i].duration_ <= 172800000)?'未超期':'超期';
+					}
+				}
+				
 				return {
 					"code": res.state, //解析接口状态
 					"msg": res.message, //解析提示文本
@@ -158,6 +165,8 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			,cols: [[ //表头
 				{field: 'assignee_', title: '处理人', width:'35%',fixed: 'left'}
 				,{field: 'act_NAME_', title: '处理节点', width:'30%'}
+				,{field: 'duration_', title: '是否超期', width:'30%'}
+				,{field: 'tenant_ID_', title: '操作名称', width:'30%'}
 				,{field: 'start_TIME_', title: '时间', width:'34.5%',fixed: 'right'} 
 				]]
 		});
