@@ -33,7 +33,7 @@ layui.use('laydate', function(){
 	var laydate = layui.laydate;
 	//常规用法
 	laydate.render({
-		elem: '#duedate'
+		elem: '#dueDate'
 		,format: 'yyyy-MM-dd'
 	});
 });
@@ -50,6 +50,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	//问题未整改数量和已整改数量
 	var uncount = 0, count = 0;
 	var piid, isreload = true;
+	var piids = null;
 	
 	/**
 	 * 问题上报信息展示表
@@ -102,7 +103,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			{field:'problemclass', title:'问题类别', width:'9%', sort:true, align:'center'},
 			{field:'profession', title:'专业', width:'7%', sort:true, align:'center'},
 			{field:'depet', title:'部门', width:'8%', sort:true, align:'center'},
-			{field:'rectificationperiod', title:'整改时间', width:'8%', sort:true, align:'center'},
+			{field:'rectificationperiod', title:'整改日期', width:'8%', sort:true, align:'center'},
 			{field:'remarkthree', title:'是否超期', width:'8%', sort:true, align:'center'},
 			{field:'problemdescribe', title:'问题描述', width:'16%', sort:true, align:'center'},
 			{field:'problemstate', title:'问题状态', width:'7%', sort:true, align:'center'},
@@ -181,7 +182,11 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'startTime': $("#startdate").val(),
     			'endTime': $("#enddate").val(),
     			'applypeople': $("#applypeople").val(),
-    			'maintenanceman': $("#maintenanceman").val()
+    			'maintenanceman': $("#maintenanceman").val(),
+    			'dueDate': $("#dueDate").val(),
+    			'duedateRange': $("#duedateRange").val(),
+    			'remarkthree':  $("#remarkthree").val(),
+    			'piidArray': piids
 			},
 			dataType: "json",
 			success: function(json){
@@ -202,7 +207,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 					// 1. 数组头部新增表头
 					data.unshift({
 						applydate: '上报日期',
-						applypeople: '申请人', 
+						applypeople: '上报人', 
 						depet: '部门',
 						maintenanceman: '问题当前责任人',
 						remarktwo: '当前进度',
@@ -281,7 +286,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	/**
 	 * 重新加载表
 	 */
-	function reloadTable(sortField, sortType, piids){
+	function reloadTable(sortField, sortType, piids_){
 		problemTable.reload({
     		url: '/iot_process/report/showproblembycondition'
     	   ,page: {
@@ -299,9 +304,12 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'schedule': $("#schedule").val(),
     			'maintenanceman': $("#maintenanceman").val(),
     			'applypeople': $("#applypeople").val(),
+    			'dueDate': $("#dueDate").val(),
+    			'duedateRange': $("#duedateRange").val(),
+    			'remarkthree':  $("#remarkthree").val(), 
     			'sortField': sortField,
     			'sortType': sortType,
-    			'piidArray': piids
+    			'piidArray': piids_
     	   }
     	})
 	}
@@ -319,6 +327,8 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    	reloadTable(null, null, null);
 	        break;
 	      case 'querydata-all':
+	    	  console.log('querydata-all');
+	    	  isreload = true;
 	    	  problemTable.reload({
 	      		url: '/iot_process/report/showproblembycondition'
 	      	   ,page: {
@@ -336,6 +346,9 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	      			'schedule': '',
 	      			'maintenanceman': '',
 	      			'applypeople': '',
+	      			'dueDate': '',
+	      			'duedateRange': '',
+	      			'remarkthree':  '',
 	      			'sortField': null,
 	    			'sortType': null,
 	      			'piidArray': ''
@@ -382,7 +395,6 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    	  break;
 	      case 'queryself':
 	    	  console.log('queryself');
-	    	  var piids = null;
 	    	  $.ajax({
 	    		  async: false,
 	    		  type: 'GET',
