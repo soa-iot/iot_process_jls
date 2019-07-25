@@ -123,6 +123,7 @@
 	     						         完成作业节点执行人变量名：complementor
 	     						         作业验收节点执行人变量名：checkor
 	     	,"userName": ""    //当前任务的完成人
+	     	,"operateName": ""    //当前操作名称
 	     }   //问题上报表单的内容
 	     ,contentType: "application/x-www-form-urlencoded"
 	     ,dataType: "json"
@@ -147,6 +148,7 @@
 	     						         接收作业节点执行人变量名：receivor
 	     						         完成作业节点执行人变量名：complementor
 	     						         作业验收节点执行人变量名：checkor
+	     	,"operateName": ""    //当前操作名称
 	     }  
 	     ,contentType: "application/x-www-form-urlencoded"
 	     ,dataType: "json"
@@ -192,6 +194,7 @@
 	     ,data: {
 	     	"comment": ""  //处理信息
 	     	,"userName": "" //当前节点处理
+	     	,"operateName": ""    //当前操作名称
 	     }  
 	     ,contentType: "application/x-www-form-urlencoded"
 	     ,dataType: "json"
@@ -208,6 +211,7 @@
 	     ,url: '/iot_process/process/nodes/before/piid/{piid}'    //piid为流程实例id
 	     ,data: {
 	     	"comment": ""  //处理信息
+	     	,"operateName": ""    //当前操作名称
 	     }  
 	     ,contentType: "application/x-www-form-urlencoded"
 	     ,dataType: "json"
@@ -224,6 +228,7 @@
 	     ,url: '/iot_process/process/nodes/end/piid/{piid}'    //piid为流程实例id
 	     ,data: {
 	     	"comment": ""  //处理信息
+	     	,"operateName": ""    //当前操作名称
 	     }  
 	     ,contentType: "application/x-www-form-urlencoded"
 	     ,dataType: "json"
@@ -241,7 +246,7 @@
 	     ,data: {
 	     	"comment": ""  //处理信息
 	     	,"userName": "" //当前节点处理
-	     	,
+	     	,"operateName": ""    //当前操作名称
 	     }  
 	     ,contentType: "application/x-www-form-urlencoded"
 	     ,dataType: "json"
@@ -262,6 +267,7 @@
 			,"": ""  //下一步流程变量
 			,"userName": ""  //当前节点任务执行人
 			,"comment": ""   //备注信息
+			,"operateName": ""    //当前操作名称
 	     } 
 	     ,contentType: "application/x-www-form-urlencoded"
 	     ,dataType: "json"

@@ -32,6 +32,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     	"comment": comment     //通用 -- 节点的处理信息
 		     	,"receivor": receivor     //通用 -- 下一个节点问题处理人
 		     	,"userName": username    //当前任务的完成人
+		     	,"operateName": "作业安排"
 		     }   //问题上报表单的内容
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
@@ -47,7 +48,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		    	 }
 		     }
 		     ,error:function(){
-		    	 layer.msg("作业安排失败",{icon:2, time: 2000, offset: '100px'});
+		    	 layer.msg("作业安排失败，请检查网络是否正常",{icon:2, time: 2000, offset: '100px'});
 		     }		       
 		});
 		

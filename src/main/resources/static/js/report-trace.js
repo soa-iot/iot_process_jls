@@ -6,7 +6,7 @@ layui.config({
 });
 //从cookie中获取当前登录用户
 var resavepeople = getCookie1("name").replace(/"/g,'');
-
+console.log("resavepeople="+resavepeople);
 /**
  * 日期插件
  */
@@ -19,11 +19,21 @@ layui.use('laydate', function(){
 	});
 });
 
+
 layui.use('laydate', function(){
 	var laydate = layui.laydate;
 	//常规用法
 	laydate.render({
 		elem: '#enddate'
+		,format: 'yyyy-MM-dd'
+	});
+});
+
+layui.use('laydate', function(){
+	var laydate = layui.laydate;
+	//常规用法
+	laydate.render({
+		elem: '#duedate'
 		,format: 'yyyy-MM-dd'
 	});
 });
@@ -39,7 +49,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	
 	//问题未整改数量和已整改数量
 	var uncount = 0, count = 0;
-	var piid, isreload = false;
+	var piid, isreload = true;
 	
 	/**
 	 * 问题上报信息展示表
@@ -52,7 +62,6 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		autoSort: false,  //禁用前端自动排序
 		defaultToolbar: [''],
 		cellMinWidth:70,
-		totalRow: true,
 		page: true,   //开启分页
 		request: {
 		    pageName: 'page' //页码的参数名称，默认：page
@@ -60,18 +69,24 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		},
 		parseData: function(res){ //res 即为原始返回的数据
 			var data = res.data     
-	    	if(data != null || data != ''){
+	    	if(data != null && data != '' && res.count != 0){
 	    		 for(var i=0;i<data.length;i++){
 	    			 data[i].applydate = (data[i].applydate == '' || data[i].applydate == null)?data[i].applydate : data[i].applydate.replace(/T/, ' ').replace(/\..*/, '');
 	    			 data[i].problemstate = (data[i].problemstate == 'FINISHED')?'已整改':'未整改';
-	    			 if(!isreload){
+	    			 if(isreload){
 	    				count = res.msg;
 		    		    uncount = res.count - count; 
 	    			 }
 	    		 }
+	    		$("#count").text(count);
+	 			$("#uncount").text(uncount);
+	    	}else{
+	    		$("#count").text(0);
+				count = 0;
+	 			$("#uncount").text(0);
+				uncount = 0;
 	    	}
-			$("#count").text(count);
-			$("#uncount").text(uncount);
+			
 			isreload = false;
 		    return {
 		      "code": res.code, //解析接口状态
@@ -82,14 +97,17 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		},
 		cols: [[{field:'id', title:'编号', width:'5%', sort:false, type:'numbers', fixed:'left', align:'center'},
 			{field:'applydate', title:'上报日期', width:'10%', sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
-			{field:'applypeople', title:'上报人', width:'10%', sort:true, align:'center'},
-			{field:'welName', title:'装置单元', width:'10%', sort:true, align:'center'},
-			{field:'problemclass', title:'问题类别', width:'10%', sort:true, align:'center'},
-			{field:'profession', title:'专业', width:'8%', sort:true, align:'center'},
-			{field:'problemtype', title:'部门', width:'10%', sort:true, align:'center'},
-			{field:'problemdescribe', title:'描述', width:'16%', sort:true, align:'center'},
-			{field:'problemstate', title:'问题状态', width:'9%', sort:true, align:'center'},
-			{fixed:'right',  title:'处理过程', minWidth:105, width:'12%', align:'center', toolbar:'#barBtn'} ]]  
+			{field:'applypeople', title:'上报人', width:'7%', sort:true, align:'center'},
+			{field:'welName', title:'装置单元', width:'9%', sort:true, align:'center'},
+			{field:'problemclass', title:'问题类别', width:'9%', sort:true, align:'center'},
+			{field:'profession', title:'专业', width:'7%', sort:true, align:'center'},
+			{field:'depet', title:'部门', width:'8%', sort:true, align:'center'},
+			{field:'rectificationperiod', title:'整改时间', width:'8%', sort:true, align:'center'},
+			{field:'remarkthree', title:'是否超期', width:'8%', sort:true, align:'center'},
+			{field:'problemdescribe', title:'问题描述', width:'16%', sort:true, align:'center'},
+			{field:'problemstate', title:'问题状态', width:'7%', sort:true, align:'center'},
+			{field:'piid', title:'流程ID', width:'8%', sort:false, hide:true},
+			{fixed:'right',  title:'处理过程', minWidth:105, width:'15.7%', align:'center', toolbar:'#barBtn'} ]]  
 	});
 	
 	/**
@@ -113,8 +131,11 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	            layer.close(index); //如果设定了yes回调，需进行手工关闭
 	          }
 	      });
-	       
 	    }
+	    if(obj.event === 'detail'){
+		   piid = data.piid;
+		   $(".problem-detail").attr({"href":"/iot_process/html/problem-detail.html?piid="+piid});
+		}
 	});
 	
 	/**
@@ -154,12 +175,12 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 				'welName': $("#welName").val(),
     			'problemclass': $("#problemclass").val(),
     			'profession': $("#profession").val(),
-    			'problemtype': $("#problemtype").val(),
+    			'depet': $("#depet").val(),
     			'problemdescribe': $("#problemdescribe").val(),
     			'problemstate': $("#problemstate").val(),
     			'startTime': $("#startdate").val(),
     			'endTime': $("#enddate").val(),
-    			'schedule': $("#schedule").val(),
+    			'applypeople': $("#applypeople").val(),
     			'maintenanceman': $("#maintenanceman").val()
 			},
 			dataType: "json",
@@ -170,30 +191,47 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			    		 for(var i=0;i<data.length;i++){
 			    			 data[i].applydate = data[i].applydate.replace(/T/, ' ').replace(/\..*/, '');
 			    			 data[i].problemstate = (data[i].problemstate == 'FINISHED')?'已整改':'未整改';
+			    			 data[i].rectificationperiod = 
+			    				 (data[i].rectificationperiod != null && data[i].rectificationperiod != '')?data[i].rectificationperiod.substring(0,10):'';
+			    			 if(data[i].problemclass != '不安全行为/状态'){
+			    				 data[i].remarkfive = '';
+			    				 data[i].remarksix = '';
+			    			 }
 			    		 }
 			    	}
-					 // 1. 数组头部新增表头
+					// 1. 数组头部新增表头
 					data.unshift({
 						applydate: '上报日期',
 						applypeople: '申请人', 
-						welName: '装置单元',
-						problemclass: '问题类别',
+						depet: '部门',
+						maintenanceman: '问题当前责任人',
+						remarktwo: '当前进度',
+						rectificationperiod: '计划完成时间',
+						remarkthree: '是否超期',
+						problemtype: '属地单位',
+						welName: '问题区域',
 						profession: '专业',
-						problemtype: '部门',
-						problemdescribe: '描述',
+						rfid: '设备位号',
+						problemclass: '问题类别',
+						remarkfive: '不安全行为',
+						remarksix: '具体行为',
+						problemdescribe: '问题描述',
 						problemstate: '问题状态',
+						
 					});
 					//2. 过滤多余属性
-					var exportData = excel.filterExportData(data, ['applydate', 'applypeople', 'welName', 'problemclass', 'profession', 'problemtype', 'problemdescribe', 'problemstate']);
+					var exportData = excel.filterExportData(data, ['applydate', 'applypeople', 'depet', 'maintenanceman', 'remarktwo', 
+						'rectificationperiod', 'remarkthree', 'problemtype', 'welName', 'profession', 'rfid', 'problemclass', 'remarkfive', 'remarksix', 'problemdescribe', 'problemstate']);
 					console.log(123);
-					//2.1 设置列宽,G列为180， 其他列默认为100
+					//2.1 设置列宽,N列为180， 其他列默认为100
 					var colConf = excel.makeColConfig({
-					    'G': 180,
-					    'H': 100
+						'A': 120,
+					    'O': 200,
+					    'P': 100
 					}, 100);
 					
 					// 2.2 调用设置样式的函数，传入设置的范围，支持回调
-					excel.setExportCellStyle(exportData, 'A1:H1', {
+					excel.setExportCellStyle(exportData, 'A1:P1', {
 					    s: {
 					        alignment: {
 					            horizontal: 'center',
@@ -203,10 +241,13 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 					    }
 					});
 					
+					var date= new Date();
+					date = '问题上报跟踪数据'+date.toLocaleDateString().replace(/\//g, '-')+'.xlsx';
+					
 					//3. 执行导出函数，系统会弹出弹框
 					excel.exportExcel({
 			            sheet1: exportData
-			        }, '问题上报数据.xlsx', 'xlsx',{
+			        }, date, 'xlsx',{
 			            extend: {
 			                '!cols': colConf
 			            }
@@ -250,7 +291,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     			'welName': $("#welName").val(),
     			'problemclass': $("#problemclass").val(),
     			'profession': $("#profession").val(),
-    			'problemtype': $("#problemtype").val(),
+    			'depet': $("#depet").val(),
     			'problemdescribe': $("#problemdescribe").val(),
     			'problemstate': $("#problemstate").val(),
     			'startTime': $("#startdate").val(),
@@ -274,33 +315,62 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		 switch(obj.event){
 	      case 'querydata':
 	    	console.log('querydata');
+	    	isreload = true;
 	    	reloadTable(null, null, null);
 	        break;
-	      case 'finish':
-	    	  console.log('finish');
-	    	  isreload = true;
+	      case 'querydata-all':
 	    	  problemTable.reload({
 	      		url: '/iot_process/report/showproblembycondition'
 	      	   ,page: {
 	      		   curr: 1 //重新从第 1 页开始
 	      	   }
 	      	   ,where: {
-	      			'problemstate': 'FINISHED',
+	      			'welName': '',
+	      			'problemclass': '',
+	      			'profession': '',
+	      			'depet': '',
+	      			'problemdescribe': '',
+	      			'problemstate': '',
+	      			'startTime': '',
+	      			'endTime': '',
+	      			'schedule': '',
+	      			'maintenanceman': '',
+	      			'applypeople': '',
+	      			'sortField': null,
+	    			'sortType': null,
+	      			'piidArray': ''
 	      	   }
 	      	})
-	        break;
-	      case 'unfinish':
-	    	  console.log('unfinish');
-	    	  isreload = true;
-	    	  problemTable.reload({
+	    	break;
+	      case 'finish':
+	    	  console.log('finish');
+			   console.log("count="+count+" , uncount="+uncount);
+	    	  if(count != 0){
+		    	  problemTable.reload({
 		      		url: '/iot_process/report/showproblembycondition'
 		      	   ,page: {
 		      		   curr: 1 //重新从第 1 页开始
 		      	   }
 		      	   ,where: {
-		      			'problemstate': 'UNFINISHED',
+		      			'problemstate': 'FINISHED',
 		      	   }
-		      })
+		      	})
+	    	  }
+	        break;
+	      case 'unfinish':
+	    	  console.log('unfinish');
+			  console.log("count="+count+" , uncount="+uncount);
+	    	  if(uncount != 0){
+	    		  problemTable.reload({
+			      		url: '/iot_process/report/showproblembycondition'
+			      	   ,page: {
+			      		   curr: 1 //重新从第 1 页开始
+			      	   }
+			      	   ,where: {
+			      			'problemstate': 'UNFINISHED',
+			      	   }
+			      })  
+	    	  }
 		      break;
 	      case 'open-advance':
 	    	  console.log('open-advance');
@@ -326,6 +396,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    		  }
 	    	  })
 	    	  piids = (piids == null||piids == '')?['nodata']:piids;
+	    	  isreload = true;
 	    	  reloadTable(null, null, piids);
 	    	  
 	    };
