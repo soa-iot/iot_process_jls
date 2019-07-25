@@ -281,9 +281,6 @@
 					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
 					   		and rectificationmeasures = #{record.rectificationmeasures}
 					   </if>
-					   <if test="record.rectificationperiod != null and record.rectificationperiod != ''">
-					   		and rectificationperiod = #{record.rectificationperiod}
-					   </if>
 					   <if test="record.isSms != null and record.isSms != ''">
 					   		and is_sms = #{record.isSms}
 					   </if>
@@ -402,7 +399,7 @@
 					   		
 					   		<choose>
 					   			<when test="record.depet == '维修工段' ">
-					   				and depet IN ('电站','钳工班','仪表班','维修班','电站班','管焊班','维修工段')
+					   				and depet IN ('电站','电工班','钳工班','仪表班','维修班','电站班','管焊班','维修工段')
 					   			</when>
 					   			<when test="record.depet == '净化工段' ">
 					   				and depet IN ('净化1班','净化4班','净化2班','净化3班','行政班','分析班')
@@ -432,6 +429,12 @@
 					   </if>
 					   <if test="record.outerDealDescribe != null and record.outerDealDescribe != ''">
 					   		and outer_deal_describe = #{record.outerDealDescribe}
+					   </if>
+					   <if test="record.dueDate != null and record.dueDate != ''">
+					   		and to_char(rectificationperiod,'YYYY-MM-DD') = #{record.dueDate}
+					   </if>
+					   <if test="record.duedateRange != null and record.duedateRange != ''">
+					   		and to_char(rectificationperiod,'YYYY-MM-DD') &lt;= #{record.duedateRange} and to_char(rectificationperiod,'YYYY-MM-DD') &gt;= to_char(sysdate, 'YYYY-MM-DD')
 					   </if>
 					</if>
 					<if test="startTime!=null and startTime!=''">
@@ -536,9 +539,6 @@
 					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
 					   		and rectificationmeasures = #{record.rectificationmeasures}
 					   </if>
-					   <if test="record.rectificationperiod != null and record.rectificationperiod != ''">
-					   		and rectificationperiod = #{record.rectificationperiod}
-					   </if>
 					   <if test="record.isSms != null and record.isSms != ''">
 					   		and is_sms = #{record.isSms}
 					   </if>
@@ -657,7 +657,7 @@
 					   		
 					   		<choose>
 					   			<when test="record.depet == '维修工段' ">
-					   				and depet IN ('电站','钳工班','仪表班','维修班','电站班','管焊班','维修工段')
+					   				and depet IN ('电站','电工班','钳工班','仪表班','维修班','电站班','管焊班','维修工段')
 					   			</when>
 					   			<when test="record.depet == '净化工段' ">
 					   				and depet IN ('净化1班','净化4班','净化2班','净化3班','行政班','分析班')
@@ -687,6 +687,12 @@
 					   </if>
 					   <if test="record.outerDealDescribe != null and record.outerDealDescribe != ''">
 					   		and outer_deal_describe = #{record.outerDealDescribe}
+					   </if>
+					   <if test="record.dueDate != null and record.dueDate != ''">
+					   		and to_char(rectificationperiod,'YYYY-MM-DD') = #{record.dueDate}
+					   </if>
+					   <if test="record.duedateRange != null and record.duedateRange != ''">
+					   		and to_char(rectificationperiod,'YYYY-MM-DD') &lt;= #{record.duedateRange} and to_char(rectificationperiod,'YYYY-MM-DD') &gt;= to_char(sysdate, 'YYYY-MM-DD')
 					   </if>
 					</if>
 					<if test="startTime!=null and startTime!=''">

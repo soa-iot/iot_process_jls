@@ -138,6 +138,8 @@ public class ReportC {
 		String sortField = problemInfoQuery.getSortField();
 		String sortType = problemInfoQuery.getSortType();
 		problemInfoQuery.setPiids(piidArray);
+		//根据时间范围推算出具体日期
+		problemInfoQuery.setDuedateRange(CommonUtil.timeRangeToDateString(problemInfoQuery.getDuedateRange()));
 		
 		List<ProblemInfo> result = reportS.getProblemInfoByPage(problemInfoQuery, page, limit, startTime, endTime, sortField, sortType);
 		if(result != null) {

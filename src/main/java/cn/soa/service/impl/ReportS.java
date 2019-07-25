@@ -147,7 +147,7 @@ public class ReportS implements ReportSI {
 	public List<ProblemInfo> getProblemInfoByPage(ProblemInfo problemInfo, Integer page, Integer limit, String startTime,
 			String endTime, String sortField, String sortType) {
 		
-		sortField = findDataBaseFieldName(sortField);		
+		sortField = findDataBaseFieldName(sortField);	
 		List<ProblemInfo> result = reportMapper.findPorblemInfoByPage(problemInfo, page, limit, startTime, endTime, sortField, sortType);
 		return result;
 	}

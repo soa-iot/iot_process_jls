@@ -30,6 +30,8 @@ public class ProblemInfoQuery extends ProblemInfo {
 	private String startTime;
 	private String endTime;
 	private String schedule;
+	private String dueDate;
+	private String duedateRange;
 	private String sortField;
 	private String sortType;
 	private String[] piids;
