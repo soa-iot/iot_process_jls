@@ -443,7 +443,7 @@ public class ActivityS implements ActivitySI{
     	}
     	String comment = map.get( "comment" ).toString();
     	logger.info( "-------流程节点备注信息--------" + comment );
-	
+    	
     	try {     
     		//拾取任务
     		taskService.claim( tsid, map.get( "userName" ).toString() );    		
@@ -457,8 +457,16 @@ public class ActivityS implements ActivitySI{
     		}else {
     			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
-
     		map.remove( "comment" );   
+    		
+    		/*
+    		 * 获取操作名称
+    		 */
+    		String  operateName = "";
+    		Object operateNameObj = map.get( "operateName" );
+    		logger.info( "---操作名称---------" + operateNameObj );
+    		if(operateName != null ) operateName = operateNameObj.toString().trim();
+    		map.remove( "operateName" );
     		   
     		/*
     		 * 设置当前任务流程变量 - 定制 -后续改设计模式
@@ -497,6 +505,14 @@ public class ActivityS implements ActivitySI{
     		 * 流程流转下一个节点
     		 */
     		taskService.complete( tsid );
+    		
+    		/*
+    		 * 添加节点操作名称
+    		 */
+    		int num = acitivityHistoryActS.updateOprateNameS( piid, tsid, operateName );
+    		String loginfo = num > 0?"成功":"失败";
+    		logger.info( "------添加节点操作名称------" + loginfo );
+    		
         	return true;
 		} catch (Exception e) {
 			e.printStackTrace();

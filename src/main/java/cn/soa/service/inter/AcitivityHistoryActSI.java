@@ -14,4 +14,11 @@ public interface AcitivityHistoryActSI {
 	 */  
 	List<HistoryAct> findAllHisActsBypiid(String piid);
 
+	/**   
+	 * @Title: updateOprateNameS   
+	 * @Description: 给每个节点增加操作名称    
+	 * @return: int        
+	 */  
+	int updateOprateNameS(String piid, String tsid, String operateName);
+
 }

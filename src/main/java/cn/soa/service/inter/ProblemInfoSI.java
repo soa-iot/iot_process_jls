@@ -85,4 +85,11 @@ public interface ProblemInfoSI {
 	 */
 	List<ProblemInfo> getAutoFill(String problemdescribe);
 	
+	/**   
+	 * @Title: modifyProblemState   
+	 * @Description: 查询所有问题状态为‘未超期’和未完成的的问题    
+	 * @return: boolean        
+	 */  
+	boolean modifyProblemState();
+	
 }

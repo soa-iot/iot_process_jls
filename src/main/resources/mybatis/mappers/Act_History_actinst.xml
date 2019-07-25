@@ -13,6 +13,21 @@
 		order by START_TIME_
 	</select>
 	
+	<!-- 1.2、根据任务piid,查询当前流程实例的最后一个节点 -->
+	<select id="findLastActByPiids"  resultType="cn.soa.entity.activity.HistoryAct">
+		SELECT * FROM ACT_HI_ACTINST 
+		WHERE ID_ IN (
+			SELECT max(ID_) FROM ACT_HI_ACTINST  
+			where PROC_INST_ID_ in 
+			<foreach collection="piids" index="index" item="item" open="(" separator="," close=")"> 
+				#{item}
+			</foreach>
+			group by PROC_INST_ID_
+		)
+	</select>
+	
+	
+	
 	
 	<!-- ===========================2、新增===============================  -->
 	<!-- 2.2、根据id增加组织 ，返回id			
@@ -83,7 +98,13 @@
 		</trim>
 	</insert>-->
 	
-
+	<!-- ===========================3、修改===============================  -->
+	<!-- 给每个节点增加操作名称 -->
+	<update id="updateOprateName" >
+		update ACT_HI_ACTINST
+		set TENANT_ID_ = #{ operateName }
+		where PROC_INST_ID_ = #{ piid } and TASK_ID_ = #{ tsid }
+	</update>
 </mapper>
  
 

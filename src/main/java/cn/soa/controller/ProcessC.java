@@ -28,6 +28,7 @@ import cn.soa.entity.ResultJson;
 import cn.soa.entity.ResultJsonForTable;
 import cn.soa.entity.TodoTask;
 import cn.soa.entity.activity.HistoryAct;
+import cn.soa.service.inter.AcitivityHistoryActSI;
 import cn.soa.service.inter.AcitivityHistorySI;
 import cn.soa.service.inter.AcitivityIdentitySI;
 import cn.soa.service.inter.ActivitySI;
@@ -71,6 +72,8 @@ public class ProcessC {
 	
 	@Autowired
 	private AcitivityIdentitySI acitivityIdentityS;
+	
+
 		
 	/**   
 	 * @Title: startProcessC   

@@ -162,5 +162,25 @@ public interface ProblemInfoMapper {
 	 * @return ProblemInfo集合
 	 */
 	List<ProblemInfo> findByProblemdescribe(String problemdescribe);
-
+	
+	/**   
+	 * @Title: findUnfinished   
+	 * @Description: 查询所有未完成的问题上报任务  
+	 * @return: List<ProblemInfo>        
+	 */  
+	List<ProblemInfo> findUnfinished();
+	
+	/**   
+	 * @Title: findUnfinished   
+	 * @Description: 查询所有问题状态不为 空和未完成的的问题  
+	 * @return: List<ProblemInfo>        
+	 */  
+	List<ProblemInfo> findUnfinishedAndTimeover();
+	
+	/**   
+	 * @Title: updateTimeoverState   
+	 * @Description:根据piid，修改流程的超期状态   
+	 * @return: int        
+	 */  
+	public int updateTimeoverState(@Param("state") String state,@Param("piid") String piid);
 }

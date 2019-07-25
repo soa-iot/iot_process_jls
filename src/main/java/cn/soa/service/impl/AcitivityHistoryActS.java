@@ -59,7 +59,35 @@ public class AcitivityHistoryActS implements AcitivityHistoryActSI{
 		}
 	}
 	
-	
-	
-	
+	/**   
+	 * @Title: updateOprateNameS   
+	 * @Description: 给每个节点增加操作名称  
+	 * @return: int        
+	 */  
+	@Override
+	public int updateOprateNameS( String piid, String tsid, String operateName ){
+		//检查
+		logger.info( "-S----给当前节点增加操作名称--------" );
+    	if( StringUtils.isBlank( piid ) ) {
+			logger.info( "---S--------任务piid为null-------------" );
+			return 0;
+		}
+    	if( StringUtils.isBlank( tsid ) ) {
+			logger.info( "---S--------任务tsid为null-------------" );
+			return 0;
+		}
+    	if( StringUtils.isBlank( operateName ) ) {
+			logger.info( "---S--------任务operateName为null-------------" );
+			return 0;
+		}
+		
+    	//修改数据
+		try {
+			int i = hisActMapper.updateOprateName(piid, tsid, operateName);
+			return i;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
 }
