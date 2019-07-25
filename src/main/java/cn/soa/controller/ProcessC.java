@@ -370,12 +370,14 @@ public class ProcessC {
 	public ResultJson<String> endProcessIngroup(
 			@PathVariable("piid") @NotBlank String piid,
 			@RequestParam("comment") String comment,
-			@RequestParam("userName") String userName){
+			@RequestParam("userName") String userName,
+			@RequestParam("operateName") String operateName){
 		logger.info( "--C-------- 终止流程     -------------" );
 		logger.info( piid );
 		logger.info( comment );
 		logger.info( userName );
-		String s = activityS.endProcessByPiidInComment(piid, comment, userName );
+		logger.info( operateName );
+		String s = activityS.endProcessByPiidInComment(piid, comment, userName, operateName);
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
 		}
@@ -391,12 +393,14 @@ public class ProcessC {
 	public ResultJson<String> endProcess(
 			@PathVariable("piid") @NotBlank String piid,
 			@RequestParam("comment") String comment,
-			@RequestParam("userName") String userName){
+			@RequestParam("userName") String userName,
+			@RequestParam("operateName") String operateName){
 		logger.info( "--C-------- 终止流程     -------------" );
 		logger.info( piid );
 		logger.info( comment );
 		logger.info( userName );
-		String s = activityS.endProcessByPiidInComment(piid, comment, userName );
+		logger.info( operateName );
+		String s = activityS.endProcessByPiidInComment(piid, comment, userName, operateName );
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
 		}

@@ -225,7 +225,7 @@ function workPlan(obj,usernames){
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
 			"receivor":usernames,
-
+			,"operateName":"作业安排"
 			"userName":$.cookie("name").replace(/"/g,"")
 
 		}   //问题上报表单的内容
@@ -245,7 +245,7 @@ function workPlan(obj,usernames){
 }
 
 /**
- * 班组长评估下一步按钮
+ * 班组长评估下一步按钮提交请求
  * @param obj
  * @param usernames
  * @returns
@@ -257,9 +257,9 @@ function estimate_next(obj,usernames){
 								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-			"comment": $("#comment").val(),     //节点的处理信息
-
-			"userName":$.cookie("name").replace(/"/g,"")
+			"comment": $("#comment").val()     //节点的处理信息
+			,"operateName":"下一步"
+			,"userName":$.cookie("name").replace(/"/g,"")
 	}
 	
 	if (area=="净化工段" || area=="化验") {

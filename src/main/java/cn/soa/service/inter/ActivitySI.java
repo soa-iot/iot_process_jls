@@ -312,7 +312,7 @@ public interface ActivitySI {
 	 * @Description:终止流程（piid）   
 	 * @return: String        
 	 */  
-	String endProcessByPiidInComment(String piid, String comment, String userName );
+	String endProcessByPiidInComment(String piid, String comment, String userName, String operateName );
 
 	/**   
 	 * @Title: transferProcessInVarsByPiid   
