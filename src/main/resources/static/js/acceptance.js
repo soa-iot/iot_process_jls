@@ -24,7 +24,9 @@ $.ajax({
 		if (json.state == 0) {
 			var imgs = json.data;
 			if (imgs.length==0) {
-				$("#doimg-div").hide();
+				//$("#doimg-div").hide();
+				$("#doimg-div").empty();
+				$("#doimg-div").append("<p style='background-color:#FAFDFD; padding-top:9px;'>没有上传图片</p>")
 			}else{
 				$("#doimg-div").show();
 				var mode = imgs.length%3;
@@ -126,7 +128,7 @@ $("#complete1").click(function(){
 			,data: {
 
 				"comment": $("#comment").val()     //节点的处理信息
-				,"operateName":$(this).html().replace(/[^\u4e00-\u9fa5]/g,'')
+				,"operateName":"闭环处理"
 				,"userName":$.cookie("name").replace(/"/g,"")
 			}   //问题上报表单的内容
 			,contentType: "application/x-www-form-urlencoded"
@@ -164,7 +166,7 @@ $("#rollback-accept").click(function(){
 			,url: '/iot_process/process/nodes/before/group/piid/'+piidp    //piid为流程实例id
 			,data: {
 				"comment": $("#comment").val()  //处理信息
-				,"operateName":$(this).html().replace(/[^\u4e00-\u9fa5]/g,'')
+				,"operateName":"回退"
 		     	,"userName":$.cookie("name").replace(/"/g,"")
 			}   //问题上报表单的内容
 			,contentType: "application/x-www-form-urlencoded"

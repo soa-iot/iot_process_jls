@@ -1,5 +1,6 @@
 package cn.soa.service.inter;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -58,4 +59,9 @@ public interface ReportSI {
 	 * @return: int 删除数据的条数
 	 */
 	Integer deleteByReportid(String repid);
+	
+	/**
+	 * 读取excel表批量问题上报
+	 */
+	String massProblemReport(InputStream is, String fileName, String resavepeople, String depet);
 }

@@ -87,8 +87,10 @@ $.ajax({
 	success: function( json) {
 		if (json.state == 0) {
 			var imgs = json.data;
-			if (imgs.length==0) {
-				$("#test11").hide();
+			if (imgs==null || imgs.length==0) {
+				//$("#test11").hide();
+				$("#test11").empty();
+				$("#test11").append("<p style='background-color:#FAFDFD; padding-top:9px;'>没有上传图片</p>")
 			}else{
 				$("#test11").show();
 				var mode = imgs.length%3;
@@ -127,8 +129,7 @@ $.ajax({
 					carousel.render({
 						elem: '#test11'
 						,arrow: 'always'
-							
-							//,width: '778px'
+						,width: '556px'
 						,height: '150px'
 						,interval: 5000
 					});
@@ -200,10 +201,10 @@ layui.use('table', function(){
 			}
 	//,format:'yyyy-MM-dd'
 	,cols: [[ //表头
-		{field: 'nodeExecutor', title: '处理人', width:'25%'}
-		,{field: 'nodeName', title: '处理节点', width:'25%'}
-		,{field: 'nodeComment', title: '处理说明', width:'25%'}
-		,{field: 'nodeEndTime', title: '时间', width:'25%', templet:function(d){
+		{field: 'nodeExecutor', title: '处理人', width:'23%'}
+		,{field: 'nodeName', title: '处理节点', width:'23%'}
+		,{field: 'nodeComment', title: '处理说明', width:'29%'}
+		,{field: 'nodeEndTime', title: '时间', width:'24.9%', templet:function(d){
 			return d.nodeEndTime.replace(/T/, ' ').replace(/\..*/, '');
 		}} 
 		]]
@@ -333,7 +334,7 @@ $("#rollback").click(function(){
 				     ,data: {
 				     	"comment": $("#comment").val()  //处理信息
 				     	,"userName":$.cookie("name").replace(/"/g,"")
-				     	,"operateName":$(this).html().replace(/[^\u4e00-\u9fa5]/g,'')
+				     	,"operateName":"回退"
 				     }  
 				     ,contentType: "application/x-www-form-urlencoded"
 				     ,dataType: "json"
@@ -479,7 +480,7 @@ $("#complete").click(function(){
 
 						"comment": $("#comment").val()     //节点的处理信息
 						,"userName":$.cookie("name").replace(/"/g,"")
-						,"operateName":$(this).html().replace(/[^\u4e00-\u9fa5]/g,'')
+						,"operateName":'闭环处理'
 
 					}   //问题上报表单的内容
 					,contentType: "application/x-www-form-urlencoded"
@@ -633,7 +634,7 @@ function outhelperm(obj,dept,usernames){
 			
 			"area": dept //属地单位
 			,"actId": actualIds  //跳转节点id
-			,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')								 
+			,"operateName":'外部协调'								 
 			,"comment": $("#comment").val()     //节点的处理信息
 			,"userName":$.cookie("name").replace(/"/g,"")
 		}
@@ -681,7 +682,7 @@ $.ajax({
     	"comment": $("#comment").val()     //通用 -- 节点的处理信息
     	,"repairor": usernames     //通用 -- 下一个节点问题处理人
     	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
-    	,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')
+    	,"operateName":"外部协调"
     }   //问题上报表单的内容
     ,contentType: "application/x-www-form-urlencoded"
     ,dataType: "json"

@@ -10,7 +10,10 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	//从cookie中获取当前登录用户
 	var resavepeople = getCookie1("name").replace(/"/g,'');
 	//上报部门
-	var dept = getCookie1("organ").replace(/"/g,'');
+	var depet = getCookie1("organ").replace(/"/g,'');
+	if(depet == 'HSE办'){
+		depet = 'HSE办公室';
+	}
 	var piid = GetQueryString("piid");
 	//暂存的问题报告id和上报问题报告id和
 	var tProblemRepId = null, tempRepId = null;
@@ -56,7 +59,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	
 	  //隐藏字段初始赋值
 	  form.val('report-form', {
-	    "dept": dept,
+	    "depet": depet,
 	    "applypeople": resavepeople
 	  })
 	  
@@ -157,6 +160,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
           		$option2.text(actionList[y].actionsName);
           		$("#detail-select").append($option2);
       		}
+      		$("#detail-select").append("<option value='其他'>其他</option>");
             //更新不安全select渲染
     	    form.render('select','notsafe-select');
           }
@@ -206,6 +210,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
        		            $option2.text(actionList[y].actionsName);
        		            $("#detail-select").append($option2);
        	            }
+       	          $("#detail-select").append("<option value='其他'>其他</option>");
        		      }
        		    }
        	    	
@@ -275,6 +280,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	            $option2.text(actionList[y].actionsName);
 	            $("#detail-select").append($option2);
             }
+            $("#detail-select").append("<option value='其他'>其他</option>");
 	      }
 	    }
 	     //更新不安全select渲染
@@ -522,6 +528,7 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 			   			     ,data: {
 			   			     	"comment": $("#problemdescribe").val()     //节点的处理信息     	
 			   			     	,"area": $("#problemtype").val()
+			   			     	,"operateName": "上报"
 			   			     }  
 			   			     ,contentType: "application/x-www-form-urlencoded"
 			   			     ,dataType: "json"
@@ -556,6 +563,87 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 	    return false;
 		
 	  });
+	  
+	  /**
+	   * 问题批量上报
+	   */
+	  $("#saveMassBtn").click(function(){
+		  console.log("-----问题批量上报开始--------");
+		  layer.open({
+		        type: 1
+		        ,title: '问题批量上报'
+		        ,id: 'problemmass'
+		        ,size: '51200'
+		        ,btn: ['上&nbsp;&nbsp;报','关&nbsp;&nbsp;闭']
+		  		,offset: ['45px','100px']
+		  		,area: ['610px','315px']
+		        ,content:$("#problemMass")
+		        ,yes: function(index, layero){
+		        	if($("#problemmass").find("span.layui-upload-choose").length == 1){
+						uploadTepmlate.upload();
+					}
+		        }
+		        ,btn2: function(index, layero){
+		        	 $("#response-div").css({"display": "none"});
+		        }
+		        ,success: function(){
+		        	 console.log("success");
+		        	 $(".layui-layer .layui-layer-btn0").prepend("<i class='layui-icon'>&#x1005;</i>&nbsp;&nbsp;");
+		    	     $(".layui-layer .layui-layer-btn1").prepend("<i class='layui-icon'>&#x1006;</i>&nbsp;&nbsp;");
+		    	     $(".layui-layer .layui-layer-btn0").addClass("primary-btn");
+		    	     $(".layui-layer .layui-layer-btn1").addClass("primary-btn");
+		    	     $(".layui-layer .layui-layer-btn0,.layui-layer .layui-layer-btn1").mouseover(function(){
+		    	        $(this).find("i").css({"color":"white"});
+		    	     })
+		    	        				  		   
+		    	     $(".layui-layer .layui-layer-btn1,.layui-layer .layui-layer-btn0").mouseout(function(){
+		    	        $(this).find("i").css({"color":"green"});
+		    	     })
+		        }
+		  });
+	  })
+	  
+     var uploadTepmlate = upload.render({
+	        			   elem: '#upload-excel-btn'
+	        			   ,url: '/iot_process/report/upload/template'
+	        			   ,auto: false
+	        			   ,data: {
+	        			       depet: function(){ return depet;},
+	        			       resavepeople: function(){ return resavepeople; }
+	        			   }
+	        			   ,accept:'file'
+	        			   ,bindAction: '#'
+	        			   ,done: function(res, index){
+	        			     //请求完成后回调
+	        			     $("#response-div").css({"display": "block"});
+	        			     layer.closeAll('loading'); 
+	        			     if(res.state == 0 && res.message != null){
+	        				     if(res.message.match("上报失败") || res.message.match("成功")){
+	        				        $("#reponse-text").text(res.message);
+	        				     }else{
+	        				    	 $("#reponse-text").text("数据验证错误 - "+res.message);
+	        				     }
+	        				 }else if(res.state == 1){
+	        				      $("#reponse-text").text(res.message);
+	        				   }else{
+	        				      layer.msg("连接服务器失败，请检查网络是否正常", {icon: 2, offset: ['180px', '300px']});
+	        				   }
+
+	        		       }
+	        			   ,before: function(res){
+	        			      //文件提交上传前的回调
+	        			      layer.load(1,{offset: ['190px', '400px']}); 
+	        			   }
+	        			   ,error: function(){
+	        			      //请求异常回调
+	        			       $(".layui-layer-dialog .layui-layer-padding:contains('请求上传接口出现异常')").css({"display":"none"});
+	        			        	layer.msg("连接服务器失败，请检查网络是否正常", {icon: 2, offset: ['180px', '300px']});
+	        			        	layer.closeAll('loading');
+	        			    }
+	     });
+	    
+	  
+	  
      
 	  /**
 	   * 汉字转成拼音的功能

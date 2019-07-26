@@ -1,7 +1,10 @@
 package cn.soa.controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -11,10 +14,15 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.activiti.validation.validator.Problems;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.InputSource;
 
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoQuery;
@@ -118,17 +127,20 @@ public class ReportC {
 	 * @return: ResultJsonForTable<List<ProblemInfo>> 返回成功响应数据 
 	 */
 	@PostMapping("/showproblembycondition")
-	public ResultJsonForTable<List<ProblemInfo>> showProblemInfoByCondition(ProblemInfoQuery problemInfoQuery) {
+	public ResultJsonForTable<List<ProblemInfo>> showProblemInfoByCondition(ProblemInfoQuery problemInfoQuery, @RequestParam(value="piidArray[]", required=false) String[] piidArray) {
 	
-		log.debug("------查询条件：{}", problemInfoQuery);
-		
+		log.info("------查询条件：{}", problemInfoQuery);
+		log.info("------piids: {}",Arrays.toString(piidArray));
 		Integer page = problemInfoQuery.getPage();
 		Integer limit = problemInfoQuery.getLimit();
 		String startTime = problemInfoQuery.getStartTime();
 		String endTime = problemInfoQuery.getEndTime();
 		String sortField = problemInfoQuery.getSortField();
 		String sortType = problemInfoQuery.getSortType();
-
+		problemInfoQuery.setPiids(piidArray);
+		//根据时间范围推算出具体日期
+		problemInfoQuery.setDuedateRange(CommonUtil.timeRangeToDateString(problemInfoQuery.getDuedateRange()));
+		
 		List<ProblemInfo> result = reportS.getProblemInfoByPage(problemInfoQuery, page, limit, startTime, endTime, sortField, sortType);
 		if(result != null) {
 			Map<String, Object> map = reportS.ProblemCount(problemInfoQuery, startTime, endTime);
@@ -315,4 +327,57 @@ public class ReportC {
 		}
 		return new ResultJson<Void>(ResultJson.SUCCESS, "删除问题上报数据成功");
 	}
+	
+	/**
+	 * 下载问题批量上报模板excel表
+	 * 
+	 */
+	@GetMapping("/download/template")
+	public ResponseEntity<byte[]> donwloadExcelTemplate(){
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource resource = resolver.getResource("classpath:问题批量上报模板表.xlsx");	
+		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+		try {
+			InputStream is = resource.getInputStream();
+			//建立字节缓冲区
+			byte[] data = new byte[4*1024];
+			int length = -1;
+			while((length = is.read(data)) != -1) {
+
+				byteArray.write(data,0,length);
+			}
+			is.close();
+			byteArray.close();
+			//处理文件名中文乱码
+			String fileName = URLEncoder.encode("问题批量上报模板表.xlsx", "UTF-8");
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add("Content-Disposition", "attchement;filename=" + fileName);
+			return new ResponseEntity<byte[]>(byteArray.toByteArray(), headers, HttpStatus.OK);
+		}catch (Exception e) {
+			log.error("-------下载问题批量上报模板excel表失败------");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 上传excel表
+	 * 
+	 */
+	@PostMapping("/upload/template")
+	public ResultJson<Void> uploadExcelTemplate(@RequestParam("file") MultipartFile file, String resavepeople, String depet){
+		log.info("------上传的excel表名为："+file.getOriginalFilename());
+		log.info("------resavepeople："+resavepeople);
+		log.info("------depet："+depet);
+		
+		try {
+			String msg = reportS.massProblemReport(file.getInputStream(), file.getOriginalFilename(), resavepeople, depet);
+			return new ResultJson<>(ResultJson.SUCCESS, msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new ResultJson<>(ResultJson.ERROR, "上传Excel表失败");
+	}
+	
 }

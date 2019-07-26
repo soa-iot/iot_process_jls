@@ -21,6 +21,7 @@
 				<h2 class="layui-colla-title h2c" id="pro">问题处理</h2>
 				
 				<div class="hbtn h2c">
+					<button class="layui-btn layui-btn-normal layui-btn-sm btn problem_describe" lay-submit lay-filter="back_previous"><span class="layui-icon">&#xe65a;</span>&nbsp;回退</button>
 					<button class="layui-btn layui-btn-normal layui-btn-sm btn"  lay-submit lay-filter="next_step">下一步&nbsp;<span class="layui-icon">&#xe65b;</span></button>
 				</div>
 				<div class="layui-colla-content layui-show">
@@ -154,9 +155,9 @@
 
 					<div class="layui-form-item layui-form-text bott">
 						<label class="layui-form-label">问题图片</label>
-						<div class="layui-input-block" style="height: 150px;">
+						<div class="layui-input-block">
 							<div class="layui-carousel" id="div-img">
-								<div carousel-item="" id="imag">
+								<div carousel-item="" id="imag"  style="height: 150px;">
 								</div>
 							</div>
 						</div>
@@ -170,8 +171,8 @@
 				<h2 class="layui-colla-title h2c">工单信息</h2>
 				<div class="layui-colla-content layui-show">
 					<div class="btn-div">
-						<a class="pbtn problem_describe" target="_blank" href="./staging-work-requisition.html">脚手架搭拆申请单</a>
-						<a class="pbtn problem_describe" target="_blank" href="./anticorrosion-work-requisition.html">防腐（保温）申请单</a>
+						<a class="pbtn problem_describe staging-requisition" target="_blank" href="#">脚手架搭拆申请单</a>
+						<a class="pbtn problem_describe anticor-requisition" target="_blank" href="#">防腐（保温）申请单</a>
 					</div>
 				</div>
 			</div>

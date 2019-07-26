@@ -15,6 +15,7 @@ import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
 
 import cn.soa.entity.TodoTask;
+import cn.soa.entity.activity.HistoryAct;
 
 @Service
 public interface ActivitySI {
@@ -143,7 +144,7 @@ public interface ActivitySI {
 	 * @Description: 流程跳转(不提供流程变量)    
 	 * @return: void        
 	 */  
-	void transferProcessNoVars(String tsid, String actId);
+	void transferProcessNoVars(String tsid, String actId, String userName);
 
 	/**   
 	 * @Title: endProcess   
@@ -157,7 +158,7 @@ public interface ActivitySI {
 	 * @Description: 终止流程（批准信息）   
 	 * @return: String        
 	 */  
-	String endProcessByTsidInComment(String tsid, String comment);
+	String endProcessByTsidInComment(String tsid, String comment, String userName);
 
 	/**   
 	 * @Title: getHistoryNodesByPiid   
@@ -311,7 +312,7 @@ public interface ActivitySI {
 	 * @Description:终止流程（piid）   
 	 * @return: String        
 	 */  
-	String endProcessByPiidInComment(String piid, String comment);
+	String endProcessByPiidInComment(String piid, String comment, String userName, String operateName );
 
 	/**   
 	 * @Title: transferProcessInVarsByPiid   
@@ -321,6 +322,13 @@ public interface ActivitySI {
 	boolean transferProcessByPiid(String piid, Map<String, Object> vars);
 
 	String getActiveTsidByPiid(String piid);
+
+	/**   
+	 * @Title: findAllHisActsBypiid   
+	 * @Description: 根据任务piid,查询当前流程实例的所有任务节点（包括完成和未完成,）      
+	 * @return: List<HistoryAct>        
+	 */  
+	List<HistoryAct> findAllHisActsBypiid(String piid);
 
 	
 

@@ -1,12 +1,25 @@
 package cn.soa.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import cn.soa.dao.ProblemInfoMapper;
 import cn.soa.dao.ProblemReportphoMapper;
@@ -14,7 +27,10 @@ import cn.soa.dao.ProblemTypeAreaMapper;
 import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ProblemInfoVO;
 import cn.soa.entity.ProblemTypeArea;
+import cn.soa.entity.ResultJson;
+import cn.soa.service.inter.ProblemInfoSI;
 import cn.soa.service.inter.ReportSI;
+import cn.soa.utils.ImportExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -25,9 +41,15 @@ public class ReportS implements ReportSI {
 	@Autowired
 	private ProblemInfoMapper reportMapper;
 	@Autowired
+	private ProblemInfoSI probelInfoS;
+	@Autowired
 	private ProblemReportphoMapper phoMapper;
 	@Autowired
 	private ProblemTypeAreaMapper problemTypeAreaMapper;
+	@Autowired
+	private ImportExcelUtil importExcelUtil;
+	@Autowired
+	private RestTemplate restTemplate;
 	
 	/**   
 	 * @Title: addOne   
@@ -128,7 +150,10 @@ public class ReportS implements ReportSI {
 	public List<ProblemInfo> getProblemInfoByPage(ProblemInfo problemInfo, Integer page, Integer limit, String startTime,
 			String endTime, String sortField, String sortType) {
 		
-		sortField = findDataBaseFieldName(sortField);		
+		sortField = findDataBaseFieldName(sortField);
+		boolean isOutDate = probelInfoS.modifyProblemState();
+		log.info("-----------查询所有问题状态为‘未超期’和未完成的的问题 结果:", isOutDate);
+		
 		List<ProblemInfo> result = reportMapper.findPorblemInfoByPage(problemInfo, page, limit, startTime, endTime, sortField, sortType);
 		return result;
 	}
@@ -191,6 +216,70 @@ public class ReportS implements ReportSI {
 		map.put("problemstate", "PROBLEMSTATE");
 		
 		return map.get(key);
+	}
+	
+	/**
+	 * 读取excel表批量问题上报
+	 */
+	@Override
+	public String massProblemReport(InputStream is, String filename, String resavepeople, String depet) {
+		
+		List<Integer> errRecord = new ArrayList<Integer>();
+		
+		//1. 验证excel表是否合法  importExcelUtil
+		boolean result1 = ImportExcelUtil.validateExcel(filename);
+		if(!result1) {
+			return "上传的文件不是模板excel表";
+		}
+		XSSFWorkbook workbook = null;
+		try {
+			workbook = new XSSFWorkbook(is);
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			boolean result2 = ImportExcelUtil.isExcelTemplate(sheet);
+			if(!result2) {
+				return "上传的文件不是模板excel表";
+			}
+			
+		} catch (IOException e) {
+			log.error("-------读取excel流失败");
+			e.printStackTrace();
+		}
+		List<MultiValueMap<String, String>> list = null;
+		try {
+			list = importExcelUtil.readExcelValue(workbook, (short)0, resavepeople, depet);
+			log.info(list.toString());
+		}catch (RuntimeException e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+			
+		//解决中文乱码
+		restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		for(int i=0; i<list.size();i++) {
+			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String,String>>(list.get(i), headers);
+			try {
+				ResultJson<String> json = restTemplate.postForObject("http://192.168.3.11:10238/iot_process/process/", request, ResultJson.class);
+				if(json == null || json.getState() == 1) {
+					log.error("----------第{}行数据问题上报失败", i+3);
+					errRecord.add(i+3);
+				}
+			}catch(RestClientException e) {
+				log.error("----------第{}行数据问题上报失败", i+3);
+				errRecord.add(i+3);
+				e.printStackTrace();
+			}
+		}
+		
+		if(errRecord.size() == 0) {
+			log.info("--------问题批量上报成功，总共上报{}个问题", list.size());
+			return "问题批量上报成功，总共上报"+list.size()+"个问题";
+		}
+		if(errRecord.size() == list.size()) {
+			return "全部问题上报失败，请检查网络是否正常";
+		}
+		return "部分问题上报成功，其中第"+errRecord.toString()+"行数据问题上报失败";
 	}
 }
 

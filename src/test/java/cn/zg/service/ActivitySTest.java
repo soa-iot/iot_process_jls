@@ -13,6 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import cn.soa.IotprocessApplication;
 import cn.soa.entity.UserOrganization;
 import cn.soa.service.inter.ActivitySI;
+import cn.soa.service.inter.ProblemInfoSI;
 import cn.soa.service.inter.UserManagerSI;
 
 @RunWith(SpringRunner.class)
@@ -25,6 +26,9 @@ public class ActivitySTest {
 	@Autowired
 	private UserManagerSI userManagerS;
 	
+	@Autowired
+	private ProblemInfoSI problemInfoS;
+	
 //	@Test
 	public void deployProcess() {
 		String name = "净化厂机电仪检维修流程";
@@ -34,10 +38,16 @@ public class ActivitySTest {
 		System.out.println(deployObj);
 	}
 	
-	@Test
+	//@Test
 	public void findUserByArea() {
 		String userName = "HSE办公室";
 		List<UserOrganization> findUserByArea = userManagerS.findUserByArea(userName);
 		System.out.println(findUserByArea);
+	}
+	
+	@Test
+	public void modifyProblemState() {
+		boolean b = problemInfoS.modifyProblemState();
+		System.out.println(b);
 	}
 }

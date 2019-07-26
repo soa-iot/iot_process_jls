@@ -6,6 +6,8 @@ import java.util.Date;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,8 +30,11 @@ public class ProblemInfoQuery extends ProblemInfo {
 	private String startTime;
 	private String endTime;
 	private String schedule;
+	private String dueDate;
+	private String duedateRange;
 	private String sortField;
 	private String sortType;
+	private String[] piids;
 	
 	public ProblemInfoQuery() {
 		super();

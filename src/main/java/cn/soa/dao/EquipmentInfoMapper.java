@@ -32,4 +32,11 @@ public interface EquipmentInfoMapper {
 	 * @return: 返回条数   
 	 */
 	Integer countEquipmentInfo(EquipmentInfo info);
+	
+	/**   
+	 * 根据设备位号rfid设备信息
+	 * @param: rfid 设备位号
+	 * @return: 返回条数   
+	 */
+	Integer findNumByRfid(String rfid);
 }

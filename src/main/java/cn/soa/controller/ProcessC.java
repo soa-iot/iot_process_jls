@@ -9,9 +9,11 @@ import javax.validation.constraints.NotBlank;
 
 import org.activiti.engine.repository.Deployment;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,10 @@ import cn.soa.entity.ProblemInfo;
 import cn.soa.entity.ResultJson;
 import cn.soa.entity.ResultJsonForTable;
 import cn.soa.entity.TodoTask;
+import cn.soa.entity.activity.HistoryAct;
+import cn.soa.service.inter.AcitivityHistoryActSI;
 import cn.soa.service.inter.AcitivityHistorySI;
+import cn.soa.service.inter.AcitivityIdentitySI;
 import cn.soa.service.inter.ActivitySI;
 import cn.soa.service.inter.BussinessSI;
 import cn.soa.service.inter.ConfigSI;
@@ -64,6 +69,11 @@ public class ProcessC {
 		
 	@Autowired
 	private ProblemInfoSI problemInfoS;
+	
+	@Autowired
+	private AcitivityIdentitySI acitivityIdentityS;
+	
+
 		
 	/**   
 	 * @Title: startProcessC   
@@ -359,11 +369,15 @@ public class ProcessC {
 	@PutMapping("/nodes/end/group/piid/{piid}")
 	public ResultJson<String> endProcessIngroup(
 			@PathVariable("piid") @NotBlank String piid,
-			@RequestParam String comment ){
+			@RequestParam("comment") String comment,
+			@RequestParam("userName") String userName,
+			@RequestParam("operateName") String operateName){
 		logger.info( "--C-------- 终止流程     -------------" );
 		logger.info( piid );
 		logger.info( comment );
-		String s = activityS.endProcessByPiidInComment(piid, comment);
+		logger.info( userName );
+		logger.info( operateName );
+		String s = activityS.endProcessByPiidInComment(piid, comment, userName, operateName);
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
 		}
@@ -378,11 +392,15 @@ public class ProcessC {
 	@PutMapping("/nodes/end/piid/{piid}")
 	public ResultJson<String> endProcess(
 			@PathVariable("piid") @NotBlank String piid,
-			@RequestParam String comment ){
+			@RequestParam("comment") String comment,
+			@RequestParam("userName") String userName,
+			@RequestParam("operateName") String operateName){
 		logger.info( "--C-------- 终止流程     -------------" );
 		logger.info( piid );
 		logger.info( comment );
-		String s = activityS.endProcessByPiidInComment(piid, comment);
+		logger.info( userName );
+		logger.info( operateName );
+		String s = activityS.endProcessByPiidInComment(piid, comment, userName, operateName );
 		if( StringUtils.isBlank( s ) ) {
 			return new ResultJson<String>( 1, "闭环流程失败", "闭环流程失败" );
 		}
@@ -513,9 +531,9 @@ public class ProcessC {
 		logger.info( userName );
 		List<TodoTask> tasks = activityS.getAllTasksByUsername( userName );
 		if( tasks != null ) {
-			return new ResultJson<List<TodoTask>>( 0, "流程返回到上一个节点成功", tasks );
+			return new ResultJson<List<TodoTask>>( 0, "代办任务查询成功", tasks );
 		}
-		return new ResultJson<List<TodoTask>>( 0, "流程返回到上一个节点失败", tasks );
+		return new ResultJson<List<TodoTask>>( 0, "代办任务查询失败", tasks );
 	}
 	
 	/**   
@@ -559,5 +577,53 @@ public class ProcessC {
 		}
 		return new ResultJson<Boolean>( 0, "节点跳转失败", false );
 	}
+	
+	/**   
+	 * @Title: getPiidsByUserIdC   
+	 * @Description: 查找与指定人相关的流程的piid    
+	 * @return: ResultJsonForTable<List<TodoTask>>        
+	 */  
+	@GetMapping("/userId/piid")
+	public ResultJson<List<String>> getPiidsByUserIdC(
+			@RequestParam("userId") @NotBlank String userId ){
+		logger.info( "--C-------- 查找与指定人相关的流程的piid    -------------" );
+		logger.info( userId );
+		List<String> piids = acitivityIdentityS.getConnectPiidByUserId( userId );
+		if( piids != null ) {
+			return new ResultJson<List<String>>( 0, "查找与指定人相关的流程成功",  piids );
+		}
+		return new ResultJson<List<String>>( 1, "查找与指定人相关的流程失败",  null );
 
+	}
+	
+	/**   
+	 * @Title: getPiidsByUserIdC   
+	 * @Description: 删除  
+	 * @return: ResultJson<List<String>>        
+	 */  
+	@DeleteMapping()
+	public ResultJson<List<String>> DeleteAllData(){
+		
+		return null;
+	}
+	
+	/**   
+	 * @Title: getProcessNodeInfosByPiidC   
+	 * @Description:  根据任务piid,查询当前流程实例的所有任务节点（包括完成和未完成任务的候选执行人,不包括分支节点）    
+	 * @return: ResultJson<List<Map<String,Object>>>        
+	 */  
+	@GetMapping("/nodes/all/piid/{piid}")
+	public ResultJson<List<HistoryAct>> findAllHisActsBypiid(
+		@PathVariable("piid") String piid){
+		logger.info( "--C-------- 根据任务piid,查询当前流程实例的所有任务节点（包括完成和未完成任务的候选执行人,不包括分支节点）      -------------" );
+		logger.info( piid );
+		if( StringUtils.isBlank( piid )) {
+			return null;
+		}
+		List<HistoryAct> acts = activityS.findAllHisActsBypiid( piid );
+		return new ResultJson<List<HistoryAct>>( 0, "查找成功",  acts );				
+	}
+	
+	
+	
 }

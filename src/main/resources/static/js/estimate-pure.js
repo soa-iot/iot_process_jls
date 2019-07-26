@@ -49,7 +49,6 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 									}
 									
 								}
-								//,"operateName":$(this).html().replace(/[^\u4e00-\u9fa5]/g,'')
 								usernames +=user;
 								if (usernames != "" && i != checkData.length - 1) {
 									usernames += ",";
@@ -117,7 +116,7 @@ function workPlan(obj,usernames){
 			,"receivor": usernames  //下一步流程变量
 			,"userName": $.cookie("name").replace(/"/g,"")  //当前节点任务执行人
 			,"comment": $("#comment").val()   //备注信息\
-			,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')
+			,"operateName":"作业安排"
 					
 			/*"isIngroup": isIngroup,   
 			"comment": $("#comment").val(),     //节点的处理信息

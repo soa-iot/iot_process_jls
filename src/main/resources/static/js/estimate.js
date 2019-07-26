@@ -124,7 +124,7 @@ function workPlan(obj,usernames){
 			"comment": $("#comment").val(),     //节点的处理信息
 			"receivor":usernames,
 			"userName":$.cookie("name").replace(/"/g,"")
-			,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')
+			,"operateName":"作业安排"
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"

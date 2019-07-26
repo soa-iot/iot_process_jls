@@ -225,7 +225,7 @@ function workPlan(obj,usernames){
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val(),     //节点的处理信息
 			"receivor":usernames,
-			,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')
+			,"operateName":"作业安排"
 			"userName":$.cookie("name").replace(/"/g,"")
 
 		}   //问题上报表单的内容
@@ -258,7 +258,7 @@ function estimate_next(obj,usernames){
 								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
 			"comment": $("#comment").val()     //节点的处理信息
-			,"operateName":$(obj).html().replace(/[^\u4e00-\u9fa5]/g,'')
+			,"operateName":"下一步"
 			,"userName":$.cookie("name").replace(/"/g,"")
 	}
 	

@@ -195,6 +195,14 @@
 				FROM 
 					( 
 						SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW
+						<where>
+							<if test="record != null and record.piids != null">
+								PIID IN 
+								<foreach collection="record.piids" index="index" item="item" open="(" separator="," close=")">
+									#{item}
+								</foreach>
+							</if>
+						</where>
 						<choose>
 								<when test="sortField != null and sortField != ''">
 									ORDER BY ${sortField} ${sortType}
@@ -216,7 +224,17 @@
 					   		and tas_id = #{record.tasId}
 					   </if>
 					   <if test="record.problemtype != null and record.problemtype != ''">
-					   		and PROBLEMTYPE = #{record.problemtype}
+					   		<choose>
+					   			<when test="record.problemtype == '维修工段'">
+					   				and PROBLEMTYPE IN ('电站', '电气', '仪表', '机械', '维修工段')
+					   			</when>
+					   			<when test="record.problemtype == '净化工段'">
+					   				and PROBLEMTYPE IN ('净化工段', '化验')
+					   			</when>
+					   			<otherwise>
+					   				and PROBLEMTYPE = #{record.problemtype}
+					   			</otherwise>
+					   		</choose>
 					   </if>
 					   <if test="record.welId != null and record.welId != ''">
 					   		and wel_id = #{record.welId}
@@ -237,7 +255,7 @@
 					   		and RESAVEPEOPLE = #{record.resavepeople}
 					   </if>
 					   <if test="record.applypeople != null and record.applypeople != ''">
-					   		and APPLYPEOPLE = #{record.applypeople}
+					   		and APPLYPEOPLE LIKE '%${record.applypeople}%'
 					   </if>
 					   <if test="record.problemstate != null and record.problemstate != ''">
 					   		and PROBLEMSTATE = #{record.problemstate}
@@ -262,9 +280,6 @@
 					   </if>
 					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
 					   		and rectificationmeasures = #{record.rectificationmeasures}
-					   </if>
-					   <if test="record.rectificationperiod != null and record.rectificationperiod != ''">
-					   		and rectificationperiod = #{record.rectificationperiod}
 					   </if>
 					   <if test="record.isSms != null and record.isSms != ''">
 					   		and is_sms = #{record.isSms}
@@ -381,13 +396,45 @@
 					   		and PROFESSION = #{record.profession}
 					   </if>
 					   <if test="record.depet != null and record.depet != ''">
-					   		and depet = #{record.depet}
+					   		
+					   		<choose>
+					   			<when test="record.depet == '维修工段' ">
+					   				and depet IN ('电站','电工班','钳工班','仪表班','维修班','电站班','管焊班','维修工段')
+					   			</when>
+					   			<when test="record.depet == '净化工段' ">
+					   				and depet IN ('净化1班','净化4班','净化2班','净化3班','行政班','分析班')
+					   			</when>
+					   			<when test="record.depet == 'HSE办公室' ">
+					   				and depet IN ('HSE办公室')
+					   			</when>
+					   			<when test="record.depet == '设备办' ">
+					   				and depet IN ('设备办','设备办公室')
+					   			</when>
+					   			<when test="record.depet == '生产办' ">
+					   				and depet IN ('生产办','生产办公室')
+					   			</when>
+					   			<when test="record.depet == '财务经营办' ">
+					   				and depet IN ('财务经营办','财务办公室')
+					   			</when>
+					   			<when test="record.depet == '综合办' ">
+					   				and depet IN ('综合办','综合办公室')
+					   			</when>
+					   			<otherwise>
+					   				and depet = #{record.depet}
+					   			</otherwise>
+					   		</choose>
 					   </if>
 					   <if test="record.interOrOuter != null and record.interOrOuter != ''">
 					   		and inter_or_outer = #{record.interOrOuter}
 					   </if>
 					   <if test="record.outerDealDescribe != null and record.outerDealDescribe != ''">
 					   		and outer_deal_describe = #{record.outerDealDescribe}
+					   </if>
+					   <if test="record.dueDate != null and record.dueDate != ''">
+					   		and to_char(rectificationperiod,'YYYY-MM-DD') = #{record.dueDate}
+					   </if>
+					   <if test="record.duedateRange != null and record.duedateRange != ''">
+					   		and to_char(rectificationperiod,'YYYY-MM-DD') &lt;= #{record.duedateRange} and to_char(rectificationperiod,'YYYY-MM-DD') &gt;= to_char(sysdate, 'YYYY-MM-DD')
 					   </if>
 					</if>
 					<if test="startTime!=null and startTime!=''">
@@ -411,7 +458,18 @@
 	
 	<select id="PorblemCount" resultType="map">
 		SELECT COUNT(1) total,COUNT(CASE when problemstate='FINISHED' THEN '1' else null end) complete
-				FROM CZ_TASK_PROBLEM_REPORT_NEW
+				FROM 
+					(
+						SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW
+						<where>
+							<if test="record != null and record.piids != null">
+								PIID IN 
+								<foreach collection="record.piids" index="index" item="item" open="(" separator="," close=")">
+									#{item}
+								</foreach>
+							</if>
+						</where>
+					) REPORT_NEW
 				<where>
 					<if test="record != null">
 					   <if test="record.tProblemRepId != null and record.tProblemRepId != ''">
@@ -424,7 +482,17 @@
 					   		and tas_id = #{record.tasId}
 					   </if>
 					   <if test="record.problemtype != null and record.problemtype != ''">
-					   		and PROBLEMTYPE = #{record.problemtype}
+					   		<choose>
+					   			<when test="record.problemtype == '维修工段'">
+					   				and PROBLEMTYPE IN ('电站', '电气', '仪表', '机械', '维修工段')
+					   			</when>
+					   			<when test="record.problemtype == '净化工段'">
+					   				and PROBLEMTYPE IN ('净化工段', '化验')
+					   			</when>
+					   			<otherwise>
+					   				and PROBLEMTYPE = #{record.problemtype}
+					   			</otherwise>
+					   		</choose>
 					   </if>
 					   <if test="record.welId != null and record.welId != ''">
 					   		and wel_id = #{record.welId}
@@ -439,13 +507,13 @@
 					   		and impacts = #{record.impacts}
 					   </if>
 					   <if test="record.problemdescribe != null and record.problemdescribe != ''">
-					   		and PROBLEMDESCRIBE = #{record.problemdescribe}
+					   		and PROBLEMDESCRIBE LIKE '%${record.problemdescribe}%'
 					   </if>
 					   <if test="record.resavepeople != null and record.resavepeople != ''">
 					   		and RESAVEPEOPLE = #{record.resavepeople}
 					   </if>
 					   <if test="record.applypeople != null and record.applypeople != ''">
-					   		and APPLYPEOPLE = #{record.applypeople}
+					   		and APPLYPEOPLE LIKE '%${record.applypeople}%'
 					   </if>
 					   <if test="record.problemstate != null and record.problemstate != ''">
 					   		and PROBLEMSTATE = #{record.problemstate}
@@ -470,9 +538,6 @@
 					   </if>
 					   <if test="record.rectificationmeasures != null and record.rectificationmeasures != ''">
 					   		and rectificationmeasures = #{record.rectificationmeasures}
-					   </if>
-					   <if test="record.rectificationperiod != null and record.rectificationperiod != ''">
-					   		and rectificationperiod = #{record.rectificationperiod}
 					   </if>
 					   <if test="record.isSms != null and record.isSms != ''">
 					   		and is_sms = #{record.isSms}
@@ -589,13 +654,45 @@
 					   		and PROFESSION = #{record.profession}
 					   </if>
 					   <if test="record.depet != null and record.depet != ''">
-					   		and depet = #{record.depet}
+					   		
+					   		<choose>
+					   			<when test="record.depet == '维修工段' ">
+					   				and depet IN ('电站','电工班','钳工班','仪表班','维修班','电站班','管焊班','维修工段')
+					   			</when>
+					   			<when test="record.depet == '净化工段' ">
+					   				and depet IN ('净化1班','净化4班','净化2班','净化3班','行政班','分析班')
+					   			</when>
+					   			<when test="record.depet == 'HSE办公室' ">
+					   				and depet IN ('HSE办公室')
+					   			</when>
+					   			<when test="record.depet == '设备办' ">
+					   				and depet IN ('设备办','设备办公室')
+					   			</when>
+					   			<when test="record.depet == '生产办' ">
+					   				and depet IN ('生产办','生产办公室')
+					   			</when>
+					   			<when test="record.depet == '财务经营办' ">
+					   				and depet IN ('财务经营办','财务办公室')
+					   			</when>
+					   			<when test="record.depet == '综合办' ">
+					   				and depet IN ('综合办','综合办公室')
+					   			</when>
+					   			<otherwise>
+					   				and depet = #{record.depet}
+					   			</otherwise>
+					   		</choose>
 					   </if>
 					   <if test="record.interOrOuter != null and record.interOrOuter != ''">
 					   		and inter_or_outer = #{record.interOrOuter}
 					   </if>
 					   <if test="record.outerDealDescribe != null and record.outerDealDescribe != ''">
 					   		and outer_deal_describe = #{record.outerDealDescribe}
+					   </if>
+					   <if test="record.dueDate != null and record.dueDate != ''">
+					   		and to_char(rectificationperiod,'YYYY-MM-DD') = #{record.dueDate}
+					   </if>
+					   <if test="record.duedateRange != null and record.duedateRange != ''">
+					   		and to_char(rectificationperiod,'YYYY-MM-DD') &lt;= #{record.duedateRange} and to_char(rectificationperiod,'YYYY-MM-DD') &gt;= to_char(sysdate, 'YYYY-MM-DD')
 					   </if>
 					</if>
 					<if test="startTime!=null and startTime!=''">
@@ -676,10 +773,24 @@
 		SELECT MAX(PROBLEMNUM) ma FROM CZ_TASK_PROBLEM_REPORT_NEW
 	</select>
 	
-	<!-- 1.4、根据用户名查找上报申请用户    -->
+	<!-- 1.5、根据用户名查找上报申请用户    -->
 	<!-- public String findApplyPeople(String name) -->
 	<select id="findApplyPeople" resultType="string">
 		SELECT PARENT_ID FROM IOT_USER_ORGANIZATION WHERE NAME = #{name, jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 1.6、查询所有未完成的问题上报任务    -->
+	<select id="findUnfinished" resultType="cn.soa.entity.ProblemInfo">
+		SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW 
+		WHERE PROBLEMSTATE = 'UNFINISHED'
+	</select>
+	
+	<!-- 1.6、查询所有问题状态为‘未超期’和未完成的的问题   -->
+	<select id="findUnfinishedAndTimeover" resultType="cn.soa.entity.ProblemInfo">
+		SELECT * FROM CZ_TASK_PROBLEM_REPORT_NEW 
+		WHERE REMARKTHREE like '%未超期%' 
+		and PROBLEMSTATE = 'UNFINISHED' 
+		and remark like '%指定日期%'
 	</select>
 	
 	<!-- ===========================2、新增===============================  -->
@@ -1522,6 +1633,13 @@
 		WHERE 
 			T_PROBLEM_REP_ID=#{bsid}
 	
+	</update>
+	
+	<!-- 根据piid，修改流程的超期状态-->
+	<update id="updateTimeoverState" >
+		UPDATE CZ_TASK_PROBLEM_REPORT_NEW 
+		SET REMARKTHREE = #{ state }
+		where piid = #{ piid }
 	</update>
 	
 	

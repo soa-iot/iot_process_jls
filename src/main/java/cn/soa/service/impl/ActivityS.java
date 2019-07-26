@@ -3,6 +3,7 @@ package cn.soa.service.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +29,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.identity.User;
@@ -54,7 +57,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
 import cn.soa.entity.TodoTask;
+import cn.soa.entity.activity.HistoryAct;
 import cn.soa.service.abs.BussinessSA;
+import cn.soa.service.inter.AcitivityHistoryActSI;
+import cn.soa.service.inter.AcitivityIdentitySI;
 import cn.soa.service.inter.ActivitySI;
 import cn.soa.service.inter.BussinessSI;
 import cn.soa.service.inter.ProblemInfoSI;
@@ -84,11 +90,17 @@ public class ActivityS implements ActivitySI{
     @Autowired
     private IdentityService identityService;
     
+    @Autowired
+    private AcitivityIdentitySI acitivityIdentityS;
+    
 //    @Autowired
 //    private BussinessSA bussinessSA;
     
     @Autowired
     private BussinessSI bussinessSI;
+    
+    @Autowired
+    private AcitivityHistoryActSI acitivityHistoryActS;
     
     
     /**   
@@ -431,7 +443,7 @@ public class ActivityS implements ActivitySI{
     	}
     	String comment = map.get( "comment" ).toString();
     	logger.info( "-------流程节点备注信息--------" + comment );
-	
+    	
     	try {     
     		//拾取任务
     		taskService.claim( tsid, map.get( "userName" ).toString() );    		
@@ -445,8 +457,16 @@ public class ActivityS implements ActivitySI{
     		}else {
     			logger.info( "---执行流转下一个节点，保存备注信息失败---------" );
     		}
-
     		map.remove( "comment" );   
+    		
+    		/*
+    		 * 获取操作名称
+    		 */
+    		String  operateName = "";
+    		Object operateNameObj = map.get( "operateName" );
+    		logger.info( "---操作名称---------" + operateNameObj );
+    		if(operateName != null ) operateName = operateNameObj.toString().trim();
+    		map.remove( "operateName" );
     		   
     		/*
     		 * 设置当前任务流程变量 - 定制 -后续改设计模式
@@ -485,6 +505,12 @@ public class ActivityS implements ActivitySI{
     		 * 流程流转下一个节点
     		 */
     		taskService.complete( tsid );
+    		
+    		/*
+    		 * 添加节点操作名称
+    		 */
+    		updateOprateNameS( piid, tsid, operateName );
+    		
         	return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -518,6 +544,15 @@ public class ActivityS implements ActivitySI{
     	logger.info( "-------流程节点备注信息--------" + comment );
 	
     	try {     	
+    		
+    		/*
+    		 * 获取操作名称
+    		 */
+    		String  operateName = "";
+    		Object operateNameObj = map.get( "operateName" );
+    		logger.info( "---操作名称---------" + operateNameObj );
+    		if(operateName != null ) operateName = operateNameObj.toString().trim();
+    		map.remove( "operateName" );
     		
     		/*
     		 * 增加备注信息
@@ -558,6 +593,11 @@ public class ActivityS implements ActivitySI{
     		 * 流程流转下一个节点
     		 */
     		taskService.complete( tsid );
+    		
+    		/*
+    		 * 添加节点操作名称
+    		 */
+    		updateOprateNameS( piid, tsid, operateName );
         	return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -784,6 +824,15 @@ public class ActivityS implements ActivitySI{
 			logger.info( "---S--------任务tsid为null或空-------------" );
 			return false;
 		}	
+    	
+    	/*
+		 * 获取操作名称
+		 */
+		String  operateName = "";
+		Object operateNameObj = vars.get( "operateName" );
+		logger.info( "---操作名称---------" + operateNameObj );
+		if(operateName != null ) operateName = operateNameObj.toString().trim();
+		vars.remove( "operateName" );
     	   	
     	/*
     	 * 增加备注信息
@@ -832,6 +881,12 @@ public class ActivityS implements ActivitySI{
     		logger.info( "---流程跳转，目标节点actId1--------" + actId1 );
     		logger.info( "---流程跳转，vars-------" + vars );
     		transferProcessInVarsAndGroup( tsid, actId, vars );
+ 
+    		/*
+    		 * 添加节点操作名称
+    		 */
+    		updateOprateNameS( piid, tsid, operateName );
+    		
     		return true;
     	}else {
     		logger.info( "---流程跳转，流程变量vars不包含actId：-------" + actIdObj );
@@ -932,7 +987,7 @@ public class ActivityS implements ActivitySI{
      * @return: void        
      */ 
     @Override
-    public void transferProcessNoVars( String tsid, String actId ) {
+    public void transferProcessNoVars( String tsid, String actId, String userName ) {
 		/*
 		 * 当前节点、目标节点
 		 */
@@ -950,6 +1005,9 @@ public class ActivityS implements ActivitySI{
 		TransitionImpl newTransition = startAct.createOutgoingTransition(); 
 		//设置新流向
 		newTransition.setDestination( targetAct ); 
+		
+		//拾取任务
+		taskService.claim( tsid, userName );  
 		
 		/*
 		 * 完成转向
@@ -971,9 +1029,19 @@ public class ActivityS implements ActivitySI{
      * @return: String        
      */  
     @Override
-    public String endProcessByPiidInComment( String piid, String comment ) {
+    public String endProcessByPiidInComment( String piid, String comment, String userName, String operateName ) {
+    	if( StringUtils.isBlank( userName ) ) {
+			logger.info( "---S--------任务userName为null或空-------------" );
+			return null;
+		}	
+    	
     	if( StringUtils.isBlank( piid ) ) {
 			logger.info( "---S--------任务piid为null或空-------------" );
+			return null;
+		}	
+    	
+    	if( StringUtils.isBlank( operateName ) ) {
+			logger.info( "---S--------任务operateName为null或空-------------" );
 			return null;
 		}	
     	
@@ -983,15 +1051,20 @@ public class ActivityS implements ActivitySI{
 			return null;
 		}	
     	
-    	String endProcessByTsid = endProcessByTsidInComment( tsid, comment  );
-    	logger.info( "---S--------任务piid为null或空-------------" );
+    	String endProcessByTsid = endProcessByTsidInComment( tsid, comment, userName  );
     	if( StringUtils.isBlank( endProcessByTsid ) ) {
 			logger.info( "---S--------闭环流程失败-------------" );
 			return null;
 		}else {
+	    	/*
+	    	 * 保存操作名称
+	    	 */
+			updateOprateNameS( piid, tsid, operateName );
+			
 			logger.info( "---S--------闭环流程成功-------------" );
 			return endProcessByTsid;
 		}
+    	
     }
     
     /**   
@@ -1001,41 +1074,41 @@ public class ActivityS implements ActivitySI{
      */  
     @Override
     public String endProcessByTsid( String tsid ) {
-    	if( StringUtils.isBlank( tsid ) ) {
-			logger.info( "---S--------任务tsid为null-------------" );
+//    	if( StringUtils.isBlank( tsid ) ) {
+//			logger.info( "---S--------任务tsid为null-------------" );
+//			return null;
+//		}	
+//    	
+//		/*
+//		 * 获取流程的end节点
+//		 */
+//    	ActivityImpl actiImpl;
+//    	try {
+//			actiImpl = getEndNode( tsid );
+//			logger.info( "---S--------end节点为-------------" + actiImpl );
+//			if( actiImpl == null ) {
+//				return null;
+//			}
+//    	} catch (Exception e) {
+//			logger.info( "--S---------获取流程的end节点失败----" );
+//			return null;
+//		}
+//		
+//		/*
+//		 * 流程跳转
+//		 */
+//		try {
+//			transferProcessNoVars( tsid, actiImpl.getId() );
+//		} catch (Exception e) {
+//			logger.info( "--S---------流程转向失败----" );
 			return null;
-		}	
-    	
-		/*
-		 * 获取流程的end节点
-		 */
-    	ActivityImpl actiImpl;
-    	try {
-			actiImpl = getEndNode( tsid );
-			logger.info( "---S--------end节点为-------------" + actiImpl );
-			if( actiImpl == null ) {
-				return null;
-			}
-    	} catch (Exception e) {
-			logger.info( "--S---------获取流程的end节点失败----" );
-			return null;
-		}
-		
-		/*
-		 * 流程跳转
-		 */
-		try {
-			transferProcessNoVars( tsid, actiImpl.getId() );
-		} catch (Exception e) {
-			logger.info( "--S---------流程转向失败----" );
-			return null;
-		}
-				
-		/*
-		 * 完成流程
-		 */
-		taskService.complete( tsid );
-		return "终止流程成功";		
+//		}
+//				
+//		/*
+//		 * 完成流程
+//		 */
+//		taskService.complete( tsid );
+//		return "终止流程成功";		
 	}
     
     /**   
@@ -1044,7 +1117,7 @@ public class ActivityS implements ActivitySI{
      * @return: String        
      */  
     @Override
-    public String endProcessByTsidInComment( String tsid, String comment ) {
+    public String endProcessByTsidInComment( String tsid, String comment, String userName ) {
     	if( StringUtils.isBlank( tsid ) ) {
 			logger.info( "---S--------任务tsid为null-------------" );
 			return null;
@@ -1068,7 +1141,7 @@ public class ActivityS implements ActivitySI{
     	/*
     	 * 增加备注信息
     	 */
-    	boolean b = saveCommentByTsid( tsid, comment );
+    	boolean b = saveCommentByTsid( tsid, comment);
     	if( b ) {
     		logger.info( "---执行回退上一个节点，保存备注信息成功---------" );
     	}else {
@@ -1080,7 +1153,7 @@ public class ActivityS implements ActivitySI{
 		 */
 		try {
 //			transferProcessNoVars( tsid, actiImpl.getId() );
-			transferProcessNoVars( tsid, "end" );
+			transferProcessNoVars( tsid, "end" , userName );
 		} catch (Exception e) {
 			logger.info( "--S---------流程转向失败----" );
 			return null;
@@ -1318,6 +1391,15 @@ public class ActivityS implements ActivitySI{
     			logger.info( "---获取当前任务节点流程变量area的areaValueStr:---------" + areaValueStr ); 
     			taskService.setVariableLocal( tsid, "area", areaValueStr );
     		}  	
+    		
+    		/*
+    		 * 获取操作名称
+    		 */
+    		String  operateName = "";
+    		Object operateNameObj = map.get( "operateName" );
+    		logger.info( "---操作名称---------" + operateNameObj );
+    		if(operateName != null ) operateName = operateNameObj.toString().trim();
+    		map.remove( "operateName" );
 
     		/*
     		 * 增加备注信息
@@ -1334,6 +1416,12 @@ public class ActivityS implements ActivitySI{
 			 * 跳转
 			 */
     		transferProcessInVarsAndGroup( tsid, beforeTaskId, map );
+    		
+    		/*
+	    	 * 保存操作名称
+	    	 */
+			updateOprateNameS( piid, tsid, operateName );
+			
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1711,7 +1799,10 @@ public class ActivityS implements ActivitySI{
 							Object reportTimeObj = firstTisTaskNode.getCreateTime();
 							logger.info( "---------问题上报时间 ：------------" + reportTimeObj );
 							if( reportTimeObj != null ) {
-								String reportTime = reportTimeObj.toString();
+								Date date = (Date) reportTimeObj;
+//								String reportTime = reportTimeObj.toString();
+								SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss");
+								String reportTime = sdf.format(date);
 								todoTask.setReporttime( reportTime );
 								logger.info( "---------问题上报时间 获取成功：------------" + reportTime );
 							}	
@@ -1880,4 +1971,84 @@ public class ActivityS implements ActivitySI{
 		return users;
 	}
 
+    /**   
+     * @Title: findAllHisActsBypiid   
+     * @Description: 根据任务piid,查询当前流程实例的所有任务节点（包括完成和未完成任务的候选执行人,不包括分支节点）    
+     * @return: List<HistoryAct>        
+     */  
+    @Override
+    public List<HistoryAct> findAllHisActsBypiid( String piid ){
+    	logger.info( "--S-------根据当前任务id，查询当前任务潜在的所有执行人  -------------" );
+    	if( StringUtils.isBlank( piid ) ) {
+			logger.info( "---S--------piid为null-------------" );
+			return null;
+		}
+    	
+    	List<HistoryAct> hisActs = new ArrayList<HistoryAct>();
+    	try {
+    		//查询所有节点
+    		List<HistoryAct> oldHisActs = acitivityHistoryActS.findAllHisActsBypiid( piid );
+    		if( oldHisActs == null || oldHisActs.size() < 1 ) {
+    			logger.info( "---S--------全部act节点为null或空-------------" );
+    			return null;
+    		}
+    		logger.info( "---S--------全部act节点为-------------" + oldHisActs.toString() );
+    		
+    		//去掉分支节点
+    		String flag = "1";//判断最新节点有无执行人
+    		int i= 0;
+    		int s = oldHisActs.size();
+    		int s1 = oldHisActs.size();
+    		for( HistoryAct h : oldHisActs ) {
+    			i++;
+    			if( i == s  ) {
+    				if( h.getEND_TIME_() == null ) {
+    					flag = null;
+    				}
+    			}
+    			String act_TYPE_ = h.getACT_TYPE_();
+    			if(  act_TYPE_ != null  ) {
+    				if( act_TYPE_.contains( "exclusiveGateway") || act_TYPE_.contains( "startEvent")  || act_TYPE_.contains( "endEvent") ) {
+    					s1 --;
+    					continue;
+    				}		
+    			}
+    			hisActs.add( h );   			
+    		}
+    		if( hisActs == null || hisActs.size() < 1 ) {
+    			logger.info( "---S--------全部task节点为null或空-------------" );
+    			return null;
+    		}
+    		logger.info( "---S--------全部task节点为-------------" + hisActs.toString() );
+    		
+    		//查看问题是否完成，若为完成，则查找最后候选执行人
+    		String candidateStr = null;
+    		if( flag == null ) {//流程是未完成的状态
+    			List<cn.soa.entity.activity.IdentityLink> candidates = acitivityIdentityS.findCandidateByPiid( piid );
+    			for( cn.soa.entity.activity.IdentityLink id : candidates ) {
+    				candidateStr = candidateStr == null ? id.getUSER_ID_():candidateStr + "," + id.getUSER_ID_();
+    			}
+    			logger.info( "---S--------最后一个节点的执行人-------------" + candidateStr );
+    			hisActs.get( s1 - 1 ).setASSIGNEE_( candidateStr );
+    			return hisActs;
+    		}
+    		
+    		return hisActs;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+    }
+    
+    /**   
+     * @Title: updateOprateNameS   
+     * @Description: 保存操作名称   
+     * @return: void        
+     */  
+    public void updateOprateNameS( String piid, String tsid, String operateName) {
+    	 int num = acitivityHistoryActS.updateOprateNameS( piid, tsid, operateName );
+		String loginfo = num > 0?"成功":"失败";
+		logger.info( "------添加节点操作名称------" + loginfo );
+    }
+   
 }

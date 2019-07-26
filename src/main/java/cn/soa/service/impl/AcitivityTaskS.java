@@ -80,10 +80,31 @@ public class AcitivityTaskS implements AcitivityTaskSI{
 			logger.info( "--S----------获取当前个人任务报错-------------" );
 			e.printStackTrace();
 			return null;
-		}
-
-	
+		}	
 
 	}
+
+	public String getActiveTsidByPiid( String piid ) {
+    	if( StringUtils.isBlank( piid )) {
+    		logger.info( "------piid为null--------" );
+    		return null;
+    	}
+    	try {
+    		Task task = taskService
+    				.createTaskQuery()
+    				.processInstanceId(piid)
+    				.active()
+    				.singleResult();
+    		if( task == null ) {
+    			logger.info( "------未正确找到task对象-------" );
+    			return null;
+    		}   		
+    		return task.getId();    		
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+    }
+
 
 }
