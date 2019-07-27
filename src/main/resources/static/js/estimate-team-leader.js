@@ -223,10 +223,10 @@ function workPlan(obj,usernames){
 		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
-			"comment": $("#comment").val(),     //节点的处理信息
-			"receivor":usernames,
+			"comment": $("#comment").val()     //节点的处理信息
+			,"receivor":usernames
 			,"operateName":"作业安排"
-			"userName":$.cookie("name").replace(/"/g,"")
+			,"userName":$.cookie("name").replace(/"/g,"")
 
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"

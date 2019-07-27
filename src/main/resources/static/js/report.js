@@ -575,8 +575,8 @@ layui.use(['jquery','form','upload','layer','layedit'], function(){
 		        ,id: 'problemmass'
 		        ,size: '51200'
 		        ,btn: ['上&nbsp;&nbsp;报','关&nbsp;&nbsp;闭']
-		  		,offset: ['45px','100px']
-		  		,area: ['610px','315px']
+		  		,offset: ['50px','100px']
+		  		,area: ['650px','335px']
 		        ,content:$("#problemMass")
 		        ,yes: function(index, layero){
 		        	if($("#problemmass").find("span.layui-upload-choose").length == 1){

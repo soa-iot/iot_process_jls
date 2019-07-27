@@ -227,7 +227,7 @@ function modifyEstimated(msge) {
 	}
 	
 	if ($("#sele").val() == "指定日期") {
-		dateEstimated["rectificationperiod"] = period.replace(/-/g, "/");
+		dateEstimated["rectificationperiod"] = period;
 	}
 	
 

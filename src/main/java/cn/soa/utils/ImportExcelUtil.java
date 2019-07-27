@@ -164,7 +164,6 @@ public class ImportExcelUtil {
 					}else{
 						userList = cellValue.split("，");
 					}
-					log.info("reportS:"+reportS+" userList: "+userList);
 					String result = reportS.verifyApplyPeople(userList);
 					if(result != null) {
 						throw new RuntimeException("第"+(i+1)+"行："+result);
@@ -178,7 +177,7 @@ public class ImportExcelUtil {
 				}
 				
 				if(j == 4) {
-					if(!validateRfid(cellValue)) {
+					if(!cellValue.contains("其他") && !validateRfid(cellValue)) {
 						throw new RuntimeException("第"+(i+1)+"行设备位号填写不正确");
 					}
 				}
