@@ -93,6 +93,17 @@ public class ReportC {
 	public ResultJson<List<Map<String ,Object>>> statisticalTaskProblempro(String beginTime,String endTime){
 		return new ResultJson<List<Map<String ,Object>>>(ResultJson.SUCCESS, null, problemInfoS.statisticalTaskProblempro(beginTime, endTime));
 	};
+	
+	/**   
+	 * @Title: problemTimeOverCountC   
+	 * @Description:  查看问题超期数量 
+	 * @return: ResultJson<List<Map<String,Object>>>        
+	 */  
+	@GetMapping("/problemTimeOverCount")
+	public ResultJson<List<Map<String ,Object>>> problemTimeOverCountC(String beginTime,String endTime){
+		return new ResultJson<List<Map<String ,Object>>>(ResultJson.SUCCESS, null, problemInfoS.findTimeStateS(beginTime, endTime));
+	};
+	
 	/**   
 	 * @Title: showUnsafeList   
 	 * @Description: 查询出所有不安全行为数据 
