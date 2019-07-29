@@ -19,7 +19,6 @@ layui.use('laydate', function(){
 	});
 });
 
-
 layui.use('laydate', function(){
 	var laydate = layui.laydate;
 	//常规用法
@@ -38,6 +37,26 @@ layui.use('laydate', function(){
 	});
 });
 
+/**
+ * 获取url地址的参数
+ */
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null) return $.trim(decodeURI(r[2])); return null;
+}
+
+//问题区域 areaName
+var areaName = GetQueryString("areaName");
+//是否整改 isFinish
+var isFinish = GetQueryString("isFinish");
+//是否超期 timeOver
+var timeOver = GetQueryString("timeOver");
+//开始时间 beginTime
+var beginTime = GetQueryString("beginTime");
+//结束时间 endTime
+var endTime = GetQueryString("endTime");
 
 //加载layui内置模块
 layui.use(['jquery','form','layer','table','excel'], function(){
@@ -111,6 +130,22 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			{fixed:'right',  title:'处理过程', minWidth:105, width:'15.7%', align:'center', toolbar:'#barBtn'} ]]  
 	});
 	
+	if(areaName != null && isFinish != null && beginTime != null && endTime != null){
+		problemTable.reload({
+    		url: '/iot_process/report/showproblembycondition'
+    	   ,page: {
+    		   curr: 1 //重新从第 1 页开始
+    	   }
+    	   ,where: {
+    			'welName': areaName,
+    			'startTime': beginTime,
+    			'endTime': endTime,
+    			'remarkthree':  timeOver, 
+    			'problemstate': isFinish
+    	   }
+    	})
+	}
+	
 	/**
 	 * 监听每一行工具事件
 	 */
@@ -126,7 +161,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    	id: obj.event+1,
 	    	btn: ['确认'],
 	    	offset: '100px',
-	    	area: ['50%','60%'],
+	    	area: ['60%','60%'],
 	        content: $('#div-process'),
 	        yes: function(index, layero){
 	            layer.close(index); //如果设定了yes回调，需进行手工关闭
@@ -152,6 +187,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 				if(data != null && data != '' && data.length != 0){
 					for(var i=0; i<data.length;i++){
 						data[i].duration_ = (data[i].duration_ <= 172800000)?'未超期':'超期';
+						data[i].start_TIME_ = data[i].start_TIME_.replace(/T/, ' ').substring(0, 19);
 					}
 				}
 				
@@ -163,11 +199,11 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 				}
 			}
 			,cols: [[ //表头
-				{field: 'assignee_', title: '处理人', width:'35%',fixed: 'left'}
-				,{field: 'act_NAME_', title: '处理节点', width:'30%'}
-				,{field: 'duration_', title: '是否超期', width:'30%'}
-				,{field: 'tenant_ID_', title: '操作名称', width:'30%'}
-				,{field: 'start_TIME_', title: '时间', width:'34.5%',fixed: 'right'} 
+				{field: 'assignee_', title: '处理人', width:'23%',fixed: 'left'}
+				,{field: 'act_NAME_', title: '处理节点', width:'20%'}
+				,{field: 'duration_', title: '是否超期', width:'15%'}
+				,{field: 'tenant_ID_', title: '操作名称', width:'17%'}
+				,{field: 'start_TIME_', title: '时间', width:'24.9%',fixed: 'right'} 
 				]]
 		});
 	}
@@ -333,11 +369,13 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	      case 'querydata':
 	    	console.log('querydata');
 	    	isreload = true;
+	    	piids = '';
 	    	reloadTable(null, null, null);
 	        break;
 	      case 'querydata-all':
 	    	  console.log('querydata-all');
 	    	  isreload = true;
+	    	  piids = '';
 	    	  problemTable.reload({
 	      		url: '/iot_process/report/showproblembycondition'
 	      	   ,page: {
