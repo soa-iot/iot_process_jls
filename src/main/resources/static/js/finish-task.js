@@ -56,7 +56,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        	}
 		        } 
 		        ,error:function(){
-		        	layer.msg("完成作业提交失败",{icon: 2, time:2000, offset: '100px'});
+		        	layer.msg("完成作业提交失败， 请检查网络是否正常",{icon: 2, time:2000, offset: '100px'});
 		        }	
 		   });
 	}
@@ -112,8 +112,10 @@ layui.use(['form', 'jquery','upload','layer'], function(){
           //上传完毕后的，回调函数
          , done: function (res, index, upload) {
         	 if(res.state == 0){
-				  imgCount--;
-				  delete this.files[index];  //删除上传成功的文件
+        		 if(imgCount != 0){
+        			 imgCount--; 
+        		 }
+				 delete this.files[index];  //删除上传成功的文件
 			  }else{
 				layer.closeAll('loading');
 			  }

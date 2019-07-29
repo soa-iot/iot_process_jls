@@ -19,7 +19,6 @@ layui.use('laydate', function(){
 	});
 });
 
-
 layui.use('laydate', function(){
 	var laydate = layui.laydate;
 	//常规用法
@@ -38,6 +37,26 @@ layui.use('laydate', function(){
 	});
 });
 
+/**
+ * 获取url地址的参数
+ */
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null) return $.trim(decodeURI(r[2])); return null;
+}
+
+//问题区域 areaName
+var areaName = GetQueryString("areaName");
+//是否整改 isFinish
+var isFinish = GetQueryString("isFinish");
+//是否超期 timeOver
+var timeOver = GetQueryString("timeOver");
+//开始时间 beginTime
+var beginTime = GetQueryString("beginTime");
+//结束时间 endTime
+var endTime = GetQueryString("endTime");
 
 //加载layui内置模块
 layui.use(['jquery','form','layer','table','excel'], function(){
@@ -110,6 +129,22 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			{field:'piid', title:'流程ID', width:'8%', sort:false, hide:true},
 			{fixed:'right',  title:'处理过程', minWidth:105, width:'15.7%', align:'center', toolbar:'#barBtn'} ]]  
 	});
+	
+	if(areaName != null && isFinish != null && beginTime != null && endTime != null){
+		problemTable.reload({
+    		url: '/iot_process/report/showproblembycondition'
+    	   ,page: {
+    		   curr: 1 //重新从第 1 页开始
+    	   }
+    	   ,where: {
+    			'welName': areaName,
+    			'startTime': beginTime,
+    			'endTime': endTime,
+    			'remarkthree':  timeOver, 
+    			'problemstate': isFinish
+    	   }
+    	})
+	}
 	
 	/**
 	 * 监听每一行工具事件
