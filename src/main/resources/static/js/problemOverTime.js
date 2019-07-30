@@ -227,7 +227,7 @@
 						      ,{field:'sb-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'sb_check'}
 						      ,{field:'zh-total', title:'总量'}
 						      ,{field:'zh-finished', title:'未超期',minWidth:75}
-						      ,{field:'zh-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'zc_check'}
+						      ,{field:'zh-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'zh_check'}
 						      ,{field:'cw-total', title:'总量'}
 						      ,{field:'cw-finished', title:'未超期',minWidth:75}
 						      ,{field:'cw-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'cw_check'}
@@ -370,8 +370,8 @@
 				layer.open({
 					  type: 2,
 					  content: '/iot_process/html/report-trace.html?areaName=' 
-						  + encodeURLComponent(areaName) 
-						  + '&isFinish=Unfinished&timeOver=' + encodeURLComponent('超期') 
+						  + encodeURIComponent(areaName) 
+						  + '&isFinish=UNFINISHED&timeOver=' + encodeURIComponent('超期') 
 						  + '&beginTime=' + $('#startTime').val() 
 						  + '&endTime='+ $('#endTime').val()
 					  , area: ['90%', '90%']
