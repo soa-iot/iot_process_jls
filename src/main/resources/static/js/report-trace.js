@@ -47,7 +47,7 @@ function GetQueryString(name)
      if(r!=null) return $.trim(decodeURI(r[2])); return null;
 }
 
-//问题区域 areaName
+//部门 areaName
 var areaName = GetQueryString("areaName");
 //是否整改 isFinish
 var isFinish = GetQueryString("isFinish");
@@ -137,7 +137,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
     		   curr: 1 //重新从第 1 页开始
     	   }
     	   ,where: {
-    			'welName': areaName,
+    			'problemtype': areaName,
     			'startTime': beginTime,
     			'endTime': endTime,
     			'remarkthree':  timeOver, 
