@@ -32,7 +32,7 @@
 				    	bottom:2},
 				    series : [
 				        {
-				            name: '问题完成率',
+				            name: '超期率',
 				            type: 'gauge',
 				            z: 3,
 				            min: 0,
@@ -101,7 +101,7 @@
 				                color: '#eee',
 				                rich: {}
 				            },
-				            data:[{value: 100, name: '问题完成率'}]
+				            data:[{value: 100, name: '超期率'}]
 				        }
 				       
 				    ]
@@ -122,7 +122,7 @@
 				        }
 				    },
 				    legend: {
-				        data: ['总量', '已整改', '未整改'],
+				        data: ['总量', '未超期', '超期'],
 //				        textStyle: {
 //				            color: '2D547B'
 //				        }
@@ -161,7 +161,7 @@
 				        }
 				       
 				    }, {
-				        name: '已整改',
+				        name: '未超期',
 				        type: 'bar',
 				        barWidth: 10,
 				        itemStyle: {
@@ -178,7 +178,7 @@
 				        }
 				      
 				    }, {
-				        name: '未整改',
+				        name: '超期',
 				        type: 'bar',
 				        barWidth: 10,
 				        itemStyle: {
@@ -211,26 +211,26 @@
 					      ,{ title:'财务办',colspan:3,align:'center'}
 					    ],[
 						      {field:'jc-total', title:'总量'}
-						      ,{field:'jc-finished', title:'已整改',minWidth:75}
-						      ,{field:'jc-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'jh_check'}
+						      ,{field:'jc-finished', title:'未超期',minWidth:75}
+						      ,{field:'jc-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'jh_check'}
 						      ,{field:'wx-total', title:'总量'}
-						      ,{field:'wx-finished', title:'已整改',minWidth:75}
-						      ,{field:'wx-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'wx_check'}
+						      ,{field:'wx-finished', title:'未超期',minWidth:75}
+						      ,{field:'wx-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'wx_check'}
 						      ,{field:'hse-total', title:'总量'}
-						      ,{field:'hse-finished', title:'已整改',minWidth:75}
-						      ,{field:'hse-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'hse_check'}
+						      ,{field:'hse-finished', title:'未超期',minWidth:75}
+						      ,{field:'hse-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'hse_check'}
 						      ,{field:'sc-total', title:'总量'}
-						      ,{field:'sc-finished', title:'已整改',minWidth:75}
-						      ,{field:'sc-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'sc_check'}
+						      ,{field:'sc-finished', title:'未超期',minWidth:75}
+						      ,{field:'sc-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'sc_check'}
 						      ,{field:'sb-total', title:'总量'}
-						      ,{field:'sb-finished', title:'已整改',minWidth:75}
-						      ,{field:'sb-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'sb_check'}
+						      ,{field:'sb-finished', title:'未超期',minWidth:75}
+						      ,{field:'sb-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'sb_check'}
 						      ,{field:'zh-total', title:'总量'}
-						      ,{field:'zh-finished', title:'已整改',minWidth:75}
-						      ,{field:'zh-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'zc_check'}
+						      ,{field:'zh-finished', title:'未超期',minWidth:75}
+						      ,{field:'zh-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'zc_check'}
 						      ,{field:'cw-total', title:'总量'}
-						      ,{field:'cw-finished', title:'已整改',minWidth:75}
-						      ,{field:'cw-unfinished', title:'未整改',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'cw_check'}
+						      ,{field:'cw-finished', title:'未超期',minWidth:75}
+						      ,{field:'cw-unfinished', title:'超期',minWidth:75, style:'cursor: pointer;background-color: #5FB878; color: #fff;',event: 'cw_check'}
 					    ]]
 						, done : function( res , curr , count ){
 							$( '#problemReport' ).next( '.layui-form' )
@@ -241,20 +241,19 @@
 			//统计问题情况
 			var tableData;
 			function changeTableDate(para,area){
-				if(para.PROBLEMSTATE=='UNFINISHED'){
+				if(para.REMARKTHREE=='超期'){
 					tableData[0][area+"-unfinished"]+=parseInt(para.COUNT);
 				}else{
 					tableData[0][area+"-finished"]+=parseInt(para.COUNT);
 				}
 				tableData[0][area+"-total"]+=parseInt(para.COUNT);
-				
 			}
 			//设置柱状图数据
 			var xtotal;
 			var xfinished;
 			var xunfinished;
 			function setBarData(n,i){
-				if(n.PROBLEMSTATE=="FINISHED"){
+				if(n.REMARKTHREE=="未超期"){
 					xfinished[i]=n.COUNT;
 				}else{
 					xunfinished[i]=n.COUNT
@@ -263,7 +262,7 @@
 			};
 			$("#generateTestData").click(function(){
 				var total=0, finished=0;
-				$.getJSON('/iot_process/report/problemCount',{'beginTime':$('#startTime').val(),'endTime':$('#endTime').val()},function(aj){
+				$.getJSON('/iot_process/report/problemTimeOverCount',{'beginTime':$('#startTime').val(),'endTime':$('#endTime').val()},function(aj){
 					if(aj.state==0){
 						//初始化基本数据
 						tableData=[{
@@ -289,8 +288,6 @@
 							,"sc-finished": 0
 							,"sc-unfinished": 0
 						  }];
-						delete tableData[0].LAY_TABLE_INDEX;
-						console.log(tableData);
 						 xAxisdata=["净化工段","维修工段","HSE办公室","财务经营办公室","综合办","设备办","生产办"];
 						 xtotal=[0,0,0,0,0,0,0];
 						 xfinished=[0,0,0,0,0,0,0];
@@ -299,7 +296,7 @@
 						//根据获取的数据进行分析
 						$.each(useData,function(i,n){
 							total+=parseInt(n.COUNT);
-							if(n.PROBLEMSTATE=='FINISHED'){
+							if(n.REMARKTHREE=='未超期'){
 								finished+=parseInt(n.COUNT);
 							};
 						
@@ -337,7 +334,7 @@
 						if(aj.data.length==0){
 							total=1;
 						}
-						var value=(finished/total*100).toFixed(2);
+						var value=100 - (finished/total*100).toFixed(2);
 						option.series[0].data[0].value=value;
 						Baroption.xAxis.data=xAxisdata;
 						Baroption.series[0].data=xtotal;
@@ -373,10 +370,11 @@
 				layer.open({
 					  type: 2,
 					  content: '/iot_process/html/report-trace.html?areaName=' 
-						  + encodeURIComponent(areaName) + '&isFinish=Unfinished'
+						  + encodeURLComponent(areaName) 
+						  + '&isFinish=Unfinished&timeOver=' + encodeURLComponent('超期') 
 						  + '&beginTime=' + $('#startTime').val() 
 						  + '&endTime='+ $('#endTime').val()
-					  ,area: ['90%', '90%']
+					  , area: ['90%', '90%']
 						,anim: 5
 					});
 			}

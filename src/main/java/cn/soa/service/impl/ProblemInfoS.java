@@ -65,6 +65,21 @@ public class ProblemInfoS implements ProblemInfoSI {
 		
 		
 	};
+	
+	/**   
+	 * <p>Title: statisticalTaskProblempro</p>   
+	 * <p>查看问题超期数量  </p>  
+	 * @param beginTime
+	 * @param endTime
+	 * @return   
+	 * @see cn.soa.service.inter.ProblemInfoSI#statisticalTaskProblempro(java.lang.String, java.lang.String)   
+	 */ 
+	@Override
+	public List<Map<String ,Object>> findTimeStateS(String beginTime,String endTime){
+		return problemInfoMapper.findTimeState(beginTime, endTime);
+		
+		
+	};
 	/**
 	 * 根据流程标识字段查询问题评估信息
 	 * 

@@ -24,6 +24,14 @@ public interface ProblemInfoMapper {
 	 * @return 问题评估信息实体
 	 */
 	List<Map<String ,Object>> statisticalTaskProblempro(@Param("beginTime")String beginTime,@Param("endTime")String endTime);
+	
+	/**   
+	 * @Title: statisticalTaskProblempro   
+	 * @Description: 查看问题超期数量  
+	 * @return: List<Map<String,Object>>        
+	 */  
+	List<Map<String ,Object>> findTimeState(@Param("beginTime")String beginTime,@Param("endTime")String endTime);
+	
 	/**
 	 * lixuefeng 新增问题查询功能
 	 * 根据流程标识字段查询问题评估信息

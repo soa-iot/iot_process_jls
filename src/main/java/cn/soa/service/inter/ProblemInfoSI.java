@@ -91,5 +91,11 @@ public interface ProblemInfoSI {
 	 * @return: boolean        
 	 */  
 	boolean modifyProblemState();
+	/**   
+	 * @Title: findTimeStateS   
+	 * @Description: 查看问题超期数量   
+	 * @return: List<Map<String,Object>>        
+	 */  
+	List<Map<String, Object>> findTimeStateS(String beginTime, String endTime);
 	
 }
