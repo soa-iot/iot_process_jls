@@ -130,7 +130,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			{fixed:'right',  title:'处理过程', minWidth:105, width:'15.7%', align:'center', toolbar:'#barBtn'} ]]  
 	});
 	
-	if(areaName != null && isFinish != null && beginTime != null && endTime != null){
+	if(areaName != null && beginTime != null && endTime != null){
 		problemTable.reload({
     		url: '/iot_process/report/showproblembycondition'
     	   ,page: {
@@ -188,6 +188,13 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 					for(var i=0; i<data.length;i++){
 						data[i].duration_ = (data[i].duration_ <= 172800000)?'未超期':'超期';
 						data[i].start_TIME_ = data[i].start_TIME_.replace(/T/, ' ').substring(0, 19);
+						if(data[i].end_TIME_ == null){
+							var startTime = new Date(Date.parse(data[i].start_TIME_.replace(/-/g, "/"))).getTime();
+							var currentTime = new Date().getTime();
+							if((currentTime - startTime) > 172800000){
+								data[i].duration_ = '超期';
+							}
+						}
 					}
 				}
 				
@@ -469,4 +476,5 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		 console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
 		 reloadTable(obj.field, obj.type, null);
 	 });
+	 
 })

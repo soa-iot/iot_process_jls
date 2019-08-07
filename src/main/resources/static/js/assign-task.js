@@ -56,6 +56,79 @@ layui.use(['tree', 'layer', 'form'], function() {
 	}
 	
 	/**
+	 * 回退到上一个节点
+	 */
+	form.on('submit(back_previous)', function(data){
+		if(isempty()){
+			return false;
+		}
+		console.log(data.field)
+		$.ajax({
+			 async:false
+		     ,type: "PUT"
+		     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id
+		     ,data: {
+		     	"comment": data.field.comment  //处理信息
+		     	,"userName": resavepeople
+		     	,"operateName": "回退"
+		     }  
+		     ,contentType: "application/x-www-form-urlencoded"
+		     ,dataType: "json"
+		     ,success: function(jsonData){
+		     	//后端返回值： ResultJson<String>
+		    	 if(jsonData){
+		    		 layer.msg("回退成功",{icon:1, time: 2000, offset: '100px'}, function(){
+		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
+		    		 })
+		    	 }else{
+		    		 layer.msg("回退失败",{icon:2, offset: '100px'});
+		    	 }
+		     },
+		     error:function(){
+		    	 layer.msg("回退失败，请检查网络是否正常",{icon:2, offset: '100px'});
+		     }		       
+		});
+		
+		return false;
+	});
+	
+	/**
+	 * 闭环流程
+	 */
+	form.on('submit(complete)', function(data){
+		if(isempty()){
+			return false;
+		}
+		$.ajax({
+			 async: false
+		     ,type: "PUT"
+		     ,url: '/iot_process/process/nodes/end/piid/'+piidp   //piid为流程实例id
+		     ,data: {
+		     	"comment": data.field.comment  //处理信息
+		     	,"operateName": "闭环"
+		     }  
+		     ,contentType: "application/x-www-form-urlencoded"
+		     ,dataType: "json"
+		     ,success: function(jsonData){
+		     	//后端返回值： ResultJson<String>
+		    	 if(jsonData){
+		    		 updateEstimated(data);
+		    		 layer.msg("闭环处理成功",{icon:1, time: 2000, offset: '100px'}, function(){
+		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
+		    		 })
+		    	 }else{
+		    		 layer.msg("闭环处理失败",{icon:2, offset: '100px'});
+		    	 }
+		     },
+		     error:function(){
+		    	 layer.msg("闭环处理失败，请检查网络是否正常",{icon:2, offset: '100px'});
+		     }		       
+		});
+		
+		return false;
+	});
+	
+	/**
 	 * 校验表单是否为空, 为空则不弹出层
 	 */
 	form.on('submit(arrange)', function(data){
