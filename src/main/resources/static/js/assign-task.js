@@ -112,7 +112,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		     ,dataType: "json"
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<String>
-		    	 if(jsonData){
+		    	 if(jsonData.state==0){
 		    		 //updateEstimated(data);
 		    		 layer.msg("闭环处理成功",{icon:1, time: 2000, offset: '100px'}, function(){
 		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
