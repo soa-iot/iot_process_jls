@@ -134,17 +134,18 @@ layui.use(['tree', 'layer', 'form'], function() {
 		$.ajax({
 			 async: false
 		     ,type: "PUT"
-		     ,url: '/iot_process/process/nodes/end/piid/'+piidp   //piid为流程实例id
+		     ,url: '/iot_process/process/nodes/end/group/piid/'+piidp   //piid为流程实例id
 		     ,data: {
 		     	"comment": data.field.comment  //处理信息
-		     	,"operateName": "闭环"
+		     	,"userName": resavepeople
+		     	,"operateName": "闭环处理"
 		     }  
 		     ,contentType: "application/x-www-form-urlencoded"
 		     ,dataType: "json"
 		     ,success: function(jsonData){
 		     	//后端返回值： ResultJson<String>
 		    	 if(jsonData){
-		    		 updateEstimated(data);
+		    		 //updateEstimated(data);
 		    		 layer.msg("闭环处理成功",{icon:1, time: 2000, offset: '100px'}, function(){
 		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
 		    		 })
