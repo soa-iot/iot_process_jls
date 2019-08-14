@@ -16,7 +16,8 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 			  return;
 		  }
 		  if($('#imgZmList').children().length == 0){
-			  layer.msg("现场施工图必须上传", {icon: 7, offset: '100px'});
+			  //layer.msg("现场施工图必须上传", {icon: 7, offset: '100px'});
+			  finishTask();
 			  return;
 		  }
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
