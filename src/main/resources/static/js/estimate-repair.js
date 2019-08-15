@@ -84,6 +84,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 				if(assignUsers.length < 1){
 					layer.msg("至少选择一名人员", {icon:7, offset: '100px'});
 				}else{
+					$(".layui-layer-btn0").off('click');
 					workAssignment(comment, arrangor, resavepeople, data);
 					layer.close(index);
 				}
@@ -133,6 +134,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		}
 		
 		layer.confirm("是否确定闭环？",{offset: '100px'}, function(){
+			$(".layui-layer-btn0").off('click');
 			$.ajax({
 				 async: false
 			     ,type: "PUT"
@@ -173,6 +175,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		}
 		console.log(data.field)
 		layer.confirm("是否确定回退？",{offset: '100px'}, function(){
+			$(".layui-layer-btn0").off('click');
 			$.ajax({
 				 async:false
 			     ,type: "PUT"
@@ -250,6 +253,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 					})
 					
 					console.log("属地单位area: "+area);
+					$(".layui-layer-btn0").off('click');
 					out_coordinate();
 					updateEstimated(data);
 				}

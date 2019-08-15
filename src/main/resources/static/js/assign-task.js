@@ -64,6 +64,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 		}
 		console.log(data.field);
 		layer.confirm("是否确定回退？",{offset: '100px'}, function(){
+			$(".layui-layer-btn0").off('click');
 			$.ajax({
 				 async:false
 			     ,type: "PUT"
@@ -102,6 +103,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 			return false;
 		}
 		layer.confirm("是否确定闭环？",{offset: '100px'}, function(){
+			$(".layui-layer-btn0").off('click');
 			$.ajax({
 				 async: false
 			     ,type: "PUT"
@@ -154,6 +156,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 				var comment = $("#comment_assign").val();
 				var receivor = assignUsers.join(",");
 				console.log(receivor);
+				$(".layui-layer-btn0").off('click');
 				workAssignment(comment, receivor, resavepeople);
 				layer.close(index);
 		    }

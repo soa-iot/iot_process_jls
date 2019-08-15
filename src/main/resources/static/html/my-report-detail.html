@@ -19,7 +19,6 @@
     	</div>
 	    <table id="myReportDetail" class="layui-hide" lay-filter="myReportDetail"> </table>
 	</div>
-
 	<script type="text/html" id="toolbarBtn">
   	   <div class="layui-row">
 		<div>
@@ -28,7 +27,13 @@
 					<i class="layui-icon" id="uncount">0</i>
 				</button> 
 				项未整改
-				</div>
+			</div>
+			<div class="layui-col-xs6" id="layui-div-finish">
+				<button type="button" class="layui-btn layui-btn-radius layui-btn-normal layui-btn-sm" lay-event="finish">
+					<i class="layui-icon" id="count">0</i>
+				</button> 
+				项已整改
+			</div>
 		</div>
 		<div id="div-btn-toolbar" >
 			<button type="button" class="layui-btn layui-btn-sm" style="margin-left:10px" id="export" lay-event="export">

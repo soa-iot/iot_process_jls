@@ -6,7 +6,6 @@ layui.config({
 });
 //从cookie中获取当前登录用户
 var resavepeople = getCookie1("name").replace(/"/g,'');
-resavepeople = '苟';
 console.log("resavepeople="+resavepeople);
 if(resavepeople == null || resavepeople == ''){
 	resavepeople = '当前登录人为空';
@@ -63,8 +62,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		    ,limitName: 'limit' //每页数据量的参数名，默认：limit
 		},
 		where: {
-			'applypeople': resavepeople,
-			'problemstate': 'UNFINISHED'
+			'applypeople': resavepeople
 		},
 		parseData: function(res){ //res 即为原始返回的数据
 			var data = res.data     
@@ -96,16 +94,15 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		},
 		cols: [[{field:'id', title:'编号', width:'5%', sort:false, type:'numbers', fixed:'left', align:'center'},
 			{field:'applydate', title:'上报日期', width:'10%', sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
-			{field:'applypeople', title:'上报人', width:'7%', sort:true, align:'center'},
+			{field:'applypeople', title:'上报人', width:'8%', sort:true, align:'center'},
 			{field:'welName', title:'装置单元', width:'9%', sort:true, align:'center'},
 			{field:'problemclass', title:'问题类别', width:'9%', sort:true, align:'center'},
 			{field:'profession', title:'专业', width:'7%', sort:true, align:'center'},
-			{field:'depet', title:'部门', width:'8%', sort:true, align:'center'},
-			{field:'rectificationperiod', title:'整改日期', width:'8%', sort:true, align:'center'},
-			{field:'remarkthree', title:'是否超期', width:'8%', sort:true, align:'center'},
-			{field:'problemdescribe', title:'问题描述', width:'16%', sort:true, align:'center'},
 			{field:'problemstate', title:'问题状态', width:'7%', sort:true, align:'center'},
-			{field:'piid', title:'流程ID', width:'8%', sort:false, hide:true},
+			{field:'rectificationperiod', title:'整改日期', width:'8%', sort:true, align:'center'},
+			{field:'remarkthree', title:'是否超期', width:'7%', sort:true, align:'center'},
+			{field:'problemdescribe', title:'问题描述', width:'16%', sort:true, align:'center'},
+			{field:'piid', title:'流程ID',sort:false, hide:true},
 			{fixed:'right',  title:'处理过程', minWidth:105, width:'15.7%', align:'center', toolbar:'#barBtn'} ]]  
 	});
 
@@ -189,20 +186,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			type: "POST",
 			url: "/iot_process/report/showproblembycondition",
 			data: {
-				'welName': $("#welName").val(),
-    			'problemclass': $("#problemclass").val(),
-    			'profession': $("#profession").val(),
-    			'depet': $("#depet").val(),
-    			'problemdescribe': $("#problemdescribe").val(),
-    			'problemstate': $("#problemstate").val(),
-    			'startTime': $("#startdate").val(),
-    			'endTime': $("#enddate").val(),
-    			'applypeople': $("#applypeople").val(),
-    			'maintenanceman': $("#maintenanceman").val(),
-    			'dueDate': $("#dueDate").val(),
-    			'duedateRange': $("#duedateRange").val(),
-    			'remarkthree':  $("#remarkthree").val(),
-    			'piidArray': piids
+    			'applypeople': resavepeople
 			},
 			dataType: "json",
 			success: function(json){
@@ -294,7 +278,36 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	    	  console.log('export');
 	    	  exportExcel();
 	    	  break;
-
+	      case 'finish':
+	    	  console.log('finish');
+			   console.log("count="+count+" , uncount="+uncount);
+	    	  if(count != 0){
+		    	  problemTable.reload({
+		      		url: '/iot_process/report/showproblembycondition'
+		      	   ,page: {
+		      		   curr: 1 //重新从第 1 页开始
+		      	   }
+		      	   ,where: {
+		      			'problemstate': 'FINISHED',
+		      	   }
+		      	})
+	    	  }
+	        break;
+	      case 'unfinish':
+	    	  console.log('unfinish');
+			  console.log("count="+count+" , uncount="+uncount);
+	    	  if(uncount != 0){
+	    		  problemTable.reload({
+			      		url: '/iot_process/report/showproblembycondition'
+			      	   ,page: {
+			      		   curr: 1 //重新从第 1 页开始
+			      	   }
+			      	   ,where: {
+			      			'problemstate': 'UNFINISHED',
+			      	   }
+			      })  
+	    	  }
+		      break;
 	    };
 	  });
 	

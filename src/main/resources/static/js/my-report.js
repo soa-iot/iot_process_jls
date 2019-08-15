@@ -59,7 +59,6 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		},
 		where: {
 			'applypeople': resavepeople,
-			'problemstate': 'UNFINISHED',
 			'limit': 5
 		},
 		parseData: function(res){ //res 即为原始返回的数据
@@ -78,12 +77,13 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		      "data": data      //解析数据列表
 		    };
 		},
-		cols: [[{field:'id', title:'序号', width:'12%', sort:false, type:'numbers', fixed:'left', align:'center'},
-			{field:'applydate', title:'上报日期', width:'25%', sort:false, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
-			{field:'remarktwo', title:'当前节点', width:'20%', sort:false, align:'center'},
-			{field:'remarkthree', title:'是否超期', width:'20%', sort:false, align:'center'},
+		cols: [[{field:'id', title:'序号', width:'8%', sort:false, type:'numbers', align:'center'},
+			{field:'applydate', title:'上报日期', width:'17%', sort:false, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
+			{field:'remarktwo', title:'当前节点', width:'15%', sort:false, align:'center'},
+			{field:'remarkthree', title:'是否超期', width:'15%', sort:false, align:'center'},
+			{field:'problemdescribe', title:'问题描述', width:'29%', sort:false, align:'center'},
 			{field:'piid', title:'流程ID', sort:false, hide:true},
-			{fixed:'right',  title:'处理详情', minWidth:105, width:'22.9%', align:'center', toolbar:'#barBtn'} ]]  
+			{fixed:'right',  title:'处理详情', minWidth:105, width:'15.9%', align:'center', toolbar:'#barBtn'} ]]  
 	});
 	
 	/**
