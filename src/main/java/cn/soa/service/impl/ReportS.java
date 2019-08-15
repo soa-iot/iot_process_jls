@@ -260,7 +260,7 @@ public class ReportS implements ReportSI {
 		for(int i=0; i<list.size();i++) {
 			HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String,String>>(list.get(i), headers);
 			try {
-				ResultJson<String> json = restTemplate.postForObject("http://10.89.90.118:10238/iot_process/process/", request, ResultJson.class);
+				ResultJson<String> json = restTemplate.postForObject("http://10.89.90.118:10238/iot_process/process", request, ResultJson.class);
 				if(json == null || json.getState() == 1) {
 					log.error("----------第{}行数据问题上报失败", i+3);
 					errRecord.add(i+3);

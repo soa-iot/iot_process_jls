@@ -155,7 +155,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 				var receivor = assignUsers.join(",");
 				console.log(receivor);
 				workAssignment(comment, receivor, resavepeople);
-				//layer.closeAll();
+				layer.close(index);
 		    }
 		,success:function(){
 			assignUsers = [];
