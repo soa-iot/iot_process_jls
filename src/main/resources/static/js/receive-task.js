@@ -74,7 +74,7 @@ layui.use(['form', 'jquery','layer'], function(){
 			  tProblemRepId = json.data.tproblemRepId;
 			//表单初始赋值
 			form.val('receive-task', {
-			  "incident_sign": ((json.data.ticketNo == 1)?"事故事件":((json.data.ticketNo == 2)?"隐患事件":"普通事件"))    //事件/隐患标记
+			  "incident_sign": ((json.data.ticketNo == 1)?"事故事件":((json.data.ticketNo == 2)?"隐患":"一般问题"))    //事件/隐患标记
 			  ,"remark": json.data.remark            //整改日期
 			  ,"sdate": function(){
 				  if(json.data.rectificationperiod != null){
@@ -175,6 +175,7 @@ layui.use(['form', 'jquery','layer'], function(){
 			  return;
 		  }	
 		  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+		  $("#next_step").attr({"disabled":"disabled"});
 		  $.ajax({  
 			    async : false,
 		    	url : "/iot_process/process/nodes/next/group/piid/"+piid,   ///iot_process/estimates/problemdescribe
@@ -188,6 +189,7 @@ layui.use(['form', 'jquery','layer'], function(){
 		        contentType: "application/x-www-form-urlencoded",
 		        dataType : "json",  
 		        success: function(jsonData) {
+
 		        	if(jsonData.data == true){
 		        		$("#comment_receive").val("");
 		        		layer.msg("接收作业成功", {icon: 1, time: 2000, offset: '100px'}, function(){
@@ -196,9 +198,11 @@ layui.use(['form', 'jquery','layer'], function(){
 		        	}else{
 		        		layer.msg("接收作业失败",{icon: 2, offset: '100px'});
 		        	}
+		        	$("#next_step").removeAttr("disabled");
 		        } 
 		        ,error:function(){
 		        	layer.msg("接收作业失败,请检查网络是否正常",{icon: 2, offset: '100px'});
+		        	$("#next_step").removeAttr("disabled");
 		        }	
 		   });		  
 		  
@@ -213,6 +217,7 @@ layui.use(['form', 'jquery','layer'], function(){
 			return false;
 		}
 		console.log(data.field)
+		$("#back_previous").attr({"disabled":"disabled"});
 		$.ajax({
 			 async:false
 		     ,type: "PUT"
@@ -233,9 +238,11 @@ layui.use(['form', 'jquery','layer'], function(){
 		    	 }else{
 		    		 layer.msg("回退失败",{icon:2, offset: '100px'});
 		    	 }
+		    	 $("#back_previous").removeAttr("disabled");
 		     },
 		     error:function(){
 		    	 layer.msg("回退失败,请检查网络是否正常",{icon:2, offset: '100px'});
+		    	 $("#back_previous").removeAttr("disabled");
 		     }		       
 	  });
     })

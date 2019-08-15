@@ -84,6 +84,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 				if(assignUsers.length < 1){
 					layer.msg("至少选择一名人员", {icon:7, offset: '100px'});
 				}else{
+					$(".layui-layer-btn0").off('click');
 					workAssignment(comment, arrangor, resavepeople, data);
 					layer.close(index);
 				}
@@ -131,31 +132,36 @@ layui.use(['tree', 'layer', 'form'], function() {
 		if(isempty()){
 			return false;
 		}
-		$.ajax({
-			 async: false
-		     ,type: "PUT"
-		     ,url: '/iot_process/process/nodes/end/piid/'+piidp   //piid为流程实例id
-		     ,data: {
-		     	"comment": data.field.comment  //处理信息
-		     	,"operateName": "闭环"
-		     }  
-		     ,contentType: "application/x-www-form-urlencoded"
-		     ,dataType: "json"
-		     ,success: function(jsonData){
-		     	//后端返回值： ResultJson<String>
-		    	 if(jsonData){
-		    		 updateEstimated(data);
-		    		 layer.msg("闭环处理成功",{icon:1, time: 2000, offset: '100px'}, function(){
-		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
-		    		 })
-		    	 }else{
-		    		 layer.msg("闭环处理失败",{icon:2, offset: '100px'});
-		    	 }
-		     },
-		     error:function(){
-		    	 layer.msg("闭环处理失败，请检查网络是否正常",{icon:2, offset: '100px'});
-		     }		       
-		});
+		
+		layer.confirm("是否确定闭环？",{offset: '100px'}, function(){
+			$(".layui-layer-btn0").off('click');
+			$.ajax({
+				 async: false
+			     ,type: "PUT"
+			     ,url: '/iot_process/process/nodes/end/group/piid/'+piidp   //piid为流程实例id
+			     ,data: {
+			     	"comment": data.field.comment  //处理信息
+			     	,"userName": resavepeople
+			     	,"operateName": "闭环处理"
+			     }  
+			     ,contentType: "application/x-www-form-urlencoded"
+			     ,dataType: "json"
+			     ,success: function(jsonData){
+			     	//后端返回值： ResultJson<String>
+			    	 if(jsonData.state==0){
+			    		 //updateEstimated(data);
+			    		 layer.msg("闭环处理成功",{icon:1, time: 2000, offset: '100px'}, function(){
+			    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
+			    		 })
+			    	 }else{
+			    		 layer.msg("闭环处理失败",{icon:2, offset: '100px'});
+			    	 }
+			     },
+			     error:function(){
+			    	 layer.msg("闭环处理失败，请检查网络是否正常",{icon:2, offset: '100px'});
+			     }		       
+			});
+		})
 		
 		return false;
 	});
@@ -168,30 +174,33 @@ layui.use(['tree', 'layer', 'form'], function() {
 			return false;
 		}
 		console.log(data.field)
-		$.ajax({
-			 async:false
-		     ,type: "PUT"
-		     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id
-		     ,data: {
-		     	"comment": data.field.comment  //处理信息
-		     	,"userName": resavepeople
-		     	,"operateName": "回退"
-		     }  
-		     ,contentType: "application/x-www-form-urlencoded"
-		     ,dataType: "json"
-		     ,success: function(jsonData){
-		     	//后端返回值： ResultJson<String>
-		    	 if(jsonData){
-		    		 layer.msg("回退成功",{icon:1, time: 2000, offset: '100px'}, function(){
-		    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
-		    		 })
-		    	 }else{
-		    		 layer.msg("回退失败",{icon:2, offset: '100px'});
-		    	 }
-		     },
-		     error:function(){
-		    	 layer.msg("回退失败，请检查网络是否正常",{icon:2, offset: '100px'});
-		     }		       
+		layer.confirm("是否确定回退？",{offset: '100px'}, function(){
+			$(".layui-layer-btn0").off('click');
+			$.ajax({
+				 async:false
+			     ,type: "PUT"
+			     ,url: '/iot_process/process/nodes/before/group/piid/'+piidp   //piid为流程实例id
+			     ,data: {
+			     	"comment": data.field.comment  //处理信息
+			     	,"userName": resavepeople
+			     	,"operateName": "回退"
+			     }  
+			     ,contentType: "application/x-www-form-urlencoded"
+			     ,dataType: "json"
+			     ,success: function(jsonData){
+			     	//后端返回值： ResultJson<Boolean>
+			    	 if(jsonData){
+			    		 layer.msg("回退成功",{icon:1, time: 2000, offset: '100px'}, function(){
+			    			 top.location.href = "http://10.89.90.118:10239/CZ_PIOTMS/index.action";
+			    		 })
+			    	 }else{
+			    		 layer.msg("回退失败",{icon:2, offset: '100px'});
+			    	 }
+			     },
+			     error:function(){
+			    	 layer.msg("回退失败，请检查网络是否正常",{icon:2, offset: '100px'});
+			     }		       
+			});
 		});
 		
 		return false;
@@ -244,6 +253,7 @@ layui.use(['tree', 'layer', 'form'], function() {
 					})
 					
 					console.log("属地单位area: "+area);
+					$(".layui-layer-btn0").off('click');
 					out_coordinate();
 					updateEstimated(data);
 				}

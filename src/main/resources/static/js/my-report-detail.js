@@ -7,6 +7,9 @@ layui.config({
 //从cookie中获取当前登录用户
 var resavepeople = getCookie1("name").replace(/"/g,'');
 console.log("resavepeople="+resavepeople);
+if(resavepeople == null || resavepeople == ''){
+	resavepeople = '当前登录人为空';
+}
 /**
  * 日期插件
  */
@@ -15,24 +18,6 @@ layui.use('laydate', function(){
 	//常规用法
 	laydate.render({
 		elem: '#startdate'
-		,format: 'yyyy-MM-dd'
-	});
-});
-
-layui.use('laydate', function(){
-	var laydate = layui.laydate;
-	//常规用法
-	laydate.render({
-		elem: '#enddate'
-		,format: 'yyyy-MM-dd'
-	});
-});
-
-layui.use('laydate', function(){
-	var laydate = layui.laydate;
-	//常规用法
-	laydate.render({
-		elem: '#dueDate'
 		,format: 'yyyy-MM-dd'
 	});
 });
@@ -46,17 +31,6 @@ function GetQueryString(name)
      var r = window.location.search.substr(1).match(reg);
      if(r!=null) return $.trim(decodeURI(r[2])); return null;
 }
-
-//部门 areaName
-var areaName = GetQueryString("areaName");
-//是否整改 isFinish
-var isFinish = GetQueryString("isFinish");
-//是否超期 timeOver
-var timeOver = GetQueryString("timeOver");
-//开始时间 beginTime
-var beginTime = GetQueryString("beginTime");
-//结束时间 endTime
-var endTime = GetQueryString("endTime");
 
 //加载layui内置模块
 layui.use(['jquery','form','layer','table','excel'], function(){
@@ -75,7 +49,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	 * 问题上报信息展示表
 	 */
 	var problemTable = table.render({
-		elem: '#reportTrace',
+		elem: '#myReportDetail',
 		method: 'post',
 		url: '/iot_process/report/showproblembycondition',
 		toolbar: '#toolbarBtn',
@@ -86,6 +60,9 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		request: {
 		    pageName: 'page' //页码的参数名称，默认：page
 		    ,limitName: 'limit' //每页数据量的参数名，默认：limit
+		},
+		where: {
+			'applypeople': resavepeople
 		},
 		parseData: function(res){ //res 即为原始返回的数据
 			var data = res.data     
@@ -117,39 +94,23 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 		},
 		cols: [[{field:'id', title:'编号', width:'5%', sort:false, type:'numbers', fixed:'left', align:'center'},
 			{field:'applydate', title:'上报日期', width:'10%', sort:true, align:'center'},    //, templet:"<div>{{layui.util.toDateString(d.applydate,'yyyy-MM-dd HH:mm:ss')}}</div>"
-			{field:'applypeople', title:'上报人', width:'7%', sort:true, align:'center'},
+			{field:'applypeople', title:'上报人', width:'8%', sort:true, align:'center'},
 			{field:'welName', title:'装置单元', width:'9%', sort:true, align:'center'},
 			{field:'problemclass', title:'问题类别', width:'9%', sort:true, align:'center'},
 			{field:'profession', title:'专业', width:'7%', sort:true, align:'center'},
-			{field:'depet', title:'部门', width:'8%', sort:true, align:'center'},
-			{field:'rectificationperiod', title:'整改日期', width:'8%', sort:true, align:'center'},
-			{field:'remarkthree', title:'是否超期', width:'8%', sort:true, align:'center'},
-			{field:'problemdescribe', title:'问题描述', width:'16%', sort:true, align:'center'},
 			{field:'problemstate', title:'问题状态', width:'7%', sort:true, align:'center'},
-			{field:'piid', title:'流程ID', width:'8%', sort:false, hide:true},
+			{field:'rectificationperiod', title:'整改日期', width:'8%', sort:true, align:'center'},
+			{field:'remarkthree', title:'是否超期', width:'7%', sort:true, align:'center'},
+			{field:'problemdescribe', title:'问题描述', width:'16%', sort:true, align:'center'},
+			{field:'piid', title:'流程ID',sort:false, hide:true},
 			{fixed:'right',  title:'处理过程', minWidth:105, width:'15.7%', align:'center', toolbar:'#barBtn'} ]]  
 	});
-	
-	if(areaName != null && beginTime != null && endTime != null){
-		problemTable.reload({
-    		url: '/iot_process/report/showproblembycondition'
-    	   ,page: {
-    		   curr: 1 //重新从第 1 页开始
-    	   }
-    	   ,where: {
-    			'problemtype': areaName,
-    			'startTime': beginTime,
-    			'endTime': endTime,
-    			'remarkthree':  timeOver, 
-    			'problemstate': isFinish
-    	   }
-    	})
-	}
+
 	
 	/**
 	 * 监听每一行工具事件
 	 */
-	table.on('tool(reportTrace)', function(obj){
+	table.on('tool(myReportDetail)', function(obj){
 		console.log(obj);
 	    var data = obj.data;
 	    if(obj.event === 'process'){
@@ -225,20 +186,7 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			type: "POST",
 			url: "/iot_process/report/showproblembycondition",
 			data: {
-				'welName': $("#welName").val(),
-    			'problemclass': $("#problemclass").val(),
-    			'profession': $("#profession").val(),
-    			'depet': $("#depet").val(),
-    			'problemdescribe': $("#problemdescribe").val(),
-    			'problemstate': $("#problemstate").val(),
-    			'startTime': $("#startdate").val(),
-    			'endTime': $("#enddate").val(),
-    			'applypeople': $("#applypeople").val(),
-    			'maintenanceman': $("#maintenanceman").val(),
-    			'dueDate': $("#dueDate").val(),
-    			'duedateRange': $("#duedateRange").val(),
-    			'remarkthree':  $("#remarkthree").val(),
-    			'piidArray': piids
+    			'applypeople': resavepeople
 			},
 			dataType: "json",
 			success: function(json){
@@ -320,95 +268,16 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 	}
 	
 	/**
-	 * 打开/关闭高级搜索
-	 */
-	var isopen = 0;
-	function opneAdvanceQuery(){
-		if(isopen){
-			$(".layui-form-hidden").css({"display":"none"});
-			$("#advance-search").text("打开高级搜索");
-			isopen = 0;
-		}else{
-			$(".layui-form-hidden").css({"display":"block"});
-			$("#advance-search").text("关闭高级搜索");
-			isopen = 1;
-		}
-	}
-	
-	/**
-	 * 重新加载表
-	 */
-	function reloadTable(sortField, sortType, piids_){
-		problemTable.reload({
-    		url: '/iot_process/report/showproblembycondition'
-    	   ,page: {
-    		   curr: 1 //重新从第 1 页开始
-    	   }
-    	   ,where: {
-    			'welName': $("#welName").val(),
-    			'problemclass': $("#problemclass").val(),
-    			'profession': $("#profession").val(),
-    			'depet': $("#depet").val(),
-    			'problemdescribe': $("#problemdescribe").val(),
-    			'problemstate': $("#problemstate").val(),
-    			'startTime': $("#startdate").val(),
-    			'endTime': $("#enddate").val(),
-    			'schedule': $("#schedule").val(),
-    			'maintenanceman': $("#maintenanceman").val(),
-    			'applypeople': $("#applypeople").val(),
-    			'dueDate': $("#dueDate").val(),
-    			'duedateRange': $("#duedateRange").val(),
-    			'remarkthree':  $("#remarkthree").val(), 
-    			'sortField': sortField,
-    			'sortType': sortType,
-    			'piidArray': piids_
-    	   }
-    	})
-	}
-	
-	/**
 	 * 监听头工具栏事件 
 	 */ 
-	  table.on('toolbar(reportTrace)', function(obj){
+	  table.on('toolbar(myReportDetail)', function(obj){
 	     //var checkStatus = table.checkStatus(obj.config.id);
 		 console.log(obj);
 		 switch(obj.event){
-	      case 'querydata':
-	    	console.log('querydata');
-	    	isreload = true;
-	    	piids = '';
-	    	reloadTable(null, null, null);
-	        break;
-	      case 'querydata-all':
-	    	  console.log('querydata-all');
-	    	  isreload = true;
-	    	  piids = '';
-	    	  problemTable.reload({
-	      		url: '/iot_process/report/showproblembycondition'
-	      	   ,page: {
-	      		   curr: 1 //重新从第 1 页开始
-	      	   }
-	      	   ,where: {
-	      			'welName': '',
-	      			'problemclass': '',
-	      			'profession': '',
-	      			'depet': '',
-	      			'problemdescribe': '',
-	      			'problemstate': '',
-	      			'startTime': '',
-	      			'endTime': '',
-	      			'schedule': '',
-	      			'maintenanceman': '',
-	      			'applypeople': '',
-	      			'dueDate': '',
-	      			'duedateRange': '',
-	      			'remarkthree':  '',
-	      			'sortField': null,
-	    			'sortType': null,
-	      			'piidArray': ''
-	      	   }
-	      	})
-	    	break;
+	      case 'export':
+	    	  console.log('export');
+	    	  exportExcel();
+	    	  break;
 	      case 'finish':
 	    	  console.log('finish');
 			   console.log("count="+count+" , uncount="+uncount);
@@ -439,39 +308,13 @@ layui.use(['jquery','form','layer','table','excel'], function(){
 			      })  
 	    	  }
 		      break;
-	      case 'open-advance':
-	    	  console.log('open-advance');
-	    	  opneAdvanceQuery();
-	    	  break;
-	      case 'export':
-	    	  console.log('export');
-	    	  exportExcel();
-	    	  break;
-	      case 'queryself':
-	    	  console.log('queryself');
-	    	  $.ajax({
-	    		  async: false,
-	    		  type: 'GET',
-	    		  url: '/iot_process/process/userId/piid',
-	    		  data: {"userId": resavepeople},
-	    		  dataType: 'json',
-	    		  success: function(json){
-	    			  if(json.state == 0){
-	    				  piids = json.data;
-	    			  }
-	    		  }
-	    	  })
-	    	  piids = (piids == null||piids == '')?['nodata']:piids;
-	    	  isreload = true;
-	    	  reloadTable(null, null, piids);
-	    	  
 	    };
 	  });
 	
 	 /**
 	  * 监听排序事件
 	  */
-	 table.on('sort(reportTrace)', function(obj){
+	 table.on('sort(myReportDetail)', function(obj){
 		 console.log(obj.field); //当前排序的字段名
 		 console.log(obj.type); //当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
 		 reloadTable(obj.field, obj.type, null);

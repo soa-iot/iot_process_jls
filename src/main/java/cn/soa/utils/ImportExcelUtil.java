@@ -141,7 +141,7 @@ public class ImportExcelUtil {
 				}
 				
 				String cellValue = "";
-				log.info("cellValue="+cellValue);
+				//log.info("cellValue="+cellValue);
 				if (cell.getCellTypeEnum() == CellType.STRING) {
 					cellValue = cell.getStringCellValue().trim();
 				}
