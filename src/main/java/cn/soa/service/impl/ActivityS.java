@@ -2008,7 +2008,7 @@ public class ActivityS implements ActivitySI{
     			}
     			String act_TYPE_ = h.getACT_TYPE_();
     			if(  act_TYPE_ != null  ) {
-    				if( act_TYPE_.contains( "exclusiveGateway") || act_TYPE_.contains( "startEvent")  || act_TYPE_.contains( "endEvent") ) {
+    				if( act_TYPE_.contains( "exclusiveGateway" ) || act_TYPE_.contains( "startEvent")  || act_TYPE_.contains( "endEvent") ) {
     					s1 --;
     					continue;
     				}		
@@ -2021,7 +2021,7 @@ public class ActivityS implements ActivitySI{
     		}
     		logger.info( "---S--------全部task节点为-------------" + hisActs.toString() );
     		
-    		//查看问题是否完成，若为完成，则查找最后候选执行人
+    		//查看问题是否完成，若未完成，则查找最后候选执行人
     		String candidateStr = null;
     		if( flag == null ) {//流程是未完成的状态
     			List<cn.soa.entity.activity.IdentityLink> candidates = acitivityIdentityS.findCandidateByPiid( piid );
@@ -2029,7 +2029,10 @@ public class ActivityS implements ActivitySI{
     				candidateStr = candidateStr == null ? id.getUSER_ID_():candidateStr + "," + id.getUSER_ID_();
     			}
     			logger.info( "---S--------最后一个节点的执行人-------------" + candidateStr );
-    			hisActs.get( s1 - 1 ).setASSIGNEE_( candidateStr );
+    			if( StringUtils.isNotBlank( candidateStr  ) 
+    					&& StringUtils.isBlank( hisActs.get( s1 - 1 ).getASSIGNEE_() )) {//在问题评估时回退到问题上报，这个回退后，第二个问题上报节点的tsid在候选人表中是没有的，在节点历史表中默认有人，这个人就是第一次问题上报的人
+    				hisActs.get( s1 - 1 ).setASSIGNEE_( candidateStr );
+    			}	
     			return hisActs;
     		}
     		

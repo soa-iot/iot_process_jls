@@ -1,17 +1,23 @@
 	layui.use(['jquery','table','form','laydate','table'], function(){
 			var layer = layui.layer,form = layui.form,
 				$ = layui.$, //重点处,使用jQuery
-				laydate = layui.laydate,table=layui.table;
+				laydate = layui.laydate,table=layui.table,nowDate = new Date();
 			console.log(layer);
-			function renderTime(param){
-				laydate.render({
-					elem: param,
-					type: 'date',
-					trigger: 'click' //采用click弹出
-				});
-			};
-			renderTime('#startTime');
-			renderTime('#endTime');
+			var month = (nowDate.getMonth() + 1) > 9 ? nowDate.getMonth() : "0" + (nowDate.getMonth());
+			var month1 = (nowDate.getMonth() + 1) > 9 ? nowDate.getMonth() + 1 : "0" + (nowDate.getMonth() + 1);
+			var now = (nowDate.getDate()) > 9 ? nowDate.getDate() : "0" + (nowDate.getDate());
+			var now1 = (nowDate.getDate()) > 9 ? nowDate.getDate() : "0" + (nowDate.getDate() );
+			var ins1 = laydate.render({
+		    	elem: '#startTime',
+		    	type: 'date',
+		    	value: nowDate.getFullYear() + "-" + month + "-" + now
+			})
+			
+			var ins2 = laydate.render({
+		    	elem: '#endTime',
+		    	type: 'date',
+		    	value: nowDate.getFullYear() + "-" + month1+ "-" + now1
+			})
 			form.render(); 
 			var option = {
 				    tooltip : {
@@ -262,7 +268,7 @@
 			};
 			$("#generateTestData").click(function(){
 				var total=0, finished=0;
-				$.getJSON('/iot_process/report/problemTimeOverCount',{'beginTime':$('#startTime').val(),'endTime':$('#endTime').val()},function(aj){
+				$.getJSON('/iot_process/report/problemTimeOverCount',{'beginTime':ins1.config.value,'endTime':ins2.config.value},function(aj){
 					if(aj.state==0){
 						//初始化基本数据
 						tableData=[{
@@ -288,7 +294,7 @@
 							,"sc-finished": 0
 							,"sc-unfinished": 0
 						  }];
-						 xAxisdata=["净化工段","维修工段","HSE办公室","财务经营办公室","综合办","设备办","生产办"];
+						 xAxisdata=["净化工段","维修工段","HSE办","财务经营办","综合办","设备办","生产办"];
 						 xtotal=[0,0,0,0,0,0,0];
 						 xfinished=[0,0,0,0,0,0,0];
 						 xunfinished=[0,0,0,0,0,0,0];
@@ -407,4 +413,5 @@
 				}
 	
 			})
+			$('#generateTestData').find('button').click();
 		});		 
