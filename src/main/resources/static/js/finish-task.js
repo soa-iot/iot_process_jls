@@ -15,6 +15,7 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 			  layer.msg("处理说明不能为空", {icon: 7, offset: '100px'});
 			  return;
 		  }
+		  $("#finish_task").attr({"disabled":"disabled"});
 		  if($('#imgZmList').children().length == 0){
 			  //layer.msg("现场施工图必须上传", {icon: 7, offset: '100px'});
 			  finishTask();
@@ -55,9 +56,11 @@ layui.use(['form', 'jquery','upload','layer'], function(){
 		        	}else{
 		        		layer.msg("完成作业提交失败",{icon: 2, time:2000, offset: '100px'});
 		        	}
+		        	$("#finish_task").removeAttr("disabled");
 		        } 
 		        ,error:function(){
 		        	layer.msg("完成作业提交失败， 请检查网络是否正常",{icon: 2, time:2000, offset: '100px'});
+		        	$("#finish_task").removeAttr("disabled");
 		        }	
 		   });
 	}
