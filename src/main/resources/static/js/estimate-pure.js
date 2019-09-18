@@ -35,32 +35,26 @@ layui.use('layer', function(){ //独立版的layer无需执行这一句
 						var childWindow = $("#addFrame")[0].contentWindow;
 						var checkData = childWindow.getCheckedData();
 						console.log(checkData);
-						for (var i = 0; i < checkData.length; i++) {
+						
 							
-							//console.log(checkData[i][1]);
-							var user=userOrDept(checkData[i][1]);
-							if (user!="") {
-								//对比是否为同一部门
-								if (i<checkData.length-2) {
-									if (!compareTodept(checkData[i][1],checkData[i+1][1])) {
-										layer.msg('请选择同一部门的人！！！',{icon:7,offset:"100px"});
-										usernames = "";
-										return;
-									}
-									
-								}
-								usernames +=user;
-								if (usernames != "" && i != checkData.length - 1) {
-									usernames += ",";
-								}
+						var dept = "";	
+						for (var i = 0; i < checkData.length; i++) {
+							var dept_one;
+							var depts = deptOrDeptUser(checkData[i][1]);
+							if (depts != "") {
+								dept = depts;
+							}else{
+								dept = dept_one;
 							}
+							console.log(dept_one) 
+							
 						}
-						console.log("选中的人："+usernames);
+						console.log("选中的bm："+dept);
 	
-						if (usernames=="") {
-							layer.msg('至少选定一人！！！',{icon:7,offset:"100px"});
+						if (dept=="") {
+							layer.msg('至少选定一个部门！！！',{icon:7,offset:"100px"});
 						}else{
-							workPlan(this,usernames);
+							workPlan(this,dept);
 							layer.close(ope);
 						}
 						usernames="";
@@ -91,49 +85,63 @@ var coordinate_tree ;
  * @param usernames 人名用“，”隔开
  * @returns
  */
-function workPlan(obj,usernames){
+function workPlan(obj,dept){
 	var isIngroup = 0;
 	
 	console.log("id:"+$(obj).attr("id"));
 	console.log("id判断:"+$(obj).attr("id")=="work_plant");
-	
-	if ($(obj).attr("id")=="work_plant") {
-		isIngroup = 1;
-	}
-	
-	if ($(obj).attr("id")=="coordinatet") {
-		isIngroup = 2;
-	}
-	console.log("isIngroupg:"+isIngroup);
 	$.ajax({
 		async:false,
-		type: "PUT"
-		,url: '/iot_process/process/nodes/jump/group/piid/'+piidp    //piid为流程实例id
+		type: "post"
+		,url: '/iot_process/userOrganizationTree/users'    //piid为流程实例id
 		,data: {
-			
-			//"area": ""  //属地单位
-			"actId": "receive"  //跳转节点id
-			,"receivor": usernames  //下一步流程变量
-			,"userName": $.cookie("name").replace(/"/g,"")  //当前节点任务执行人
-			,"comment": $("#comment").val()   //备注信息\
-			,"operateName":"作业安排"
-					
-			/*"isIngroup": isIngroup,   
-			"comment": $("#comment").val(),     //节点的处理信息
-			"receivor":usernames,
-			"userName":$.cookie("name").replace(/"/g,"")*/
+			"dept": dept
 		}   //问题上报表单的内容
 		,contentType: "application/x-www-form-urlencoded"
 		,dataType: "json"
 		,success: function(jsonData){
 			//后端返回值： ResultJson<Boolean>
-			console.log("人员提交："+jsonData.data);
-			if (jsonData.data) {
-				modifyEstimated("作业安排成功，问题流转到："+usernames);
-			}else{
-				layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
+			if(jsonData.state==0){
+				var data = jsonData.data[0].children;
+				
+				var usernames = "";
+				for ( var user in data) {
+					console.log(data[user].label)
+					usernames +=data[user].label+","
+				}
+				
+				if(usernames.length > 1){
+					usernames = usernames.substring(0,usernames.length-1);
+				}
+				console.log(usernames);
+				$.ajax({
+					async:false,
+					type: "PUT"
+					,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
+					,data: {
+						
+						"userName": $.cookie("name").replace(/"/g,"")  //当前节点任务执行人
+						,"comment": $("#comment").val()   //备注信息\
+						,"operateName":"作业安排"
+						,"verifty":"2"
+						,"arrangor":usernames
+					}   //问题上报表单的内容
+					,contentType: "application/x-www-form-urlencoded"
+					,dataType: "json"
+					,success: function(jsonData){
+						//后端返回值： ResultJson<Boolean>
+						console.log("人员提交："+jsonData.data);
+						if (jsonData.data) {
+							modifyEstimated("作业安排成功，问题流转到："+usernames);
+						}else{
+							layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
+						}
+					},
+					//,error:function(){}		       
+				});
 			}
 		},
 		//,error:function(){}		       
 	});
+	
 }

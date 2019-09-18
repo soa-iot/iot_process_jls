@@ -1,3 +1,4 @@
+
 //加载layui内置模块
 layui.use(['jquery','form','upload','layer','layedit'], function(){
 	var form = layui.form

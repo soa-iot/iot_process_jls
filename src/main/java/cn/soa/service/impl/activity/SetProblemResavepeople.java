@@ -48,6 +48,7 @@ public class SetProblemResavepeople implements ExecutionListener{
 		map.put("receive", "receivor");
 		map.put("complement", "complementor");
 		map.put("check", "checkor");
+		map.put("verify", "verifor");
 		//map.put("end", "");
 		
 		

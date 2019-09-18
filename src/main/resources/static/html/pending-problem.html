@@ -72,32 +72,22 @@
 			    ,layEvent = obj.event; //获得 lay-event 对应的值
 			    if(layEvent === 'edit'){
 			    	//根据属地判断跳转页面
-			    	
-			    	var  toHtml={"问题上报":'report.html',"作业安排":"assign-task.html","作业接收":"receive-task.html","作业完成":"finish-task.html","作业验收":"acceptance.html","净化分配":"estimate-pure.html","维修分配":"estimate-repair.html"};
-			    	if(data.currentnode=="问题评估"){
-				    	switch(data.area){
-				    	case "HSE办公室":			    		
-				    	case "设备办":
+			    	console.log(data.currentnode);
+			    	var  toHtml={"问题上报":'report.html',"问题评估":"estimate-team-leader.html","作业安排":"assign-task.html","作业接收":"receive-task.html","作业完成":"finish-task.html","作业验收":"acceptance.html","净化分配":"estimate-pure.html","领导审核":"estimate.html"};
+			    	/* if(data.currentnode=="问题评估"){
+				    	switch(data.area){		    		
 				    	case "生产办":
-				    	case "综合办":
-				    	case "财务经营办":
-				    		html="estimate.html";
-				    		break;
 				    	case "净化工段":			    		
 				    	case "维修工段":
-				    	case "化验":
-				    	case "电站":
-				    	case "机械":
-				    	case "电气":
-				    	case "电工":
+				    	case "项目部":
 			    			html="estimate-team-leader.html";
 			    			break;
-			    		default:
-			    			html="estimate-repair.html";
+			    		 default:
+			    			html="estimate-repair.html"; 
 				    	}
-			    	}else{
+			    	}else{ */
 			    		html=toHtml[data.currentnode]
-			    	}
+			    	//}
 					location.href=html+"?piid="+data.piid+"&area="+data.area;
 			    }
 			  });  

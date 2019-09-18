@@ -193,10 +193,11 @@ $.ajax({
 				};
 
 				$('#estimate_next').on('click', function(){
-					if (yesCompare()) {
+					estimate_next(this,usernames);
+					/*if (yesCompare()) {
 						var othis = $(this), method = othis.data('method');
 						active[method] ? active[method].call(this, othis) : '';
-					}
+					}*/
 				});
 
 			});
@@ -219,7 +220,7 @@ function workPlan(obj,usernames){
 		type: "PUT"
 		,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
 		,data: {
-			"isIngroup": 1,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+			"isIngroup": 2,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
 		     								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 		     								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 		     								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
@@ -253,7 +254,7 @@ function workPlan(obj,usernames){
 function estimate_next(obj,usernames){
 	
 	var estimate_next_data = {
-			"isIngroup": 3,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
+			"isIngroup": 1,    /*流程变量名称,流程变量值(属地单位为非维修非净化+前端选择"作业安排"时，值为1；
 								   属地单位为非维修非净化+前端选择"外部协调"时，值为2；
 								   属地单位为维修或净化+前端选择"作业安排"时，值为1；
 								    属地单位为维修或净化+前端选择"下一步"时，值为3 )*/
@@ -262,11 +263,11 @@ function estimate_next(obj,usernames){
 			,"userName":$.cookie("name").replace(/"/g,"")
 	}
 	
-	if (area=="净化工段" || area=="化验") {
+	/*if (area=="净化工段" || area=="化验") {
 		estimate_next_data["puror"] = usernames;
 	}else if(area=="维修工段" ||area=="电工" || area=="电站"|| area=="机械"|| area=="仪表"){
 		estimate_next_data["repairor"] = usernames;
-	}
+	}*/
 	
 	
 	

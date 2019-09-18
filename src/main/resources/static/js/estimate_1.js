@@ -606,10 +606,11 @@ layui.use('tree', function(){
 		};
 		
 		$('#coordinate').on('click', function(){
-			if (yesCompare()) {
+			outhelper_pure(this,usernames);
+			/*if (yesCompare()) {
 				var othis = $(this), method = othis.data('method');
 				active[method] ? active[method].call(this, othis) : '';
-			}
+			}*/
 		});
 		
 	});
@@ -617,6 +618,30 @@ layui.use('tree', function(){
 	
 });
 
+$('#coordinatec').on('click', function(){
+	$.ajax({
+		async:false,
+	    type: "PUT"
+	    ,url: '/iot_process/process/nodes/jump/group/piid/'+piidp    //piid为流程实例id
+	    ,data: {
+	    	"comment": $("#comment").val()     //通用 -- 节点的处理信息
+	    	,"actId": "pure"  //跳转节点id
+	    	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
+	    	,"operateName":"下一步"
+	    }   //问题上报表单的内容
+	    ,contentType: "application/x-www-form-urlencoded"
+	    ,dataType: "json"
+	    ,success: function(jsonData){
+	    	//后端返回值： ResultJson<Boolean>
+	    	if (jsonData.data) {
+				modifyEstimated("问题流转到生产办！！");
+			}else{
+				layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
+			}
+	    }
+	    //,error:function(){}		       
+	});
+});
 /**
  * 外部协调提交请求
  * @returns
@@ -680,16 +705,18 @@ $.ajax({
     ,url: '/iot_process/process/nodes/next/group/piid/'+piidp    //piid为流程实例id
     ,data: {
     	"comment": $("#comment").val()     //通用 -- 节点的处理信息
-    	,"repairor": usernames     //通用 -- 下一个节点问题处理人
+    	,"verifor": "王军,王燕"     //通用 -- 下一个节点问题处理人
+    	,"actId": "pure"  //跳转节点id
     	,"userName": $.cookie("name").replace(/"/g,"")    //当前任务的完成人
-    	,"operateName":"外部协调"
+    	,"operateName":"领导审核"
+    	,"verifty":"1"
     }   //问题上报表单的内容
     ,contentType: "application/x-www-form-urlencoded"
     ,dataType: "json"
     ,success: function(jsonData){
     	//后端返回值： ResultJson<Boolean>
     	if (jsonData.data) {
-			modifyEstimated("外部协调成功，问题流转到："+usernames);
+			modifyEstimated("问题流转到领导审核!!");
 		}else{
 			layer.msg('安排人员发送失败！！！',{icon:7,offset:"100px"});
 		}
